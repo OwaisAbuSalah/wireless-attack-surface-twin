@@ -139,6 +139,28 @@ def write_results(B, names, sp, nominal, calibrated, cal, nom_stats, cal_stats, 
                      f"{_m(m['outdoor'], 'rmse')} | {_m(m['floors'], 'rmse')} |")
     L.append("")
 
+    app = OUT / "app_stats.json"
+    if app.exists():
+        try:
+            ad = json.loads(app.read_text(encoding="utf-8"))
+            A = ad.get("scenarios", {})
+            common = [n for n in names if n in A and n in mwm_rt]
+            if common:
+                L += ["### 2b. Reference model vs. the web app's GPU implementation", "",
+                      f"`sim/out/app_stats.json` (written by the web app, {ad.get('generated', '?')}, GPU: "
+                      f"{ad.get('gpu', '?')}) vs. the NumPy reference on the same real-time grid (table 1c); "
+                      "difference = app − NumPy.", "",
+                      "| Scenario | " + " | ".join(h for _, h, _ in STATS) + " |", "|---|" + "---:|" * len(STATS)]
+                for n in common:
+                    L.append(f"| {n} | " + " | ".join(f"{float(A[n][k]) - float(mwm_rt[n][k]):+.1f}" for k, _, _ in STATS) + " |")
+                missing = [n for n in names if n not in A]
+                if missing:
+                    L.append("")
+                    L.append("Not in the app file: " + ", ".join(f"`{n}`" for n in missing) + ".")
+                L.append("")
+        except Exception as e:  # noqa: BLE001
+            L += [f"(app_stats.json could not be compared: {e})", ""]
+
     # ------------------------------------------------------------------ 3. calibration
     L += ["## 3. Calibration of the MWM material losses to Sionna RT", "", f"Method: {cal['method']}. Data: AP maps of "
           "the unshielded scenarios of each band (`lowPower` is excluded because its path loss is identical to `baseline`) "
@@ -235,7 +257,10 @@ def write_results(B, names, sp, nominal, calibrated, cal, nom_stats, cal_stats, 
           "cells can stay empty; these environments are traced with 4 averaged seeds on the outdoor plane "
           f"({', '.join(f'{k}: {v}' for k, v in st.get('seeds_outdoor', {}).items())} seed(s)) and the share of ray-less "
           "outdoor cells is listed in section 1a. Client-source maps behind the shielded façade remain the least converged "
-          "quantity (deauth / evil-twin areas of `shieldPaint`, `band5`, `allRF`).",
+          "quantity (deauth / evil-twin areas of " + ", ".join(f"`{k}`" for k, v in st.get("seeds_outdoor", {}).items()
+                                                              if v > 1) + ").",
+          "* Runtimes in section 5 were measured on an RTX 3060 shared with another GPU job; per-scenario values include "
+          "the scenario's share of the client-source maps of its propagation environment.",
           "* Radio-map cells are averages of the incoherent ray power over each cell (local-area mean, no small-scale "
           "fading); the MWM is evaluated at cell centres. Both use isotropic receivers (MODEL.md §3).",
           "* Shielding is modelled in Sionna as an equivalent lossy slab whose normal-incidence transmission loss matches "
@@ -253,12 +278,17 @@ def outdoor_area(B) -> float:
     return float((~B.inside_footprint(X, Y)).sum() * g["dx"] ** 2)
 
 
+def scenario_tx(B, n) -> float:
+    from .building import scenario_params
+    return scenario_params(B, n).tx_dbm
+
+
 def interpretation(B, names, nominal, calibrated, cal, mwm_sg, sio, cal_rows, specs_by_f) -> list:
     out = []
     try:
         def area(tab, n):
             return float(tab[n]["area_eavesdrop"])
-        single = [n for n in names if n not in ("baseline", "allRF")]
+        single = [n for n in names if len(B.scenarios[n]["protections"]) == 1]
         rk_m = sorted(single, key=lambda n: area(mwm_sg, n))
         rk_s = sorted(single, key=lambda n: area(sio, n))
         out.append(f"* **Ranking of single protections** by remaining eavesdropping area (best first) — MWM: "
@@ -279,6 +309,24 @@ def interpretation(B, names, nominal, calibrated, cal, mwm_sg, sio, cal_rows, sp
         else:
             out.append("* Both models agree on the direction of the change (reduction or increase of the eavesdropping area) "
                        "for every protection.")
+        if "applied" in names:
+            def st_(tab, k):
+                return float(tab["applied"][k])
+            sw = lambda tab: float(tab["applied"]["street_exposure"])
+            out.append(
+                f"* **Headline configuration `applied`** ({' + '.join(B.scenarios['applied']['protections'])}, "
+                f"{scenario_tx(B, 'applied'):g} dBm per AP, two ceiling micro-cells): both models confirm the large reduction "
+                f"of the attack surface — eavesdropping area {st_(mwm_sg, 'area_eavesdrop'):,.0f} m² (MWM) / "
+                f"{st_(sio, 'area_eavesdrop'):,.0f} m² (Sionna) vs. {b_m:,.0f} / {b_s:,.0f} m² in the baseline "
+                f"({100 * (st_(mwm_sg, 'area_eavesdrop') - b_m) / b_m:+.0f} % / {100 * (st_(sio, 'area_eavesdrop') - b_s) / b_s:+.0f} %), "
+                f"deauth {st_(mwm_sg, 'area_deauth'):,.0f} / {st_(sio, 'area_deauth'):,.0f} m², evil twin "
+                f"{st_(mwm_sg, 'area_eviltwin'):,.0f} / {st_(sio, 'area_eviltwin'):,.0f} m², with service coverage "
+                f"{st_(mwm_sg, 'coverage'):.0f} % / {st_(sio, 'coverage'):.0f} %. Quantitatively the ray tracer leaves a "
+                f"{st_(sio, 'area_eavesdrop') / max(st_(mwm_sg, 'area_eavesdrop'), 1):.0f}× larger residual eavesdropping "
+                f"zone (max. leak {st_(mwm_sg, 'max_leak_m'):.0f} m vs. {st_(sio, 'max_leak_m'):.0f} m, street exposure "
+                f"{sw(mwm_sg):.0f} % vs. {sw(sio):.0f} %): the multi-wall model under-predicts outdoor power behind the "
+                f"shielded façade (outdoor bias {nominal['applied']['outdoor']['bias']:+.1f} dB), so the report should "
+                "quote the Sionna value as the residual risk.")
         if "allRF" in names:
             out.append(f"* **{B.scenarios['allRF']['label']['en']}** (`allRF` = {' + '.join(B.scenarios['allRF']['protections'])}) "
                        f"reduce the eavesdropping area to {area(mwm_sg, 'allRF'):,.0f} m² (MWM) / "

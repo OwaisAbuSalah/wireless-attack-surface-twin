@@ -79,6 +79,27 @@ def test_endpoint_on_wall_plane_never_counts():
     assert v.sum() == 0
 
 
+def test_lattice_tolerances():
+    # ray through the junction of two facade walls (x = -6, floor 1 south facade is one wall; use floor 0:
+    # F0 south facade is split at x = -6 and x = 6) -> both walls meeting there are counted (u = 1 and u = 0)
+    j = lb((-6.0, -6.0, 1.5), (-6.0, -10.0, 1.5))
+    assert sorted(w["id"] for w in j["walls"] if w["id"].startswith("F0-00")) == ["F0-001", "F0-002"], j["walls"]
+    # crossing exactly at a window sill height (h = 0.9): counts as glass (sill - delta <= h)
+    sill = lb((-16.5, -7.0, 0.9), (-16.5, -9.0, 0.9))
+    assert [w["material"] for w in sill["walls"]] == ["ext_glass"], sill["walls"]
+    # crossing exactly at an opening edge of a periodic pattern (s = 2.4 -> m = 1.8 = width): glass
+    edge = lb((-15.6, -7.0, 1.8), (-15.6, -9.0, 1.8))
+    assert [w["material"] for w in edge["walls"]] == ["ext_glass"], edge["walls"]
+    # exactly one period after the offset (s = 3.6 -> m = 3.0 -> wraps to 0): glass
+    wrap = lb((-14.4, -7.0, 1.8), (-14.4, -9.0, 1.8))
+    assert [w["material"] for w in wrap["walls"]] == ["ext_glass"], wrap["walls"]
+    # vectorised path agrees
+    P = np.array([[-6.0, -10.0, 1.5], [-16.5, -9.0, 0.9], [-15.6, -9.0, 1.8], [-14.4, -9.0, 1.8]])
+    T = [np.array([-6.0, -6.0, 1.5]), np.array([-16.5, -7.0, 0.9]), np.array([-15.6, -7.0, 1.8]), np.array([-14.4, -7.0, 1.8])]
+    for t_, p_, ref in zip(T, P, (j, sill, edge, wrap)):
+        assert abs(pl(t_, p_) - ref["pl_db"]) < 1e-9
+
+
 def test_coverage_excludes_core():
     g = B.grid("floor1", "realtime")
     from twin.building import cell_centers
@@ -135,6 +156,16 @@ def test_nested_attack_tiers():
     assert a["deauth"].tolist() == [[True, False]] and a["eviltwin"].tolist() == [[True, False]]
     assert a["tier"].tolist() == [[3, 0]]
     assert abs(a["margin_deauth"][0, 1] - (-95 + 92)) < 1e-12          # limited by eavesdropping margin
+
+
+def test_microcells_max_over_aps():
+    a = scenario_params(B, "applied")             # microcells + shieldWindows + shieldPaint + band5, explicit tx_dbm
+    assert a.tx_dbm == float(B.scenarios["applied"]["tx_dbm"]) and a.mount == "micro" and a.freq_ghz == 5.0 and len(a.tx_positions) == 2
+    R = np.array([[-12.0, -3.0, 4.8], [9.0, -3.0, 4.8], [0.0, -30.0, 1.5]])
+    per_ap = []
+    for T in a.tx_positions:
+        per_ap.append([mwm.link_budget(B, T, r, 5.0, a.loss, mwm.router_gain_fn(a), a.tx_dbm)["rss_dbm"] for r in R])
+    assert np.allclose(mwm.rss_from_router(B, a, R), np.max(per_ap, axis=0))
 
 
 def test_encoding():

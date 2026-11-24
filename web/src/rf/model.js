@@ -46,23 +46,23 @@ export function pathLoss(a, b, rf, detail = null) {
   const zmin = Math.min(a[2], b[2]), zmax = Math.max(a[2], b[2]);
   let walls = 0;
   for (const w of WALLS) {
-    if (zmax < w.z0 || zmin > w.z1) continue;
+    if (zmax < w.z0 - 1e-4 || zmin > w.z1 + 1e-4) continue;
     const sx = w.b[0] - w.a[0], sy = w.b[1] - w.a[1];
     const rxs = rx * sy - ry * sx;
     if (Math.abs(rxs) < 1e-9) continue;
     const qx = w.a[0] - a[0], qy = w.a[1] - a[1];
     const t = (qx * sy - qy * sx) / rxs;
     const u = (qx * ry - qy * rx) / rxs;
-    if (t <= 1e-5 || t >= 1 - 1e-5 || u < 0 || u > 1) continue;
+    if (t <= 1e-5 || t >= 1 - 1e-5 || u < -1e-5 || u > 1 + 1e-5) continue;   // MODEL.md §2.1 tolerances
     const zc = a[2] + t * rz;
-    if (zc < w.z0 || zc > w.z1) continue;
+    if (zc < w.z0 - 1e-4 || zc > w.z1 + 1e-4) continue;
     let mat = w.matId;
     if (w.open) {
       const o = w.open;
       let m = u * w.len - o.offset;
-      if (o.period > 0) m = ((m % o.period) + o.period) % o.period;
+      if (o.period > 0) { m = ((m % o.period) + o.period) % o.period; if (m > o.period - 1e-4) m -= o.period; }
       const h = zc - w.z0;
-      if (m >= 0 && m <= o.width && h >= o.sill && h <= o.head) mat = o.matId;
+      if (m >= -1e-4 && m <= o.width + 1e-4 && h >= o.sill - 1e-4 && h <= o.head + 1e-4) mat = o.matId;
     }
     const loss = rf.loss[mat];
     walls += loss;
@@ -73,7 +73,7 @@ export function pathLoss(a, b, rf, detail = null) {
     if ((a[2] - zs) * (b[2] - zs) < 0) {
       const t = (zs - a[2]) / rz;
       const x = a[0] + t * rx, y = a[1] + t * ry;
-      if (x >= FOOT[0] && x <= FOOT[2] && y >= FOOT[1] && y <= FOOT[3]) {
+      if (x >= FOOT[0] - 1e-4 && x <= FOOT[2] + 1e-4 && y >= FOOT[1] - 1e-4 && y <= FOOT[3] + 1e-4) {
         slabs += rf.slabLoss;
         if (detail) detail.slabs.push({ z: zs, p: [x, y, zs], loss: rf.slabLoss, t });
       }

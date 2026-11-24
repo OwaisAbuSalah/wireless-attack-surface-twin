@@ -17,6 +17,33 @@ const OUT = path.join(__dirname, 'Wireless_Attack_Surface_Digital_Twin.pptx');
 const REPO = 'https://github.com/OwaisAbuSalah/wireless-attack-surface-twin';
 const LIVE = 'https://owaisabusalah.github.io/wireless-attack-surface-twin/';
 const NUM = JSON.parse(fs.readFileSync(path.join(__dirname, 'numbers.json'), 'utf8'));
+const r1 = (x) => (Math.round(x * 10 + 1e-6) / 10).toFixed(1);   // half-up, as in the report
+// live numbers: web app (sim/out/app_stats.json) and the Python / Sionna runs (sim/out/*.csv)
+const APP = JSON.parse(fs.readFileSync(path.join(ROOT, 'sim/out/app_stats.json'), 'utf8'));
+const csv = (f) => {
+  const p = path.join(ROOT, 'sim/out', f);
+  if (!fs.existsSync(p)) return [];
+  const [h, ...rows] = fs.readFileSync(p, 'utf8').trim().split(/\r?\n/);
+  const k = h.split(',');
+  return rows.map((r) => Object.fromEntries(r.split(',').map((v, i) => [k[i], isNaN(+v) || v === '' ? v : +v])));
+};
+const SST = csv('sionna_stats.csv'), MST = csv('mwm_stats.csv').filter((r) => r.grid === 'sionna'), CMP = csv('compare_metrics.csv');
+{
+  const S = APP.scenarios, b = S.baseline, a = S.applyAll, L = APP.link;
+  NUM.base = { areaU: b.area_danger, areaT: b.area_eviltwin, street: b.street_exposure, cov: b.coverage, hijack: L.hijack_floor_pct };
+  NUM.link = { ptx: 20, d: L.d_m, spread: L.path_loss_distance_db, gTx: L.gain_tx_dbi, wall: L.walls[0]?.[1] ?? 0, gRx: 5, rss: L.rss_dbm, sens: -92, margin: L.margin_db, deauth: L.deauth_devices };
+  NUM.after = { tx: a.tx_dbm, areaU: a.area_danger, street: a.street_exposure, leak: a.max_leak_m, cov: a.coverage };
+  const names = { baseline: 'Baseline', lowPower: 'Reduce TX power (12 dBm)', directional: 'Directional antenna', relocate: 'Relocate AP to ceiling', microcells: 'Micro-cells (2 APs, 20 dBm)', shieldWindows: 'Shielding window film', shieldPaint: 'Shielding paint', band5: 'Move to 5 GHz', applyAll: 'All combined' };
+  NUM.measures = Object.keys(names).filter((k) => S[k]).map((k) => [names[k], S[k].area_danger, +r1(S[k].coverage)]);
+  NUM.unit = { maxErr: APP.verification.js_vs_python.max_abs_diff_db.toFixed(3), links: APP.verification.js_vs_python.links };
+  NUM.gpuMs = String(Math.round(APP.timing_ms));
+  const nom = CMP.filter((r) => r.mwm === 'nominal' && r.scenario === 'baseline');
+  const out = nom.find((r) => r.plane === 'outdoor'), fl = nom.filter((r) => /^floor\d/.test(r.plane)), all = nom.find((r) => r.plane === 'all');
+  if (out) NUM.validation.outRmse = out.rmse.toFixed(1);
+  if (fl.length) NUM.validation.floorsRmse = Math.sqrt(fl.reduce((s2, r) => s2 + r.rmse * r.rmse * r.n, 0) / fl.reduce((s2, r) => s2 + r.n, 0)).toFixed(1);
+  if (all) NUM.validation.bias = (all.bias < 0 ? '−' : '+') + Math.abs(all.bias).toFixed(1);
+}
+const reduction = (rows, k) => { const b = rows.find((r) => r.scenario === 'baseline'), r = rows.find((x) => x.scenario === k); return b && r ? Math.round((1 - r.area_eavesdrop / b.area_eavesdrop) * 100) : null; };
 
 // ───────────────────────── theme ─────────────────────────
 const THEME = {
@@ -160,7 +187,7 @@ async function build() {
   pres.addSection({ title: 'Introduction' });
   let s = pres.addSlide({ masterName: 'TITLE', sectionTitle: 'Introduction' });
   s.addImage({ path: await cropTo(heroSrc, W, H, 0.6, 0.5), x: 0, y: 0, w: W, h: H, objectName: 'Hero render', altText: '3-D digital twin of the building with the Wi-Fi danger zone on the street' });
-  s.addImage({ path: gLeft, x: 0, y: 0, w: W, h: H, objectName: 'Readability gradient' });
+  s.addImage({ path: gLeft, x: 0, y: 0, w: W, h: H, objectName: 'Readability gradient', altText: 'Decorative gradient overlay' });
   txt(s, 'COURSE PROJECT  ·  WIRELESS COMMUNICATION SYSTEMS & SECURITY', { x: 0.7, y: 1.55, w: 8, h: 0.35, fontSize: 12, bold: true, color: HEX.accent1, charSpacing: 2 });
   s.addText('Wireless Attack Surface Digital Twin', { placeholder: 'title' });
   s.addText('Where can an outside attacker reach a building’s Wi-Fi from — and how far can we shrink that zone?', { placeholder: 'body' });
@@ -306,8 +333,8 @@ async function build() {
   pres.addSection({ title: 'Results' });
   s = pres.addSlide({ masterName: 'FULL_IMAGE', sectionTitle: 'Results' });
   s.addImage({ path: await cropTo(A('shot_overview_baseline.jpg'), W, H, 0.5, 0.5), x: 0, y: 0, w: W, h: H, objectName: 'Baseline attack surface', altText: 'Danger zone covering the whole street' });
-  s.addImage({ path: gTop, x: 0, y: 0, w: W, h: H, objectName: 'Top gradient' });
-  s.addImage({ path: gBottom, x: 0, y: 0, w: W, h: H, objectName: 'Bottom gradient' });
+  s.addImage({ path: gTop, x: 0, y: 0, w: W, h: H, objectName: 'Top gradient', altText: 'Decorative gradient overlay' });
+  s.addImage({ path: gBottom, x: 0, y: 0, w: W, h: H, objectName: 'Bottom gradient', altText: 'Decorative gradient overlay' });
   s.addText('Baseline: the whole street is attack surface', { placeholder: 'title' });
   const k8 = [
     [NUM.base.areaU.toLocaleString('en-US') + ' m²', 'danger zone outside', HEX.accent2],
@@ -353,7 +380,7 @@ async function build() {
   s.addText('Evil Twin: the rogue AP wins near the street windows', { placeholder: 'title' });
   frame(s, await cropTo(A('shot_floor_hijack.jpg'), 8.1, 5.35, 0.45, 0.55), 0.6, 1.35, 8.1, 5.35, 'Floor 1 cut-away with hijack zone');
   const s10 = [
-    [`${NUM.base.hijack.toFixed(0)} %`, 'of floor 1 would associate with the rogue AP (purple)', HEX.accent6],
+    [`${Math.round(NUM.base.hijack)} %`, 'of floor 1 would associate with the rogue AP (purple)', HEX.accent6],
     [`${NUM.link.deauth} / 8`, 'devices can be knocked offline by forged deauthentication', HEX.accent4],
     ['1 wall', 'is all that separates the street from the department office', HEX.accent2],
   ];
@@ -400,17 +427,17 @@ async function build() {
     txt(s, v, { x: 8.55, y, w: 4.2, h: 0.75, fontSize: 40, bold: true, color: col });
     txt(s, l, { x: 8.55, y: y + 0.75, w: 4.15, h: 0.85, fontSize: 14, color: HEX.lt2, valign: 'top' });
   });
-  s.addNotes('5 GHz loses more in every wall, so one access point cannot cover this floor: the best single position reaches 79 percent. The answer from network design is micro-cells — two access points on the corridor ceiling. A GPU search over 450 placements picked the best pair. Because the cells are small, the power can then be cut to 13 dBm.');
+  s.addNotes('5 GHz loses more in every wall, so one access point cannot cover this floor: the best single position reaches 79 percent. The answer from network design is micro-cells — two access points on the corridor ceiling. A GPU search over 450 placements picked the best pair. Because the cells are small, the power can then be cut to ' + NUM.after.tx + ' dBm.');
 
   // 13 ─ Result
   s = pres.addSlide({ masterName: 'CONTENT', sectionTitle: 'Protection' });
-  s.addText('Result: −99 % attack surface, coverage kept', { placeholder: 'title' });
+  s.addText(`Result: −${Math.round((1 - NUM.after.areaU / NUM.base.areaU) * 100)} % attack surface, coverage kept`, { placeholder: 'title' });
   frame(s, await cropTo(A('shot_protected_overview.jpg'), 6.2, 5.35, 0.5, 0.5), 6.5, 1.35, 6.2, 5.35, 'Protected building');
   const ba = [
     ['Danger zone outside', `${NUM.base.areaU.toLocaleString('en-US')} m²`, `${NUM.after.areaU.toLocaleString('en-US')} m²`],
     ['Street exposure', `${Math.floor(NUM.base.street)} %`, `${NUM.after.street.toFixed(0)} %`],
     ['Max leak distance', '> 100 m', `${NUM.after.leak.toFixed(0)} m`],
-    ['Indoor coverage', `${NUM.base.cov.toFixed(1)} %`, `${NUM.after.cov.toFixed(1)} %`],
+    ['Indoor coverage', `${r1(NUM.base.cov)} %`, `${r1(NUM.after.cov)} %`],
   ];
   ba.forEach(([l, a, b], i) => {
     const y = 1.35 + i * 1.12;
@@ -420,8 +447,19 @@ async function build() {
     txt(s, '→', { x: 2.95, y: y + 0.4, w: 0.5, h: 0.5, fontSize: 22, color: MUTED, align: 'center' });
     txt(s, b, { x: 3.5, y: y + 0.4, w: 2.55, h: 0.5, fontSize: 24, bold: true, color: i === 3 ? HEX.accent5 : HEX.accent1 });
   });
-  txt(s, `Applied: shielding film + paint, two micro-cells, 5 GHz, ${NUM.after.tx} dBm, 802.11w PMF, WPA3-SAE.`, { x: 0.6, y: 5.95, w: 5.6, h: 0.75, fontSize: 13, color: MUTED, valign: 'top' });
-  s.addNotes('Combined: the danger zone falls from about 22 500 to about 240 square metres, nobody on the street can eavesdrop any more, and indoor coverage actually improves slightly. The dashed white line in the app shows where the zone used to end.');
+  {
+    const sb = SST.find((r) => r.scenario === 'baseline'), sa = SST.find((r) => r.scenario === 'applied');
+    if (sb && sa) {
+      card(s, 0.6, 5.85, 5.6, 0.95, 'Ray-traced check', '2A1F3D');
+      txt(s, [
+        { text: 'Ray-traced check (Sionna RT): ', options: { bold: true, color: 'D9B8FF' } },
+        { text: `−${Math.round((1 - sa.area_eavesdrop / sb.area_eavesdrop) * 100)} % zone, street ${Math.round(sa.street_exposure)} % — reflections leave a margin the protocol layer must cover.`, options: { color: HEX.lt2 } },
+      ], { x: 0.85, y: 5.87, w: 5.2, h: 0.9, fontSize: 13, valign: 'middle' });
+    } else {
+      txt(s, `Applied: shielding film + paint, two micro-cells, 5 GHz, ${NUM.after.tx} dBm, 802.11w PMF, WPA3-SAE.`, { x: 0.6, y: 5.95, w: 5.6, h: 0.75, fontSize: 13, color: MUTED, valign: 'top' });
+    }
+  }
+  s.addNotes('Combined (shielding film and paint, two ceiling micro-cells, 5 GHz, auto-tuned power, 802.11w and WPA3): in the real-time model the danger zone falls from about 22 500 to under 300 square metres, the street is no longer exposed, and indoor coverage stays above 95 percent. Be honest about the check: the ray tracer, which includes reflections, still finds about 2 700 square metres and part of the street — a reduction of 88 percent rather than 99. That remaining margin is exactly what the protocol layer is for.');
 
   // 14 ─ Defence in depth
   s = pres.addSlide({ masterName: 'CONTENT', sectionTitle: 'Protection' });
@@ -432,7 +470,7 @@ async function build() {
   const hdr = (t) => ({ text: t, options: { bold: true, color: HEX.accent1 } });
   const matrix = [
     [hdr('Attack'), hdr('RF measures (shielding, micro-cells, 5 GHz, power)'), hdr('802.11w PMF'), hdr('WPA3-SAE')],
-    [{ text: 'Eavesdropping', options: { bold: true, color: 'FFFFFF' } }, ok('Zone shrinks by 99 %'), no('no effect'), part('only encrypted frames remain')],
+    [{ text: 'Eavesdropping', options: { bold: true, color: 'FFFFFF' } }, ok(reduction(SST, 'applied') != null ? `Zone shrinks by ${reduction(SST, 'applied')}–${Math.round((1 - NUM.after.areaU / NUM.base.areaU) * 100)} %` : 'Zone shrinks by 99 %'), no('no effect'), part('only encrypted frames remain')],
     [{ text: 'Offline password cracking', options: { bold: true, color: 'FFFFFF' } }, part('fewer places to capture the handshake'), no('no effect'), ok('blocked — SAE resists dictionary attacks')],
     [{ text: 'Deauthentication', options: { bold: true, color: 'FFFFFF' } }, ok('zone shrinks'), ok('blocked — forged frames rejected'), part('PMF is mandatory in WPA3')],
     [{ text: 'Evil Twin', options: { bold: true, color: 'FFFFFF' } }, ok('rogue AP cannot out-shout the real one'), part('no forced disconnects'), ok('blocked — clone cannot complete SAE')],
@@ -463,6 +501,38 @@ async function build() {
   txt(s, v.note, { x: 0.6, y: 5.45, w: 12.1, h: 1.2, fontSize: 14, color: HEX.lt2, valign: 'top' });
   s.addNotes('To check the engineering model, the same geometry was ray-traced with NVIDIA Sionna RT on ITU-R P.2040 materials, with reflections and transmission through walls, on the RTX 3060. Indoors the two agree within about 7 dB RMS; outdoors the ray tracer fills the multi-wall shadows with reflections, so the RMSE is larger. Both models agree on the key security finding: at baseline the eavesdropping zone extends beyond the study area.');
 
+  // 15b ─ Ray tracing vs fast model on protections
+  {
+    const keys = [['shieldWindows', 'Window film'], ['shieldPaint', 'Shielding paint'], ['directional', 'Directional'], ['band5', '5 GHz'], ['allRF', 'Combined RF'], ['applied', 'Applied (app)']]
+      .filter(([k]) => reduction(SST, k) != null && reduction(MST, k) != null);
+    s = pres.addSlide({ masterName: 'CONTENT', sectionTitle: 'Validation' });
+    s.addText('Ray tracing: protections work less well than the fast model says', { placeholder: 'title' });
+    s.addChart(pres.charts.BAR, [
+      { name: 'Real-time multi-wall model', labels: keys.map((k) => k[1]), values: keys.map(([k]) => reduction(MST, k)) },
+      { name: 'NVIDIA Sionna RT', labels: keys.map((k) => k[1]), values: keys.map(([k]) => reduction(SST, k)) },
+    ], {
+      x: 0.5, y: 1.3, w: 7.6, h: 5.4, barDir: 'col', barGrouping: 'clustered', barGapWidthPct: 60,
+      chartColors: ['22D3EE', 'B14CFF'], showValue: true, dataLabelPosition: 'outEnd', dataLabelFormatCode: '0"%"', dataLabelColor: 'E9EEF6', dataLabelFontSize: 11, dataLabelFontFace: '+mn-lt',
+      catAxisLabelColor: 'C3CDDD', catAxisLabelFontSize: 12, catAxisLabelFontFace: '+mn-lt', valAxisHidden: true, valAxisMinVal: 0, valAxisMaxVal: 110,
+      valGridLine: { style: 'none' }, catGridLine: { style: 'none' }, catAxisLineShow: false,
+      showLegend: true, legendPos: 't', legendColor: 'E9EEF6', legendFontSize: 12, legendFontFace: '+mn-lt',
+      showTitle: true, title: 'Eavesdropping zone reduction vs baseline', titleColor: 'FFFFFF', titleFontSize: 15, titleFontFace: '+mn-lt', objectName: 'Reduction comparison chart',
+    });
+    const pts = [
+      ['Both agree on the baseline', 'the whole street and > 100 m are exposed in both models.'],
+      ['Reflections bypass shielding', 'energy leaving through the windows is reflected around shielded walls and off the ground and the neighbours.'],
+      ['Use both tools', 'the fast model to explore and explain, the ray tracer to confirm a design.'],
+      ['Hence the protocol layer', 'radio measures alone never close the zone — enable WPA3-SAE and 802.11w everywhere.'],
+    ];
+    pts.forEach(([t, d], i) => {
+      const y = 1.4 + i * 1.32;
+      card(s, 8.45, y, 4.25, 1.15, `Finding ${i + 1}`);
+      txt(s, t, { x: 8.7, y: y + 0.1, w: 3.85, h: 0.36, fontSize: 15, bold: true, color: i === 3 ? HEX.accent5 : 'FFFFFF' });
+      txt(s, d, { x: 8.7, y: y + 0.46, w: 3.9, h: 0.65, fontSize: 12, color: HEX.lt2, valign: 'top' });
+    });
+    s.addNotes('This is the most important scientific result of the validation. The ray tracer agrees that the unprotected building exposes the whole street, but it shows that several protections shrink the zone much less than the fast multi-wall model predicts, because reflections carry energy around shielded parts of the facade. The fast model is the right tool for interaction and explanation; the ray tracer is the reference for a final design — and the protocol layer remains essential.');
+  }
+
   // 16 ─ Live demo
   s = pres.addSlide({ masterName: 'CONTENT', sectionTitle: 'Validation' });
   s.addText('Live demo — open it in any browser', { placeholder: 'title' });
@@ -475,7 +545,7 @@ async function build() {
   txt(s, 'owaisabusalah.github.io/wireless-attack-surface-twin', { x: 9.0, y: 4.75, w: 3.55, h: 0.8, fontSize: 12, color: HEX.accent1, align: 'center', valign: 'top', hyperlink: { url: LIVE } });
   const feats = ['Drag the attacker and the APs', '9 protections, one-click “Apply protection”', 'Guided demo (T) · Arabic / English · offline single file'];
   txt(s, feats.map((f, i) => ({ text: f, options: { bullet: { indent: 18 }, breakLine: i < feats.length - 1, paraSpaceAfter: 4 } })), { x: 0.75, y: 5.95, w: 11.9, h: 0.9, fontSize: 15, color: HEX.lt2, valign: 'top' });
-  s.addNotes('Switch to the browser now. Start the guided demo with T, or drag the attacker around the street, toggle protections and watch the zone shrink. The whole app is a single 1.3 MB HTML file that also works offline.');
+  s.addNotes('Switch to the browser now. Start the guided demo with T, or drag the attacker around the street, toggle protections and watch the zone shrink. The whole app is a single ' + (fs.statSync(path.join(ROOT, 'docs/index.html')).size / 1048576).toFixed(1) + ' MB HTML file that also works offline.');
 
   // 17 ─ Limitations
   pres.addSection({ title: 'Conclusion' });
@@ -499,7 +569,7 @@ async function build() {
   // 18 ─ Closing
   s = pres.addSlide({ masterName: 'TITLE', sectionTitle: 'Conclusion' });
   s.addImage({ path: await cropTo(closeSrc, W, H, 0.55, 0.5), x: 0, y: 0, w: W, h: H, objectName: 'Closing image', altText: 'Protected digital twin at dusk' });
-  s.addImage({ path: gLeft, x: 0, y: 0, w: W, h: H, objectName: 'Readability gradient' });
+  s.addImage({ path: gLeft, x: 0, y: 0, w: W, h: H, objectName: 'Readability gradient', altText: 'Decorative gradient overlay' });
   s.addText('Thank you', { placeholder: 'title' });
   s.addText('Questions?', { placeholder: 'body' });
   txt(s, [
@@ -510,7 +580,7 @@ async function build() {
   s.addNotes('Thank you. Happy to show any part of the twin live.');
 
   await pres.writeFile({ fileName: OUT });
-  const { applyTheme } = require(process.env.PPTX_SKILL + '/scripts/apply_theme.js');
+  const { applyTheme } = require('./theme.js');
   await applyTheme(OUT, THEME);
   console.log('wrote', OUT);
 }

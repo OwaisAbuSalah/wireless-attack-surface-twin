@@ -40,11 +40,17 @@ Every wall is a vertical rectangle: plan segment `a → b`, vertical extent `[z0
 (absolute), base material `mat`, optional `opening`.
 
 1. Intersect the plan projections of `T→R` (parameter `t`) and `a→b` (parameter `u` ∈ [0,1]).
-   A crossing exists for `ε < t < 1 − ε` (ε = 10⁻⁵, so an end point lying on a wall plane never
-   counts that wall — this keeps float32 GPU and float64 CPU results identical) and `0 ≤ u ≤ 1`
-   (parallel segments never cross).
+   A crossing exists for `ε < t < 1 − ε` and `−ε ≤ u ≤ 1 + ε` with ε = 10⁻⁵ (an end point lying on a
+   wall plane never counts that wall; a ray through a wall junction counts every wall meeting there).
+   Parallel segments never cross.
+   *Tolerances.* The geometry and the map grids lie on a regular lattice, so exact coincidences occur
+   (rays through junctions, crossings exactly at a sill, head, opening edge or storey boundary). All
+   boundary tests therefore use the tolerances above for `t`, `u` and δ = 10⁻⁴ m for lengths/heights
+   (`z0 − δ ≤ zc ≤ z1 + δ`, `−δ ≤ m ≤ width + δ`, `sill − δ ≤ h ≤ head + δ`, slab footprint ± δ; with a
+   period, `m > period − δ` wraps to `m − period`). This makes float32 (GPU) and float64 (CPU, NumPy)
+   decide every coincidence the same way.
 2. Height of the ray at the crossing: `zc = T.z + t·(R.z − T.z)`.
-   The wall is crossed only if `z0 ≤ zc ≤ z1`.
+   The wall is crossed only if `z0 − δ ≤ zc ≤ z1 + δ`.
 3. Material at the crossing point: let `s = u·|b − a|` (metres along the wall),
    `h = zc − z0`. With an opening `{sill, head, period, width, offset, mat}`:
    ```

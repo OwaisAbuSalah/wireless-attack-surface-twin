@@ -10,6 +10,7 @@ __pycache__/
 out/render_log_*.json
 out/final_render.log
 
-# Large generated files (> 50 MB). None of the outputs currently exceeds 50 MB
-# (twin.blend ~ see README); if one ever does, list it here, e.g.:
+# Large generated files (> 50 MB). Current sizes: twin.blend 5 MB, twin.glb 2.6 MB,
+# rss_outdoor.exr 7 MB, so nothing is excluded yet. List any output that grows past 50 MB here, e.g.:
 # out/twin.blend
+out/render_log.json

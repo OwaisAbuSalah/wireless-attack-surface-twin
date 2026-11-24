@@ -29,7 +29,7 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 #app { position: fixed; inset: 0; }
-#viewport { position: absolute; inset: 0; }
+#viewport { position: absolute; inset: 0; z-index: 0; isolation: isolate; }
 #viewport canvas { display: block; outline: none; }
 #viewport > div { direction: ltr; }   /* CSS2D layer: keep absolute positioning LTR */
 .num, .mono { font-family: var(--mono); font-feature-settings: 'tnum' 1; direction: ltr; unicode-bidi: isolate; }
@@ -311,9 +311,32 @@ body.clean.labels-off #viewport > div { display: none; }
   .kpis, .panel { top: 140px; }
   .brand h1 { font-size: 14px; }
 }
+.fab { display: none; }
 @media (max-width: 760px) {
-  .kpis { width: calc(100vw - 32px); max-height: 34vh; top: auto; bottom: 16px; }
-  .legend { display: none; }
-  .panel { width: calc(100vw - 32px); top: 140px; max-height: 40vh; }
+  .topbar { padding: 8px 8px 14px; gap: 8px; }
+  .brand-text { display: none; }
+  .brand-mark { width: 36px; height: 36px; }
+  .top-actions { gap: 5px; }
+  .top-actions .btn.icon { width: 34px; height: 34px; padding: 6px; }
+  #btn-full { display: none; }
+  .center-controls { overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
+  .center-controls::-webkit-scrollbar { display: none; }
+  .seg button { padding: 6px 9px; font-size: 12px; }
   .btn.primary span:not(.ico) { display: none; }
+  /* KPIs: compact horizontal strip at the bottom */
+  .kpis { top: auto; bottom: 64px; inset-inline: 8px; width: auto; max-height: none; flex-direction: row; overflow-x: auto; gap: 8px; scroll-snap-type: x mandatory; }
+  .kpis > * { flex: 0 0 auto; min-width: 190px; scroll-snap-align: start; }
+  .kpis .row2 { display: flex; gap: 8px; }
+  .kpis .row2 .kpi { min-width: 150px; }
+  .kpis .att-card { display: none; }
+  .kpi-value { font-size: 21px; }
+  .legend, .hint { display: none; }
+  /* controls: bottom sheet behind a button */
+  .fab { display: inline-flex; position: absolute; z-index: 12; bottom: 12px; inset-inline-end: 12px; }
+  .panel { display: none; top: auto; bottom: 62px; inset-inline: 8px; width: auto; max-height: 58vh; }
+  body.panel-open .panel { display: block; }
+  body.panel-open .kpis { display: none; }
+  .tour { bottom: 64px; }
+  .tour-text { font-size: 13px; }
+  #viewport .room-label, #viewport .client-label, #viewport .ctx-label, #viewport .wall-tag { display: none; }
 }

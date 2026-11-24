@@ -1,0 +1,185 @@
+{
+ "generated": "2026-11-24T23:10:58.291Z",
+ "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 (0x00002504) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+ "scenarios": {
+  "baseline": {
+   "area_eavesdrop": 22520,
+   "area_deauth": 22520,
+   "area_eviltwin": 566,
+   "area_danger": 22520,
+   "max_leak_m": 102.5,
+   "leak_reaches_edge": true,
+   "street_exposure": 99.47,
+   "coverage": 94.35,
+   "tx_dbm": 20,
+   "freq_ghz": 2.4
+  },
+  "lowPower": {
+   "area_eavesdrop": 16490,
+   "area_deauth": 16490,
+   "area_eviltwin": 3493,
+   "area_danger": 16490,
+   "max_leak_m": 102.5,
+   "leak_reaches_edge": true,
+   "street_exposure": 99.47,
+   "coverage": 82.09,
+   "tx_dbm": 12,
+   "freq_ghz": 2.4
+  },
+  "directional": {
+   "area_eavesdrop": 15452,
+   "area_deauth": 15452,
+   "area_eviltwin": 6470,
+   "area_danger": 15452,
+   "max_leak_m": 102.5,
+   "leak_reaches_edge": true,
+   "street_exposure": 91.87,
+   "coverage": 88.45,
+   "tx_dbm": 20,
+   "freq_ghz": 2.4
+  },
+  "relocate": {
+   "area_eavesdrop": 18202,
+   "area_deauth": 18202,
+   "area_eviltwin": 6379,
+   "area_danger": 18202,
+   "max_leak_m": 102.3,
+   "leak_reaches_edge": true,
+   "street_exposure": 97.86,
+   "coverage": 81.16,
+   "tx_dbm": 20,
+   "freq_ghz": 2.4
+  },
+  "microcells": {
+   "area_eavesdrop": 25266,
+   "area_deauth": 25265,
+   "area_eviltwin": 60,
+   "area_danger": 25266,
+   "max_leak_m": 102.5,
+   "leak_reaches_edge": true,
+   "street_exposure": 98.23,
+   "coverage": 100,
+   "tx_dbm": 20,
+   "freq_ghz": 2.4
+  },
+  "shieldWindows": {
+   "area_eavesdrop": 16793,
+   "area_deauth": 16793,
+   "area_eviltwin": 463,
+   "area_danger": 16793,
+   "max_leak_m": 102.5,
+   "leak_reaches_edge": true,
+   "street_exposure": 96.93,
+   "coverage": 94.35,
+   "tx_dbm": 20,
+   "freq_ghz": 2.4
+  },
+  "shieldPaint": {
+   "area_eavesdrop": 13623,
+   "area_deauth": 10719,
+   "area_eviltwin": 25,
+   "area_danger": 13623,
+   "max_leak_m": 102.5,
+   "leak_reaches_edge": true,
+   "street_exposure": 95.56,
+   "coverage": 94.35,
+   "tx_dbm": 20,
+   "freq_ghz": 2.4
+  },
+  "band5": {
+   "area_eavesdrop": 9378,
+   "area_deauth": 8469,
+   "area_eviltwin": 8,
+   "area_danger": 9378,
+   "max_leak_m": 101.2,
+   "leak_reaches_edge": true,
+   "street_exposure": 94.97,
+   "coverage": 70.05,
+   "tx_dbm": 20,
+   "freq_ghz": 5
+  },
+  "allRF": {
+   "area_eavesdrop": 815,
+   "area_deauth": 16,
+   "area_eviltwin": 0,
+   "area_danger": 815,
+   "max_leak_m": 59.8,
+   "leak_reaches_edge": false,
+   "street_exposure": 9.63,
+   "coverage": 68.27,
+   "tx_dbm": 20,
+   "freq_ghz": 5
+  },
+  "applyAll": {
+   "area_eavesdrop": 282,
+   "area_deauth": 0,
+   "area_eviltwin": 0,
+   "area_danger": 282,
+   "max_leak_m": 38.6,
+   "leak_reaches_edge": false,
+   "street_exposure": 0,
+   "coverage": 95.88,
+   "tx_dbm": 14,
+   "freq_ghz": 5,
+   "pmf": true,
+   "wpa3": true
+  }
+ },
+ "verification": {
+  "js_vs_python": {
+   "links": 39,
+   "skipped_pathloss_only": 4,
+   "max_abs_diff_db": 0
+  },
+  "js_vs_python_protections": {
+   "links": 40,
+   "max_abs_diff_db": 0,
+   "per_scenario": {
+    "lowPower": 0,
+    "directional": 0,
+    "relocate": 0,
+    "shieldWindows": 0,
+    "shieldPaint": 0,
+    "band5": 0,
+    "allRF": 0,
+    "applied": 0,
+    "directional+relocate": 0
+   },
+   "multi_ap_links": 8,
+   "multi_ap_max_abs_diff_db": 0
+  },
+  "gpu_vs_cpu_outdoor": {
+   "cells": 5000,
+   "max_abs_diff_rss_db": 0.0004,
+   "max_abs_diff_deauth_db": 0,
+   "max_abs_diff_eviltwin_db": 0
+  },
+  "gpu_vs_cpu_floors": {
+   "cells": 47175,
+   "differing_over_0_01_db": 0
+  }
+ },
+ "grid": {
+  "outdoor_cell_m": 0.4,
+  "floor_cell_m": 0.2,
+  "outdoor_cells": 175000,
+  "floor_cells": 47175
+ },
+ "link": {
+  "d_m": 23.98,
+  "path_loss_distance_db": 67.64,
+  "gain_tx_dbi": 1.94,
+  "walls": [
+   [
+    "ext_concrete",
+    17
+   ]
+  ],
+  "rss_dbm": -57.7,
+  "margin_db": 34.3,
+  "deauth_devices": 6,
+  "hijack_floor_pct": 8.39
+ },
+ "timing_ms": 5.9,
+ "page_errors": []
+}

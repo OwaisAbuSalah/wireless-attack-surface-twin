@@ -41,7 +41,7 @@ float wallsLoss(vec3 a, vec3 b) {
   for (int i = 0; i < MAXW; i++) {
     if (i >= uWallCount) break;
     vec4 w1 = texelFetch(uWalls, ivec2(i * 4 + 1, 0), 0);
-    if (zmax < w1.x || zmin > w1.y) continue;
+    if (zmax < w1.x - 1e-4 || zmin > w1.y + 1e-4) continue;
     vec4 w0 = texelFetch(uWalls, ivec2(i * 4, 0), 0);
     vec2 s = w0.zw - w0.xy;
     float rxs = r.x * s.y - r.y * s.x;
@@ -49,17 +49,19 @@ float wallsLoss(vec3 a, vec3 b) {
     vec2 q = w0.xy - a.xy;
     float t = (q.x * s.y - q.y * s.x) / rxs;
     float u = (q.x * r.y - q.y * r.x) / rxs;
-    if (t <= 1e-5 || t >= 1.0 - 1e-5 || u < 0.0 || u > 1.0) continue;
+    // tolerances make exact coincidences (rays through wall junctions, opening edges, storey
+    // boundaries) resolve identically in float32 (GPU) and float64 (CPU) — see MODEL.md §2.1
+    if (t <= 1e-5 || t >= 1.0 - 1e-5 || u < -1e-5 || u > 1.0 + 1e-5) continue;
     float zc = a.z + t * (b.z - a.z);
-    if (zc < w1.x || zc > w1.y) continue;
+    if (zc < w1.x - 1e-4 || zc > w1.y + 1e-4) continue;
     int mat = int(w1.z + 0.5);
     if (w1.w > 0.0) {
       vec4 w2 = texelFetch(uWalls, ivec2(i * 4 + 2, 0), 0);
       vec4 w3 = texelFetch(uWalls, ivec2(i * 4 + 3, 0), 0);
       float m = u * w1.w - w3.x;
-      if (w2.z > 0.0) m = mod(m, w2.z);
+      if (w2.z > 0.0) { m = mod(m, w2.z); if (m > w2.z - 1e-4) m -= w2.z; }
       float h = zc - w1.x;
-      if (m >= 0.0 && m <= w2.w && h >= w2.x && h <= w2.y) mat = int(w3.y + 0.5);
+      if (m >= -1e-4 && m <= w2.w + 1e-4 && h >= w2.x - 1e-4 && h <= w2.y + 1e-4) mat = int(w3.y + 0.5);
     }
     total += uMatLoss[mat];
   }
@@ -69,7 +71,7 @@ float wallsLoss(vec3 a, vec3 b) {
     if ((a.z - zs) * (b.z - zs) < 0.0) {
       float t = (zs - a.z) / (b.z - a.z);
       vec2 p = a.xy + t * r;
-      if (p.x >= uFoot.x && p.x <= uFoot.z && p.y >= uFoot.y && p.y <= uFoot.w) total += uSlabLoss;
+      if (p.x >= uFoot.x - 1e-4 && p.x <= uFoot.z + 1e-4 && p.y >= uFoot.y - 1e-4 && p.y <= uFoot.w + 1e-4) total += uSlabLoss;
     }
   }
   return total;

@@ -1,0 +1,254 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Wireless Attack Surface Digital Twin — Report</title>
+<style>
+@page { size: A4; margin: 18mm 17mm 20mm 17mm; }
+* { box-sizing: border-box; }
+body { font-family: Cambria, Georgia, serif; font-size: 10.6pt; line-height: 1.5; color: #1b1f24; margin: 0; }
+h1, h2, h3, .sans { font-family: "Segoe UI", Calibri, Arial, sans-serif; }
+h2 { font-size: 15pt; margin: 22px 0 8px; color: #0f3550; border-bottom: 1.5px solid #cfdbe6; padding-bottom: 4px; break-after: avoid; }
+h3 { font-size: 12pt; margin: 16px 0 6px; color: #17486c; break-after: avoid; }
+p { margin: 0 0 8px; text-align: justify; hyphens: auto; }
+ul, ol { margin: 4px 0 10px 18px; padding: 0; }
+li { margin: 2px 0; }
+figure { margin: 10px 0 14px; break-inside: avoid; text-align: center; }
+figure img { width: 100%; border-radius: 4px; border: 1px solid #d9dee5; }
+figure.half img { width: 78%; }
+figcaption { font-size: 9.2pt; color: #444; margin-top: 4px; text-align: left; }
+table { width: 100%; border-collapse: collapse; font-family: "Segoe UI", Calibri, sans-serif; font-size: 8.9pt; margin: 6px 0 12px; break-inside: avoid; }
+th { background: #eaf1f7; color: #0f3550; font-weight: 600; text-align: left; padding: 4px 6px; border-bottom: 1px solid #b9cbdb; }
+td { padding: 3.5px 6px; border-bottom: 1px solid #e3e8ee; vertical-align: top; }
+td.r { text-align: right; font-family: Consolas, monospace; white-space: nowrap; }
+td { font-variant-numeric: tabular-nums; }
+.two table.narrow { width: 100%; }
+table.wide td:not(:first-child) { white-space: nowrap; }
+tr.hl td { background: #eef8f3; font-weight: 600; }
+table.narrow { width: 80%; }
+.eq { font-family: "Cambria Math", Cambria, serif; background: #f5f8fb; border-left: 3px solid #2b7bb9; padding: 8px 12px; margin: 8px 0 10px; font-size: 11pt; break-inside: avoid; }
+.eq small { display: block; font-family: Cambria, serif; font-size: 9.2pt; color: #555; margin-top: 2px; }
+.box { background: #f7f9fb; border: 1px solid #dde5ee; border-radius: 6px; padding: 8px 12px; margin: 8px 0 12px; break-inside: avoid; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0 14px; break-inside: avoid; }
+.kpi { border: 1px solid #dbe3ec; border-radius: 6px; padding: 7px 9px; font-family: "Segoe UI", Calibri, sans-serif; }
+.kpi b { display: block; font-size: 15pt; color: #0f3550; }
+.kpi span { font-size: 8.5pt; color: #555; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cover { height: 257mm; display: flex; flex-direction: column; break-after: page; }
+.cover .img { flex: 1; background: url('../docs/figures/blender_hero.png') center/cover; border-radius: 6px; margin-bottom: 18px; }
+.cover h1 { font-size: 27pt; margin: 0 0 6px; color: #0f3550; line-height: 1.15; }
+.cover .sub { font-family: "Segoe UI", Calibri, sans-serif; font-size: 13pt; color: #333; margin-bottom: 18px; }
+.cover .meta { font-family: "Segoe UI", Calibri, sans-serif; font-size: 11pt; color: #222; line-height: 1.6; }
+.toc { break-after: page; }
+.toc li { font-family: "Segoe UI", Calibri, sans-serif; }
+code { font-family: Consolas, monospace; font-size: 9pt; background: #f1f4f7; padding: 0 3px; border-radius: 3px; }
+.refs li { font-size: 9.5pt; }
+.pb { break-before: page; }
+</style></head><body>
+
+<section class="cover">
+  <div class="img"></div>
+  <h1>Wireless Attack Surface Digital Twin</h1>
+  <div class="sub">Mapping where an outside attacker can reach a building’s Wi-Fi — and how far protections shrink that zone</div>
+  <div class="meta"><b>Owais Abu Salah</b> · Student ID 12610830<br>Course project — Wireless Communication Systems &amp; Security<br>November 2026<br>
+  Live twin: <span style="color:#2b7bb9">owaisabusalah.github.io/wireless-attack-surface-twin</span> · Code: <span style="color:#2b7bb9">github.com/OwaisAbuSalah/wireless-attack-surface-twin</span></div>
+</section>
+
+<section class="toc">
+<h2>Abstract</h2>
+<p>Wi-Fi does not stop at the walls of a building, so the security of a wireless network depends not only on <i>how</i> an attack works but on <i>where</i> an attacker can stand to launch it. This project builds a three-dimensional digital twin of a three-storey faculty building with its street, café, parking lot and neighbouring buildings, simulates the propagation of the access point’s signal through walls, windows, doors and floor slabs, and converts the received power into a map of the <b>attack surface</b>: the outdoor area from which passive eavesdropping, deauthentication or an Evil-Twin rogue access point is feasible. A real-time COST-231 multi-wall model with three-dimensional wall/opening/slab intersection and antenna patterns runs on the GPU (≈ 222,175 map cells in about 6 ms) and is verified against independent CPU and Python implementations; NVIDIA Sionna RT ray tracing of the same geometry serves as the physics reference. In the baseline configuration (one access point next to a street window, 20 dBm, 2.4 GHz) an attacker with a USB adapter can eavesdrop on <b>22,520 m²</b> of the 200 m × 140 m study area, including 99 % of the street; from the café across the street he receives -57.7 dBm, a margin of 34.3 dB. No single countermeasure closes the leak and several of them reduce indoor coverage. A combination of RF-shielding film and paint, two ceiling micro-cells, the 5 GHz band and an automatically tuned transmit power of 14 dBm reduces the danger zone to <b>282 m² (−99 %)</b>, removes the street from it entirely and keeps 95.9 % indoor coverage. Ray tracing confirms the baseline finding but shows that reflections make several protections markedly less effective than the engineering model predicts — ray-traced with Sionna RT, the same configuration leaves 2,691 m² (−88 % relative to the ray-traced baseline) and 18 % of the street exposed — which is why the protocol layer (802.11w, WPA3-SAE) remains necessary.</p>
+<h2>Contents</h2>
+<ol>
+<li>Introduction</li><li>Background</li><li>System architecture</li><li>The digital twin</li><li>Propagation model</li><li>Attack-surface model</li><li>Implementation and verification</li><li>Results</li><li>Validation with NVIDIA Sionna RT</li><li>Discussion and limitations</li><li>Conclusion</li><li>References</li><li>Appendix — reproducing the results</li>
+</ol>
+</section>
+
+<h2>1. Introduction</h2>
+<p>Most coursework on wireless security studies an attack itself — how a WPA2 handshake is captured, how forged deauthentication frames disconnect a client, how a rogue access point lures victims. The question this project asks is complementary and spatial: <b>from where can these attacks be launched?</b> A Wi-Fi access point radiates in all directions; walls attenuate the signal but rarely stop it, and a street, a café or a parking lot next to an office building can receive the network at levels that are perfectly usable for an attacker. The physical extent of this exposure — the <i>wireless attack surface</i> — is invisible to administrators and to users.</p>
+<p>The project makes it visible with a <b>digital twin</b>: a three-dimensional model of a building and its surroundings in which the propagation of the signal is simulated and translated, cell by cell, into the attacks that are feasible there. The contributions are:</p>
+<ul>
+<li>a single parametric description of the building (165 walls with openings, 11 materials, access-point mounts, client devices) that drives three engines — Blender for rendering, NVIDIA Sionna RT for ray tracing and a browser-based real-time twin;</li>
+<li>a real-time multi-wall propagation model on the GPU with exact three-dimensional wall, window, door and slab intersections and realistic antenna patterns, verified against two independent implementations;</li>
+<li>an attack-feasibility model for eavesdropping, deauthentication and Evil Twin that uses path-loss reciprocity to evaluate the attacker’s own transmissions;</li>
+<li>an interactive study of eight countermeasures and their side effect on indoor coverage, including an optimiser for transmit power and a micro-cell design;</li>
+<li>a validation of the engineering model against ray tracing, with cell-wise error statistics and a calibration of the material losses.</li>
+</ul>
+
+<h2>2. Background</h2>
+<h3>2.1 Indoor-to-outdoor propagation</h3>
+<p>In free space the received power falls with the square of the distance; the free-space path loss at 1 m is 20·log₁₀ f + 32.44 dB (f in GHz), i.e. 40.0 dB at 2.4 GHz and 46.4 dB at 5 GHz. Inside and around buildings the dominant additional effect is the attenuation of the walls and floors that the signal must cross. The <b>COST-231 multi-wall model</b> [1] adds the loss of every crossed wall and floor to the free-space loss; it is the standard engineering model for WLAN planning and underlies ITU-R P.1238 [2]. The losses of individual building materials depend on their permittivity, conductivity and thickness and increase with frequency; ITU-R P.2040 [3] tabulates the electrical properties. Real propagation also includes reflection, diffraction and scattering, which a ray tracer such as NVIDIA Sionna RT [5] models explicitly.</p>
+<h3>2.2 Wi-Fi attacks considered</h3>
+<ul>
+<li><b>Passive eavesdropping.</b> A receiver in monitor mode captures every frame it can decode, including the WPA2-PSK four-way handshake, which allows an offline dictionary attack on the pre-shared key; even encrypted traffic leaks metadata (MAC addresses, volumes, timing).</li>
+<li><b>Deauthentication.</b> Without 802.11w Protected Management Frames, management frames are unauthenticated; forged deauthentication frames disconnect clients, as a denial of service or to force a re-association that the attacker can capture.</li>
+<li><b>Evil Twin.</b> A rogue access point advertises the same SSID; a client that receives it more strongly than the legitimate access point may associate with it, exposing credentials or traffic.</li>
+</ul>
+<h3>2.3 Countermeasures</h3>
+<p>Radio-layer measures change <i>where</i> an attack is possible: lower transmit power, directional antennas, placement of the access point away from the façade, RF-shielding window films and conductive paints, and the 5 GHz band, which loses more in walls and in free space. Protocol-layer measures change <i>what</i> an attacker can do: 802.11w protects management frames, WPA3-SAE removes offline dictionary attacks on captured handshakes and prevents a clone without the password from completing the handshake [6].</p>
+
+<h2>3. System architecture</h2>
+<p>All engines read one data file, <code>data/building.json</code>, generated by a small script. It contains the geometry (floors, walls with their three-dimensional extent and openings, rooms, neighbouring buildings, the site), the radio parameters (material losses per band, access-point mounts and antennas, client devices) and the security parameters (attacker equipment, thresholds, protections and pre-defined scenarios).</p>
+<figure class="half"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNzAwIDI1MCIgd2lkdGg9IjEwMCUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBDYWxpYnJpLCBzYW5zLXNlcmlmIj4KICA8ZGVmcz48bWFya2VyIGlkPSJhciIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI5IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iNyIgbWFya2VySGVpZ2h0PSI3IiBvcmllbnQ9ImF1dG8iPjxwYXRoIGQ9Ik0wIDBMMTAgNUwwIDEweiIgZmlsbD0iIzY2NyIvPjwvbWFya2VyPjwvZGVmcz4KICA8cmVjdCB4PSIxMCIgeT0iODUiIHdpZHRoPSIxNTAiIGhlaWdodD0iODAiIHJ4PSIxMCIgZmlsbD0iI2VlZjZmYiIgc3Ryb2tlPSIjMmI3YmI5Ii8+CiAgPHRleHQgeD0iODUiIHk9IjExNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzEzNCI+YnVpbGRpbmcuanNvbjwvdGV4dD4KICA8dGV4dCB4PSI4NSIgeT0iMTM1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiMzNDUiPjE2NSB3YWxscyDCtyAxMSBtYXRlcmlhbHM8L3RleHQ+CiAgPHRleHQgeD0iODUiIHk9IjE1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjMzQ1Ij5BUCBtb3VudHMgwrcgY2xpZW50cyDCtyBzY2VuYXJpb3M8L3RleHQ+CiAgCiAgPGxpbmUgeDE9IjE2MCIgeTE9IjEyNSIgeDI9IjI1MCIgeTI9IjUwIiBzdHJva2U9IiM2NjciIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2FyKSIvPgogIDxyZWN0IHg9IjI1NSIgeT0iMjAiIHdpZHRoPSIyMTAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2Y2ZWZlNiIgc3Ryb2tlPSIjYjk3NzJiIi8+CiAgPHRleHQgeD0iMzYwIiB5PSI0NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzIyMiI+QmxlbmRlciA1LjI8L3RleHQ+CiAgPHRleHQgeD0iMzYwIiB5PSI2NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjNDQ0Ij4zLUQgbW9kZWwsIEN5Y2xlcyByZW5kZXJzPC90ZXh0PgogIDxsaW5lIHgxPSIxNjAiIHkxPSIxMjUiIHgyPSIyNTAiIHkyPSIxMjUiIHN0cm9rZT0iIzY2NyIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjYXIpIi8+CiAgPHJlY3QgeD0iMjU1IiB5PSI5NSIgd2lkdGg9IjIxMCIgaGVpZ2h0PSI2MCIgcng9IjEwIiBmaWxsPSIjZjNlZGY5IiBzdHJva2U9IiM3YTRiYjMiLz4KICA8dGV4dCB4PSIzNjAiIHk9IjEyMSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzIyMiI+TlZJRElBIFNpb25uYSBSVCAyLjI8L3RleHQ+CiAgPHRleHQgeD0iMzYwIiB5PSIxNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzQ0NCI+cmF5IHRyYWNpbmcg4oCUIHBoeXNpY3MgcmVmZXJlbmNlPC90ZXh0PgogIDxsaW5lIHgxPSIxNjAiIHkxPSIxMjUiIHgyPSIyNTAiIHkyPSIyMDAiIHN0cm9rZT0iIzY2NyIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjYXIpIi8+CiAgPHJlY3QgeD0iMjU1IiB5PSIxNzAiIHdpZHRoPSIyMTAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iI2U5ZjhmNyIgc3Ryb2tlPSIjMWQ5NjhmIi8+CiAgPHRleHQgeD0iMzYwIiB5PSIxOTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMyMjIiPlRocmVlLmpzICsgR0xTTDwvdGV4dD4KICA8dGV4dCB4PSIzNjAiIHk9IjIxNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjNDQ0Ij5yZWFsLXRpbWUgbW9kZWwsIGludGVyYWN0aXZlIHR3aW48L3RleHQ+CiAgCiAgPGxpbmUgeDE9IjQ2NSIgeTE9IjUwIiB4Mj0iNTI1IiB5Mj0iNTAiIHN0cm9rZT0iIzY2NyIgc3Ryb2tlLXdpZHRoPSIxLjUiIG1hcmtlci1lbmQ9InVybCgjYXIpIi8+CiAgPHJlY3QgeD0iNTMwIiB5PSIzMiIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIzNiIgcng9IjgiIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzk5YSIvPgogIDx0ZXh0IHg9IjYxMCIgeT0iNTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMyMjIiPnJlbmRlcnMgKHNsaWRlcywgcmVwb3J0KTwvdGV4dD4KICA8bGluZSB4MT0iNDY1IiB5MT0iMTI1IiB4Mj0iNTI1IiB5Mj0iMTI1IiBzdHJva2U9IiM2NjciIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2FyKSIvPgogIDxyZWN0IHg9IjUzMCIgeT0iMTA3IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjM2IiByeD0iOCIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjOTlhIi8+CiAgPHRleHQgeD0iNjEwIiB5PSIxMjkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMyMjIiPnZhbGlkYXRpb24gKyBjYWxpYnJhdGlvbjwvdGV4dD4KICA8bGluZSB4MT0iNDY1IiB5MT0iMjAwIiB4Mj0iNTI1IiB5Mj0iMjAwIiBzdHJva2U9IiM2NjciIHN0cm9rZS13aWR0aD0iMS41IiBtYXJrZXItZW5kPSJ1cmwoI2FyKSIvPgogIDxyZWN0IHg9IjUzMCIgeT0iMTgyIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjM2IiByeD0iOCIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjOTlhIi8+CiAgPHRleHQgeD0iNjEwIiB5PSIyMDQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMyMjIiPmxpdmUgdHdpbiAoR2l0SHViIFBhZ2VzKTwvdGV4dD4KPC9zdmc+"><figcaption><b>Figure 1.</b> One data file drives three engines: Blender builds the visual model and renders, NVIDIA Sionna RT ray-traces the same geometry as the physics reference, and the browser twin evaluates the real-time model on the GPU.</figcaption></figure>
+
+<h2>4. The digital twin</h2>
+<p>The building is a 36 m × 16 m faculty block with three storeys of 3.6 m. A double-loaded corridor separates street-facing rooms in the south from the north rooms and a concrete stair-and-elevator core. Exterior walls are 30 cm reinforced concrete with a regular pattern of double-glazed windows (one 1.8 m window per 3 m bay); the ground-floor lobby has a glass curtain wall. Corridor walls are 20 cm blocks with wooden doors, partitions are drywall, the elevator shaft and the server-room door are steel. The department’s access point hangs on the first floor next to a window that faces University Street; eight client devices (laptops, phones, a lab workstation, a network printer) are placed in the rooms. The site includes the street with a zebra crossing, sidewalks, a café terrace across the street, a parking lot and five neighbouring buildings, whose façades also attenuate the signal.</p>
+<figure class=""><img src="../docs/figures/blender_cutaway.png"><figcaption><b>Figure 2.</b> Cut-away of the first floor (Blender, Cycles): the access point next to the street window, the rooms and corridor, and the simulated received power on the floor and the street.</figcaption></figure>
+<table class="narrow"><thead><tr><th>Material</th><th>Thickness</th><th>ITU-R P.2040 type</th><th>Loss 2.4 GHz</th><th>Loss 5 GHz</th></tr></thead><tbody>
+<tr><td>Exterior reinforced concrete, 30 cm</td><td>30.0 cm</td><td>concrete</td><td>17 dB</td><td>26 dB</td></tr><tr><td>Concrete core / shear wall, 25 cm</td><td>25.0 cm</td><td>concrete</td><td>15 dB</td><td>23 dB</td></tr><tr><td>Block / brick wall, 20 cm</td><td>20.0 cm</td><td>brick</td><td>6 dB</td><td>10 dB</td></tr><tr><td>Gypsum drywall partition</td><td>12.0 cm</td><td>plasterboard</td><td>3 dB</td><td>4 dB</td></tr><tr><td>Exterior double glazing</td><td>2.4 cm</td><td>glass</td><td>3 dB</td><td>5 dB</td></tr><tr><td>Interior glass partition</td><td>1.2 cm</td><td>glass</td><td>2 dB</td><td>3 dB</td></tr><tr><td>Wooden door</td><td>4.5 cm</td><td>wood</td><td>3 dB</td><td>5 dB</td></tr><tr><td>Steel (elevator shaft, server-room door)</td><td>0.3 cm</td><td>metal</td><td>26 dB</td><td>32 dB</td></tr><tr><td>Reinforced concrete floor slab, 30 cm</td><td>30.0 cm</td><td>concrete</td><td>18 dB</td><td>26 dB</td></tr><tr><td>Neighbouring façade (effective)</td><td>25.0 cm</td><td>concrete</td><td>10 dB</td><td>15 dB</td></tr>
+</tbody></table>
+<p class="sans" style="font-size:9pt;color:#555;margin-top:-6px">Table 1. Through-wall losses (normal incidence) used by the real-time model — typical WLAN-planning values consistent with ITU-R P.2040; they are calibrated against Sionna RT in section 9.</p>
+
+<h2>5. Propagation model</h2>
+<p>The received signal strength from a transmitter T at a receiver R is</p>
+<div class="eq">RSS = P<sub>tx</sub> + G<sub>tx</sub>(θ, φ) + G<sub>rx</sub> − PL(T, R)<small>with</small>
+PL = 20·log₁₀ f<sub>GHz</sub> + 32.44 + 10·n·log₁₀ d + Σ L<sub>wall</sub> + Σ L<sub>slab</sub>, &nbsp; n = 2, d ≥ 0.5 m</div>
+<p><b>Wall crossings in three dimensions.</b> Each wall is a vertical rectangle defined by a plan segment and a height range. The plan projection of the ray T→R is intersected with the segment; for a crossing the height of the ray at that point is interpolated and compared with the wall’s height range, so a ray from the first floor to the street crosses only the walls of the storeys it actually passes through. If the crossing point lies inside an opening (a window, a door or the curtain wall — described by sill, head, width, offset and an optional period), the opening’s material is used instead of the wall’s. <b>Floor slabs</b> are crossed when the ray passes a slab plane inside the building footprint. Because the geometry and the map grids lie on a regular lattice, rays can pass exactly through wall junctions or opening edges; all boundary tests therefore use small symmetric tolerances (10⁻⁵ in the line parameters, 0.1 mm in lengths), which makes the float32 GPU and float64 CPU implementations decide every such case identically.</p>
+<p><b>Antennas.</b> The default access-point antenna is a vertical half-wave dipole, G = 2.15 + 10·log₁₀[cos(π/2·sin el)/cos el]² dBi. The directional option is the 3GPP TR 38.901 element pattern [4], G = G<sub>max</sub> − min(12(φ′/φ<sub>3dB</sub>)² + 12(θ′/θ<sub>3dB</sub>)², SLA) in the antenna’s local frame (8 dBi, 65°, 30 dB for the wall mount; a 5.5 dBi, 110° ceiling panel for the ceiling mount). Receivers are isotropic; the attacker’s antenna gain is added as if it were pointed at the target. With several access points, every receiver uses the strongest one.</p>
+<p><b>Maps.</b> The model is evaluated on an outdoor plane of 200 m × 140 m at 1.5 m (hand height, 0.4 m cells) and on one plane per storey at 1.2 m above the floor (0.2 m cells).</p>
+
+<h2>6. Attack-surface model</h2>
+<p>For an attacker standing at X with antenna gain G<sub>att</sub>, receiver sensitivity S<sub>att</sub> and transmit power P<sub>att</sub> (Table 2), and for the client devices c:</p>
+<div class="eq">Eavesdropping: RSS(AP→X) + G<sub>att</sub> ≥ S<sub>att</sub><br>
+Deauthentication: eavesdropping feasible and max<sub>c</sub> [P<sub>att</sub> + G<sub>att</sub> − PL(X, c)] ≥ -88 dBm<br>
+Evil Twin: eavesdropping feasible and ∃c: P<sub>att</sub> + G<sub>att</sub> − PL(X, c) ≥ RSS(AP→c) + 3 dB and ≥ -75 dBm
+<small>Path loss is reciprocal, so PL(X, c) is computed with the client as the source. Active attacks require the attacker to hear the network (BSSID, channel, client addresses), so the tiers are nested.</small></div>
+<table class="narrow"><thead><tr><th>Attacker equipment</th><th>Antenna gain</th><th>Sensitivity</th><th>TX power</th></tr></thead><tbody>
+<tr><td>Smartphone</td><td>0 dBi</td><td>-85 dBm</td><td>15 dBm</td></tr><tr><td>USB adapter + 5 dBi antenna</td><td>5 dBi</td><td>-92 dBm</td><td>27 dBm</td></tr><tr><td>Yagi directional, 15 dBi</td><td>15 dBi</td><td>-92 dBm</td><td>27 dBm</td></tr>
+</tbody></table>
+<p class="sans" style="font-size:9pt;color:#555;margin-top:-6px">Table 2. Attacker equipment. The default analysis uses the USB adapter with a 5 dBi antenna.</p>
+<p>From the maps the twin derives four indicators: the <b>danger zone</b> (outdoor area outside the building where at least one attack is feasible), the <b>maximum leak distance</b> from the building, the <b>street exposure</b> (share of the street and its sidewalks inside the eavesdropping zone) and the <b>indoor coverage</b> on the access point’s floor (share of cells, excluding the stair core, with at least −67 dBm, the usual requirement for voice-grade Wi-Fi). For the attacker’s current position the twin additionally shows the <b>hijack map</b>: the cells inside the building where a client would prefer the attacker’s rogue access point.</p>
+
+<h2>7. Implementation and verification</h2>
+<p>The interactive twin is a browser application (three.js, WebGL 2) built into a single self-contained HTML file that runs offline. The propagation model is implemented as a fragment shader: each fragment of a floating-point render target is one map cell, the 165 walls are stored in a data texture, and every outdoor cell evaluates the path from the access point(s) and from the eight clients (for the deauthentication and Evil-Twin channels) — about 222,175 cells per update in 5.9 ms on an NVIDIA GeForce RTX 3060 (WebGL 2 via Direct3D 11). The results are read back asynchronously for the indicators and morphed smoothly on screen when a protection is toggled. The attacker can be dragged or walked with the keyboard; his link budget, the ray to the access point with the loss of every crossed wall, and the status of each client are updated continuously. A guided demonstration mode, Arabic and English interfaces and several lighting moods support the presentation.</p>
+<p><b>Verification.</b> The model is implemented three times — GLSL on the GPU, JavaScript for single links and statistics, and NumPy as the batch reference — following one written specification. The automated checks (script <code>web/tools/measure.mjs</code>) give:</p>
+<ul>
+<li>JavaScript vs NumPy on 39 reference links (access point to clients, to the attacker and to random indoor and outdoor points): maximum difference <b>0.000 dB</b>;</li>
+<li>GPU vs JavaScript on 5,000 random outdoor cells: maximum difference 0.0004 dB (received power), 0.0000 dB (deauthentication channel) and 0.0000 dB (Evil-Twin channel);</li>
+<li>GPU vs JavaScript on all 47,175 floor cells: 0 cells differ by more than 0.01 dB.</li>
+</ul>
+
+<h2>8. Results</h2>
+<h3>8.1 Baseline: the street is inside the attack surface</h3>
+<figure class=""><img src="../presentation/assets/shot_overview_baseline.jpg"><figcaption><b>Figure 3.</b> Baseline attack surface in the twin. Amber: eavesdropping; orange: deauthentication; hatched red: Evil Twin. The café terrace, the street, the parking lot and the campus lawn all lie inside the danger zone.</figcaption></figure>
+<div class="kpis"><div class="kpi"><b>22,520 m²</b><span>danger zone outside</span></div><div class="kpi"><b>> 100 m</b><span>maximum leak distance</span></div><div class="kpi"><b>99 %</b><span>street exposure</span></div><div class="kpi"><b>94.4 %</b><span>indoor coverage</span></div></div>
+<p>With the access point next to the street window, essentially the whole 200 m × 140 m study area lies inside the eavesdropping zone of a USB adapter; the zone is only interrupted behind the neighbouring buildings. The Evil-Twin zone (566 m²) covers the plaza in front of the façade and part of the parking lot, where a rogue access point is received more strongly than the real one by devices near the windows. The link budget of an attacker on the café terrace explains why: a single wall separates him from the access point.</p>
+<div class="two"><div><table class="narrow"><tbody>
+<tr><td>AP transmit power</td><td class="r">+20.0 dBm</td></tr>
+<tr><td>AP antenna gain towards the attacker (half-wave dipole)</td><td class="r">+1.94 dBi</td></tr>
+<tr><td>Free-space path loss over 24.0 m</td><td class="r">−67.64 dB</td></tr>
+<tr><td>Exterior reinforced concrete, 30 cm</td><td class="r">−17.0 dB</td></tr>
+<tr><td>Attacker antenna (USB adapter)</td><td class="r">+5.0 dBi</td></tr>
+<tr class="hl"><td>Received power</td><td class="r">-57.7 dBm</td></tr>
+<tr><td>Adapter sensitivity</td><td class="r">−92.0 dBm</td></tr>
+<tr class="hl"><td>Eavesdropping margin</td><td class="r">+34.3 dB</td></tr>
+</tbody></table><p class="sans" style="font-size:9pt;color:#555;margin-top:-6px">Table 3. Link budget from the access point to the café terrace.</p></div>
+<div><figure class=""><img src="../presentation/assets/shot_floor_hijack.jpg"><figcaption><b>Figure 4.</b> Hijack map on the first floor for the attacker on the café terrace: purple cells (8 % of the floor) would prefer his rogue access point; 6 of 8 devices can be deauthenticated.</figcaption></figure></div></div>
+
+<h3>8.2 Individual countermeasures</h3>
+<table class="wide"><thead><tr><th>Configuration</th><th>TX</th><th>Band</th><th>Danger zone</th><th>Δ</th><th>Evil Twin zone</th><th>Street exp.</th><th>Max leak</th><th>Coverage</th></tr></thead><tbody>
+<tr class=""><td>Baseline</td><td>20 dBm</td><td>2.4 GHz</td><td>22,520 m²</td><td></td><td>566 m²</td><td>99.5 %</td><td>> 100 m</td><td>94.4 %</td></tr><tr class=""><td>Reduced TX power</td><td>12 dBm</td><td>2.4 GHz</td><td>16,490 m²</td><td>−27 %</td><td>3,493 m²</td><td>99.5 %</td><td>> 100 m</td><td>82.1 %</td></tr><tr class=""><td>Directional antenna</td><td>20 dBm</td><td>2.4 GHz</td><td>15,452 m²</td><td>−31 %</td><td>6,470 m²</td><td>91.9 %</td><td>> 100 m</td><td>88.5 %</td></tr><tr class=""><td>Relocated AP</td><td>20 dBm</td><td>2.4 GHz</td><td>18,202 m²</td><td>−19 %</td><td>6,379 m²</td><td>97.9 %</td><td>> 100 m</td><td>81.2 %</td></tr><tr class=""><td>Two ceiling micro-cells</td><td>20 dBm</td><td>2.4 GHz</td><td>25,266 m²</td><td>+12 %</td><td>60 m²</td><td>98.2 %</td><td>> 100 m</td><td>100.0 %</td></tr><tr class=""><td>Shielding window film</td><td>20 dBm</td><td>2.4 GHz</td><td>16,793 m²</td><td>−25 %</td><td>463 m²</td><td>96.9 %</td><td>> 100 m</td><td>94.4 %</td></tr><tr class=""><td>Shielding paint</td><td>20 dBm</td><td>2.4 GHz</td><td>13,623 m²</td><td>−40 %</td><td>25 m²</td><td>95.6 %</td><td>> 100 m</td><td>94.4 %</td></tr><tr class=""><td>5 GHz band</td><td>20 dBm</td><td>5 GHz</td><td>9,378 m²</td><td>−58 %</td><td>8 m²</td><td>95.0 %</td><td>> 100 m</td><td>70.1 %</td></tr><tr class=""><td>Combined RF measures</td><td>20 dBm</td><td>5 GHz</td><td>815 m²</td><td>−96 %</td><td>0 m²</td><td>9.6 %</td><td>59.8 m</td><td>68.3 %</td></tr><tr class="hl"><td>“Apply protection” (all combined)</td><td>14 dBm</td><td>5 GHz</td><td>282 m²</td><td>−99 %</td><td>0 m²</td><td>0.0 %</td><td>38.6 m</td><td>95.9 %</td></tr>
+</tbody></table>
+<p class="sans" style="font-size:9pt;color:#555;margin-top:-6px">Table 4. Indicators of each configuration (real-time model, USB attacker). Δ = change of the danger zone relative to the baseline.</p>
+<div class="two"><div><svg viewBox="0 0 640 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Calibri, sans-serif">
+    <text x="210" y="16" font-size="12" font-weight="600" fill="#111">Danger zone outside the building (m²)</text><text x="202" y="47.91111111111111" text-anchor="end" font-size="11" fill="#333">Baseline</text>
+      <rect x="210" y="35.2" width="320.8739016860603" height="18.48888888888889" rx="2" fill="#8a93a3"/>
+      <text x="535.8739016860603" y="47.91111111111111" font-size="11" fill="#222">22,520</text><text x="202" y="76.8" text-anchor="end" font-size="11" fill="#333">Reduced TX power</text>
+      <rect x="210" y="64.08888888888889" width="234.95606744241272" height="18.48888888888889" rx="2" fill="#d94a5a"/>
+      <text x="449.95606744241275" y="76.8" font-size="11" fill="#222">16,490</text><text x="202" y="105.68888888888888" text-anchor="end" font-size="11" fill="#333">Directional antenna</text>
+      <rect x="210" y="92.97777777777777" width="220.16623129897886" height="18.48888888888889" rx="2" fill="#d94a5a"/>
+      <text x="435.16623129897886" y="105.68888888888888" font-size="11" fill="#222">15,452</text><text x="202" y="134.57777777777778" text-anchor="end" font-size="11" fill="#333">Relocated AP</text>
+      <rect x="210" y="121.86666666666667" width="259.3493232011399" height="18.48888888888889" rx="2" fill="#d94a5a"/>
+      <text x="474.3493232011399" y="134.57777777777778" font-size="11" fill="#222">18,202</text><text x="202" y="163.46666666666664" text-anchor="end" font-size="11" fill="#333">Two ceiling micro-cells</text>
+      <rect x="210" y="150.75555555555553" width="360" height="18.48888888888889" rx="2" fill="#d94a5a"/>
+      <text x="575" y="163.46666666666664" font-size="11" fill="#222">25,266</text><text x="202" y="192.35555555555555" text-anchor="end" font-size="11" fill="#333">Shielding window film</text>
+      <rect x="210" y="179.64444444444445" width="239.2733317501781" height="18.48888888888889" rx="2" fill="#d94a5a"/>
+      <text x="454.2733317501781" y="192.35555555555555" font-size="11" fill="#222">16,793</text><text x="202" y="221.24444444444447" text-anchor="end" font-size="11" fill="#333">Shielding paint</text>
+      <rect x="210" y="208.53333333333333" width="194.10591308477797" height="18.48888888888889" rx="2" fill="#d94a5a"/>
+      <text x="409.10591308477797" y="221.24444444444447" font-size="11" fill="#222">13,623</text><text x="202" y="250.13333333333333" text-anchor="end" font-size="11" fill="#333">5 GHz band</text>
+      <rect x="210" y="237.42222222222222" width="133.6214675848967" height="18.48888888888889" rx="2" fill="#d94a5a"/>
+      <text x="348.62146758489666" y="250.13333333333333" font-size="11" fill="#222">9,378</text><text x="202" y="279.0222222222222" text-anchor="end" font-size="11" fill="#333">All combined (applied)</text>
+      <rect x="210" y="266.3111111111111" width="4.01804796960342" height="18.48888888888889" rx="2" fill="#2a9d6f"/>
+      <text x="219.01804796960343" y="279.0222222222222" font-size="11" fill="#222">282</text></svg></div><div><svg viewBox="0 0 640 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Calibri, sans-serif">
+    <text x="210" y="16" font-size="12" font-weight="600" fill="#111">Indoor coverage ≥ −67 dBm (%)</text><text x="202" y="47.91111111111111" text-anchor="end" font-size="11" fill="#333">Baseline</text>
+      <rect x="210" y="35.2" width="339.66" height="18.48888888888889" rx="2" fill="#d8a31a"/>
+      <text x="554.6600000000001" y="47.91111111111111" font-size="11" fill="#222">94.4%</text><text x="202" y="76.8" text-anchor="end" font-size="11" fill="#333">Reduced TX power</text>
+      <rect x="210" y="64.08888888888889" width="295.524" height="18.48888888888889" rx="2" fill="#e07b22"/>
+      <text x="510.524" y="76.8" font-size="11" fill="#222">82.1%</text><text x="202" y="105.68888888888888" text-anchor="end" font-size="11" fill="#333">Directional antenna</text>
+      <rect x="210" y="92.97777777777777" width="318.42" height="18.48888888888889" rx="2" fill="#d8a31a"/>
+      <text x="533.4200000000001" y="105.68888888888888" font-size="11" fill="#222">88.5%</text><text x="202" y="134.57777777777778" text-anchor="end" font-size="11" fill="#333">Relocated AP</text>
+      <rect x="210" y="121.86666666666667" width="292.176" height="18.48888888888889" rx="2" fill="#e07b22"/>
+      <text x="507.176" y="134.57777777777778" font-size="11" fill="#222">81.2%</text><text x="202" y="163.46666666666664" text-anchor="end" font-size="11" fill="#333">Two ceiling micro-cells</text>
+      <rect x="210" y="150.75555555555553" width="360" height="18.48888888888889" rx="2" fill="#2a9d6f"/>
+      <text x="575" y="163.46666666666664" font-size="11" fill="#222">100.0%</text><text x="202" y="192.35555555555555" text-anchor="end" font-size="11" fill="#333">Shielding window film</text>
+      <rect x="210" y="179.64444444444445" width="339.66" height="18.48888888888889" rx="2" fill="#d8a31a"/>
+      <text x="554.6600000000001" y="192.35555555555555" font-size="11" fill="#222">94.4%</text><text x="202" y="221.24444444444447" text-anchor="end" font-size="11" fill="#333">Shielding paint</text>
+      <rect x="210" y="208.53333333333333" width="339.66" height="18.48888888888889" rx="2" fill="#d8a31a"/>
+      <text x="554.6600000000001" y="221.24444444444447" font-size="11" fill="#222">94.4%</text><text x="202" y="250.13333333333333" text-anchor="end" font-size="11" fill="#333">5 GHz band</text>
+      <rect x="210" y="237.42222222222222" width="252.18" height="18.48888888888889" rx="2" fill="#e07b22"/>
+      <text x="467.18" y="250.13333333333333" font-size="11" fill="#222">70.1%</text><text x="202" y="279.0222222222222" text-anchor="end" font-size="11" fill="#333">All combined (applied)</text>
+      <rect x="210" y="266.3111111111111" width="345.16799999999995" height="18.48888888888889" rx="2" fill="#2a9d6f"/>
+      <text x="560.1679999999999" y="279.0222222222222" font-size="11" fill="#222">95.9%</text></svg></div></div>
+<p>No individual measure comes close to closing the street. Shielding the façade helps where it is applied, but the zone remains far larger than the study area in most directions; the 5 GHz band has the largest single effect because both the free-space loss and every wall loss increase. Several measures reduce indoor coverage: a lower transmit power, a single access point relocated behind the concrete core, and 5 GHz all fall far below the 95 % target. Two ceiling micro-cells at full power cover the whole floor but radiate more energy and enlarge the danger zone. The directional antenna aimed away from the street shrinks the zone but leaves the ends of the floor in its weak side lobes.</p>
+
+<h3>8.3 Micro-cells and transmit-power optimisation</h3>
+<p>Because the received power is linear in the transmit power (in dB), the minimum power that keeps 95 % of the floor above −67 dBm follows directly from the 5th percentile p₅ of the floor map computed at the current power P: P<sub>min</sub> = P + (−67 − p₅) + 0.5 dB. On 5 GHz a single access point cannot reach the target from any ceiling position (best of a GPU search over 60 positions: 79 %), so the design moves to two micro-cells. A GPU search over 450 placements selected two corridor-ceiling positions at x = −12 m and x = +9 m (99.5 % at 20 dBm), after which the optimiser reduces the power to <b>14 dBm</b>.</p>
+
+<h3>8.4 Combined result</h3>
+<div class="two"><figure class=""><img src="../presentation/assets/shot_overview_baseline.jpg"><figcaption><b>Figure 5.</b> Before.</figcaption></figure><figure class=""><img src="../presentation/assets/shot_protected_overview.jpg"><figcaption><b>Figure 6.</b> After “Apply protection”: shielding film and paint, two micro-cells, 5 GHz, 14 dBm, 802.11w and WPA3-SAE.</figcaption></figure></div>
+<div class="kpis"><div class="kpi"><b>282 m²</b><span>danger zone (−99 %)</span></div><div class="kpi"><b>38.6 m</b><span>maximum leak distance</span></div><div class="kpi"><b>0 %</b><span>street exposure</span></div><div class="kpi"><b>95.9 %</b><span>indoor coverage</span></div></div>
+<p>The combination is effective because its parts complement each other: shielding raises the loss of the façade, micro-cells create coverage headroom indoors, 5 GHz increases every loss, and the optimiser converts the headroom into a lower transmit power. The remaining eavesdropping zone is a narrow band around the building; no deauthentication or Evil-Twin cells remain. Ray-traced with Sionna RT, the same configuration leaves 2,691 m² (−88 % relative to the ray-traced baseline) and 18 % of the street exposed (section 9): the real-time model is optimistic, and the protocol layer covers the remaining margin.</p>
+
+<h3>8.5 The protocol layer</h3>
+<table><thead><tr><th>Attack</th><th>RF measures</th><th>802.11w PMF</th><th>WPA3-SAE</th></tr></thead><tbody>
+<tr><td>Eavesdropping</td><td>zone −99 %</td><td>no effect</td><td>only encrypted frames remain</td></tr>
+<tr><td>Offline password cracking</td><td>fewer places to capture the handshake</td><td>no effect</td><td>blocked (SAE resists dictionary attacks)</td></tr>
+<tr><td>Deauthentication</td><td>zone removed</td><td>blocked (forged frames rejected)</td><td>PMF is mandatory in WPA3</td></tr>
+<tr><td>Evil Twin</td><td>rogue AP cannot out-shout the real one</td><td>no forced disconnects</td><td>blocked (a clone cannot complete SAE)</td></tr>
+</tbody></table>
+<p>Radio measures limit <i>where</i> an attack can be launched; protocol measures limit <i>what</i> it can achieve inside the area that is left. Neither is sufficient alone — section 9 shows why this matters.</p>
+
+<h2>9. Validation with NVIDIA Sionna RT</h2>
+<p><b>Setup.</b> The same building was ray-traced with sionna-rt 2.2.0 (Mitsuba 3.9.1, Dr.Jit 1.5.0, variant <code>cuda_ad_mono_polarized</code>, NVIDIA GeForce RTX 3060, 616.64). Walls are zero-thickness quads carrying ITU-R P.2040 single-slab materials with the wall’s thickness (closed boxes would apply the slab transmission twice); openings are split into separate quads of glass or wood; slabs, a ground plane and the neighbouring buildings are included; the shielding measures are modelled as conductive layers whose normal-incidence loss matches Table 1 plus the specified increase. The radio maps use 1,000,000,000 rays per transmitter, a maximum depth of 5 interactions, line of sight, specular reflection and refraction (transmission through walls); diffuse scattering and diffraction are disabled. The client-to-attacker maps needed for the deauthentication and Evil-Twin conditions are traced with the clients as sources (reciprocity).</p>
+<figure class=""><img src="../docs/figures/sionna_baseline.png"><figcaption><b>Figure 7.</b> NVIDIA Sionna RT: baseline received power on the outdoor plane (top) and the three floors (bottom).</figcaption></figure>
+<figure class=""><img src="../docs/figures/mwm_baseline.png"><figcaption><b>Figure 8.</b> Real-time multi-wall model on the same grid, for comparison with Figure 7.</figcaption></figure>
+<table><thead><tr><th>Scenario</th><th>outdoor RMSE / bias</th><th>floor0 RMSE / bias</th><th>floor1 RMSE / bias</th><th>floor2 RMSE / bias</th><th>floors RMSE / bias</th><th>all RMSE / bias</th></tr></thead><tbody>
+<tr><td>Baseline</td><td>12.8 / -2.5 dB</td><td>7.1 / -1.5 dB</td><td>7.2 / -2.9 dB</td><td>6.6 / 2.5 dB</td><td>7.0 / -0.7 dB</td><td>10.2 / -1.6 dB</td></tr><tr><td>Reduced TX power</td><td>12.2 / -2.7 dB</td><td>6.0 / -1.2 dB</td><td>7.2 / -2.9 dB</td><td>4.6 / 3.1 dB</td><td>6.1 / -0.4 dB</td><td>9.4 / -1.5 dB</td></tr><tr><td>Directional antenna</td><td>16.1 / -9.1 dB</td><td>7.6 / -1.0 dB</td><td>7.3 / -3.0 dB</td><td>7.2 / 2.7 dB</td><td>7.4 / -0.5 dB</td><td>12.1 / -4.5 dB</td></tr><tr><td>Relocated AP</td><td>19.8 / -11.8 dB</td><td>11.9 / -4.4 dB</td><td>13.9 / -6.9 dB</td><td>10.1 / 0.9 dB</td><td>12.1 / -3.5 dB</td><td>16.1 / -7.4 dB</td></tr><tr><td>Shielding window film</td><td>10.5 / 0.9 dB</td><td>6.2 / 0.5 dB</td><td>7.9 / -3.5 dB</td><td>6.7 / 2.4 dB</td><td>7.0 / -0.3 dB</td><td>8.7 / 0.2 dB</td></tr><tr><td>Shielding paint</td><td>19.6 / -10.6 dB</td><td>7.1 / -1.3 dB</td><td>7.3 / -3.0 dB</td><td>6.7 / 2.6 dB</td><td>7.0 / -0.6 dB</td><td>14.1 / -5.1 dB</td></tr><tr><td>5 GHz band</td><td>15.2 / -8.1 dB</td><td>14.0 / -0.4 dB</td><td>10.1 / -6.1 dB</td><td>12.5 / 9.6 dB</td><td>12.2 / -0.1 dB</td><td>13.5 / -3.5 dB</td></tr><tr><td>Combined RF measures</td><td>12.7 / -10.0 dB</td><td>8.9 / 6.6 dB</td><td>15.9 / -9.9 dB</td><td>16.9 / 13.7 dB</td><td>14.4 / 2.4 dB</td><td>14.1 / 0.2 dB</td></tr><tr><td>Applied protection (app)</td><td>10.4 / -8.9 dB</td><td>6.8 / 5.6 dB</td><td>6.6 / -4.8 dB</td><td>11.8 / 10.5 dB</td><td>8.7 / 3.7 dB</td><td>9.2 / 0.5 dB</td></tr>
+</tbody></table>
+<p class="sans" style="font-size:9pt;color:#555;margin-top:-6px">Table 5. Cell-wise difference between the multi-wall model and Sionna RT (RMSE / mean bias, dB, cells above −120 dBm; outdoor cells outside and floor cells inside the footprint).</p>
+<p>Indoors the two models agree well (baseline floors RMSE ≈ 7.0 dB). Outdoors the error is larger (RMSE 12.8 dB): the ray tracer fills the multi-wall model’s geometric shadows with reflections from the ground and the neighbouring façades, while in the direct beams the two agree.</p>
+<table><thead><tr><th rowspan="2">Scenario</th><th colspan="3">Eavesdropping zone [m²]</th><th colspan="2">Street exposure [%]</th><th colspan="2">Coverage [%]</th></tr>
+<tr><th>MWM</th><th>Sionna RT</th><th>Sionna Δ vs baseline</th><th>MWM</th><th>Sionna</th><th>MWM</th><th>Sionna</th></tr></thead><tbody>
+<tr><td>Baseline</td><td>22,521</td><td>21,672</td><td></td><td>99.5</td><td>98.2</td><td>94.7</td><td>94.8</td></tr><tr><td>Reduced TX power</td><td>16,518</td><td>18,822</td><td>−13 %</td><td>99.5</td><td>96.3</td><td>82.4</td><td>83.8</td></tr><tr><td>Directional antenna</td><td>15,469</td><td>19,609</td><td>−10 %</td><td>91.4</td><td>94.1</td><td>88.9</td><td>92.4</td></tr><tr><td>Relocated AP</td><td>18,170</td><td>23,178</td><td>+7 %</td><td>97.7</td><td>99.0</td><td>81.6</td><td>98.7</td></tr><tr><td>Shielding window film</td><td>16,785</td><td>17,446</td><td>−19 %</td><td>96.9</td><td>95.3</td><td>94.7</td><td>95.1</td></tr><tr><td>Shielding paint</td><td>13,651</td><td>20,429</td><td>−6 %</td><td>95.3</td><td>95.7</td><td>94.7</td><td>94.8</td></tr><tr><td>5 GHz band</td><td>9,410</td><td>16,428</td><td>−24 %</td><td>94.8</td><td>95.7</td><td>70.1</td><td>82.0</td></tr><tr><td>Combined RF measures</td><td>819</td><td>3,960</td><td>−82 %</td><td>9.6</td><td>36.7</td><td>68.5</td><td>92.2</td></tr><tr><td>Applied protection (app)</td><td>288</td><td>2,691</td><td>−88 %</td><td>0.0</td><td>17.6</td><td>96.1</td><td>100.0</td></tr>
+</tbody></table>
+<p class="sans" style="font-size:9pt;color:#555;margin-top:-6px">Table 6. Attack-surface indicators of both models on the same 1 m / 0.25 m grid.</p>
+<p><b>Finding.</b> Both models agree on the central security finding: at baseline the eavesdropping zone covers practically the whole study area and the street. They disagree on how well the radio countermeasures work. In the ray tracer the shielding measures, the directional antenna and the 5 GHz band remove a much smaller share of the zone than in the multi-wall model, because energy that escapes through the remaining openings is reflected around the shielded parts of the façade. The engineering model is therefore optimistic about radio countermeasures; its value lies in speed and interactivity, while the ray tracer provides the reference. This is the strongest argument for treating radio measures as only one layer of defence.</p>
+<figure class=""><img src="../docs/figures/compare_calibration.png"><figcaption><b>Figure 9.</b> Calibration of the multi-wall material losses to Sionna RT (bounded least squares, see sim/out/calibration.json).</figcaption></figure>
+
+<h2>10. Discussion and limitations</h2>
+<ul>
+<li><b>Material losses</b> are planning values. They were calibrated against the ray tracer, but not yet against measurements in a real building; the repository contains a template and a script for an RSSI survey with a phone (<code>sim/measure/</code>), which is the natural next step.</li>
+<li><b>The real-time model has no reflections or diffraction.</b> It is accurate indoors and in the direct beams, optimistic in shadows and about shielding (section 9).</li>
+<li><b>Attack thresholds</b> are deliberately simple (sensitivities, a 3 dB margin for the Evil Twin). Real attacks also depend on traffic, channel load, client roaming behaviour and the user.</li>
+<li><b>Scope.</b> One building, one band at a time, receivers at hand height; elevated attackers (upper floors next door, drones) and moving attackers are not modelled.</li>
+</ul>
+<p><b>Recommendations for a real building.</b> Place access points away from façades and prefer several low-power cells to one powerful one; use 5 GHz (or 6 GHz) for staff networks; tune the transmit power to the coverage that is actually needed; shield the façade only where an exposure map shows that it matters, remembering the windows; and in every case enable WPA3-SAE with Protected Management Frames, because some leakage always remains.</p>
+
+<h2>11. Conclusion</h2>
+<p>The digital twin turns an invisible property of a wireless network — how far it reaches beyond the walls — into a map that can be explored, explained and acted upon. For the studied building the result is clear: without protection, the whole street is attack surface. A combination of measures that complement each other shrinks the danger zone by 99 % while keeping indoor coverage, and ray tracing reminds us that radio measures alone are never the whole answer. The method is general: the same data file, model and tools can describe any building whose plan and materials are known.</p>
+
+<h2>12. References</h2>
+<ol class="refs">
+<li>COST Action 231, <i>Digital mobile radio towards future generation systems</i>, Final Report, ch. 4 (Multi-Wall Model), European Commission, 1999.</li>
+<li>ITU-R Recommendation P.1238, <i>Propagation data and prediction methods for the planning of indoor radiocommunication systems</i>.</li>
+<li>ITU-R Recommendation P.2040, <i>Effects of building materials and structures on radiowave propagation above about 100 MHz</i>.</li>
+<li>3GPP TR 38.901, <i>Study on channel model for frequencies from 0.5 to 100 GHz</i> (antenna element pattern).</li>
+<li>J. Hoydis et al., “Sionna RT: Differentiable Ray Tracing for Radio Propagation Modeling,” 2023; NVIDIA Sionna RT documentation.</li>
+<li>IEEE Std 802.11-2020 (receiver minimum sensitivity, Protected Management Frames); Wi-Fi Alliance, <i>WPA3 Specification</i>.</li>
+</ol>
+
+<h2>Appendix — reproducing the results</h2>
+<div class="box sans" style="font-size:9.5pt">
+<b>Interactive twin:</b> open <code>docs/index.html</code> (or the live link). Development: <code>cd web &amp;&amp; npm install &amp;&amp; npm run dev</code>; build: <code>npm run build</code>.<br>
+<b>Indicators and verification of the twin:</b> <code>node web/tools/measure.mjs</code> → <code>sim/out/app_stats.json</code>.<br>
+<b>Reference model and ray tracing:</b> <code>sim/run_mwm.py</code>, <code>sim/run_sionna.py</code>, <code>sim/compare.py</code> → <code>sim/out/RESULTS.md</code> (see <code>sim/README.md</code>).<br>
+<b>Renders:</b> <code>blender -b --factory-startup -P blender/build_twin.py -- --out docs/figures</code>.<br>
+<b>Slides and this report:</b> <code>node presentation/build_deck.js</code>, <code>node report/build_report.mjs</code>.<br>
+<b>Model specification:</b> <code>docs/MODEL.md</code>.
+</div>
+</body></html>

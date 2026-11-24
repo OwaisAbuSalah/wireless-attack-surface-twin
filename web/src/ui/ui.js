@@ -69,6 +69,7 @@ export class UI {
     $('#btn-mood').onclick = () => this.app.cycleMood();
     $('#btn-full').onclick = () => (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());
     $('#btn-about').onclick = () => ($('#about').hidden = false);
+    $('#btn-panel').onclick = () => document.body.classList.toggle('panel-open');
   }
 
   buildCamMenu() {

@@ -215,6 +215,7 @@ class ScenarioParams:
     extra_db: dict             # material key -> extra dB applied by protections
     pmf: bool
     wpa3: bool
+    tx_positions: np.ndarray   # (K, 3) all access points (K = 2 for the micro-cell mount), tx_pos = first
 
     @property
     def material_config(self) -> tuple:
@@ -231,16 +232,24 @@ def scenario_params(B: Building, scenario: str | None = None, protections: list 
     if "band5" in protections:
         freq = float(P["band5"]["freq_ghz"])
     fk = freq_key(freq)
-    tx = float(r["tx_dbm"])
-    if "lowPower" in protections:
+    # transmit power: explicit scenario value, else lowPower, else the router default (MODEL.md §5)
+    sc = B.scenarios.get(scenario, {}) if scenario else {}
+    if sc.get("tx_dbm") is not None:
+        tx = float(sc["tx_dbm"])
+    elif "lowPower" in protections:
         tx = float(P["lowPower"]["tx_dbm"])
+    else:
+        tx = float(r["tx_dbm"])
     antenna = r["antenna"]
     if "directional" in protections:
         antenna = P["directional"]["antenna"]
     mount = r["mount"]
     if "relocate" in protections:
         mount = P["relocate"]["mount"]
+    if "microcells" in protections:
+        mount = P["microcells"]["mount"]
     m = r["mounts"][mount]
+    positions = np.array(m.get("positions") or [m["pos"]], float)
     loss = B.loss_table(freq)
     extra = {}
     for key in ("shieldWindows", "shieldPaint"):
@@ -255,9 +264,10 @@ def scenario_params(B: Building, scenario: str | None = None, protections: list 
     return ScenarioParams(
         name=scenario or "+".join(protections) or "baseline", protections=list(protections),
         freq_ghz=freq, fkey=fk, tx_dbm=tx, antenna=antenna, mount=mount,
-        tx_pos=np.array(m["pos"], float), az_deg=float(m["az_deg"]), tilt_deg=float(m["tilt_deg"]),
+        tx_pos=positions[0].copy(), az_deg=float(m["az_deg"]), tilt_deg=float(m["tilt_deg"]),
         patch={"gmax_dbi": float(d["gmax_dbi"]), "hpbw_deg": float(d["hpbw_deg"]), "sla_db": float(d["sla_db"])},
         loss=loss, extra_db=extra, pmf="pmf" in protections, wpa3="wpa3" in protections,
+        tx_positions=positions,
     )
 
 

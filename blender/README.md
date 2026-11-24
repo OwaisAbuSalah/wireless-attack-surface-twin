@@ -51,7 +51,7 @@ Build only (≈ 10 s; for opening the `.blend` and looking around):
 |---|---|
 | `docs/figures/blender_{hero,cutaway,street,clean}.png` | 1920×1080 renders |
 | `blender/out/twin.blend` | the full scene (left in the *hero* state). The RSS field images are packed. All four cameras are `CAM_*`, and each view's settings are re-applied by `apply_view()` |
-| `blender/out/twin.glb` | building + site + context buildings + street furniture, **no heat map, no RF markers, no lights**. glTF is Y-up: glTF `x` = east, `y` = up, `z` = −north |
+| `blender/out/twin.glb` | building + site + context buildings + street furniture, **no heat map, no RF markers, no lights** (205 meshes, 81 k polygons, 2.6 MB, no modifiers applied). glTF is Y-up: glTF `x` = east, `y` = up, `z` = −north. The ground slab and the roads and sidewalks that touch the edge of the study area extend to ±1.6 km, so they reach the horizon |
 | `blender/out/rss_outdoor.exr`, `rss_floor1.exr` | float maps: R = RSS (dBm), G = signed distance (m) to the eavesdropping contour (positive = danger side), B = distance (m) to the nearest 5 dB iso-level. Row 0 = southern edge (`y0`), as in MODEL.md §4 |
 | `blender/out/render_log.json` | arguments, RF statistics, per-view render times, automated checks |
 
@@ -59,7 +59,17 @@ Build only (≈ 10 s; for opening the `.blend` and looking around):
 
 RTX 3060 12 GB, OptiX, 256 samples (adaptive), OIDN denoise, 1920×1080:
 
-RENDER_TIMES_TABLE
+| Step | Time |
+|---|---|
+| RSS maps (outdoor 800×560 @ 0.25 m + floor 1 370×170 @ 0.1 m) | 6 s |
+| Scene build (563 objects) | < 1 s |
+| `blender_hero.png` | 83 s |
+| `blender_cutaway.png` | 82 s |
+| `blender_street.png` | 126 s |
+| `blender_clean.png` | 70 s |
+| **Whole run** (4 renders + `.blend` + `.glb`) | **6 min 8 s** |
+
+The 50 % / 32-sample preview runs all four views in about 1 minute.
 
 ## How it is built
 
@@ -132,7 +142,7 @@ figure: a subdivided mannequin with a laptop and a USB whip.
 * `RSS = 20 dBm + G_tx − PL`, using the wall mount.
 
 The computation is vectorised over (cells × walls) in chunks of 6 000 cells. The 0.25 m grid (448 k
-cells) takes about 12 s and the 0.5 m spec grid about 3 s. Results at 0.5 m: outdoor RSS ranges
+cells) takes about 6 s and the 0.5 m spec grid about 3 s. Results at 0.5 m: outdoor RSS ranges
 from −150.8 to −40.6 dBm (median −84.3). **22 522 m² (82 %) of the study area** outside the
 footprint allows eavesdropping with the USB kit. Floor 1 at z = 4.8 m ranges from −117 to −25 dBm.
 

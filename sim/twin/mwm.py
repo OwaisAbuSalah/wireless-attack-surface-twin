@@ -20,7 +20,9 @@ import numpy as np
 from .building import Building, ScenarioParams, boresight, cell_centers, grid_points
 
 CHUNK = 4096
-EPS_T = 1e-5          # MODEL.md §2.1: a wall counts only for EPS < t < 1 - EPS (end point on a wall plane never counts)
+EPS_T = 1e-5          # MODEL.md §2.1: wall counts for EPS < t < 1 - EPS (end point on a wall plane never counts)
+EPS_U = 1e-5          #   and -EPS <= u <= 1 + EPS (a ray through a wall junction counts every wall meeting there)
+DELTA = 1e-4          #   length/height tolerance [m] for z-range, opening edges, sill/head, slab footprint
 
 
 # ============================================================================ path loss
@@ -57,13 +59,16 @@ def crossing_counts(T, R, B: Building) -> np.ndarray:
             t = t_num / denom
             u = (wx * dy - wy * dx) / denom
             zc = T[2] + t * dz
-        ok = (denom != 0) & (t > EPS_T) & (t < 1 - EPS_T) & (u >= 0) & (u <= 1)
-        ok &= (zc >= W.z0) & (zc <= W.z1)
+        ok = (denom != 0) & (t > EPS_T) & (t < 1 - EPS_T) & (u >= -EPS_U) & (u <= 1 + EPS_U)
+        ok &= (zc >= W.z0 - DELTA) & (zc <= W.z1 + DELTA)
         with np.errstate(invalid="ignore"):
             m = u * W.length - W.offset
-            m = np.where(W.period > 0, np.mod(m, per_safe), m)
+            mp = np.mod(m, per_safe)                                     # positive modulo
+            mp = np.where(mp > per_safe - DELTA, mp - per_safe, mp)      # wrap at the period boundary
+            m = np.where(W.period > 0, mp, m)
         h = zc - W.z0
-        inside = W.has_open & (m >= 0) & (m <= W.width) & (h >= W.sill) & (h <= W.head)
+        inside = (W.has_open & (m >= -DELTA) & (m <= W.width + DELTA)
+                  & (h >= W.sill - DELTA) & (h <= W.head + DELTA))
         mat = np.where(inside, W.open_mat, W.mat)
         rows = np.broadcast_to(np.arange(n)[:, None], mat.shape)
         idx = rows[ok] * nmat + mat[ok]
@@ -80,7 +85,7 @@ def crossing_counts(T, R, B: Building) -> np.ndarray:
             t = (zs - T[2]) / dzs
             px = T[0] + t * (R[:, 0] - T[0])
             py = T[1] + t * (R[:, 1] - T[1])
-        cross &= (px >= x0) & (px <= x1) & (py >= y0) & (py <= y1)
+        cross &= (px >= x0 - DELTA) & (px <= x1 + DELTA) & (py >= y0 - DELTA) & (py <= y1 + DELTA)
         counts[:, k_slab] += cross
     return counts
 
@@ -140,10 +145,10 @@ def tx_gain(sp: ScenarioParams, T, R) -> np.ndarray:
 
 def rss_from_router(B: Building, sp: ScenarioParams, R, g_rx: float = 0.0, n: float | None = None,
                     loss: np.ndarray | None = None) -> np.ndarray:
-    """RSS(AP -> R) [dBm] (MODEL.md §4)."""
-    T = sp.tx_pos
+    """RSS(AP -> R) [dBm] (MODEL.md §4); with several APs the maximum over the APs."""
     L = sp.loss if loss is None else loss
-    return sp.tx_dbm + tx_gain(sp, T, R) + g_rx - path_loss(T, R, B, L, sp.freq_ghz, n=n)
+    vals = [sp.tx_dbm + tx_gain(sp, T, R) + g_rx - path_loss(T, R, B, L, sp.freq_ghz, n=n) for T in sp.tx_positions]
+    return np.max(vals, axis=0)
 
 
 # ============================================================================ maps
@@ -300,7 +305,8 @@ def link_budget(B: Building, T, R, freq_ghz: float, loss: np.ndarray, gain_fn=No
         D = math.hypot(dx, dy)
         near = (-0.05 < t * D and (t - 1) * D < 0.05 and -0.05 < u * L and (u - 1) * L < 0.05
                 and W.z0[k] - 0.05 < zc < W.z1[k] + 0.05)
-        crossed = (EPS_T < t < 1 - EPS_T) and (0 <= u <= 1) and (W.z0[k] <= zc <= W.z1[k])
+        crossed = ((EPS_T < t < 1 - EPS_T) and (-EPS_U <= u <= 1 + EPS_U)
+                   and (W.z0[k] - DELTA <= zc <= W.z1[k] + DELTA))
         if near:
             margins += [abs(t * D), abs((1 - t) * D), abs(u * L), abs((1 - u) * L),
                         abs(zc - W.z0[k]), abs(W.z1[k] - zc)]
@@ -312,8 +318,11 @@ def link_budget(B: Building, T, R, freq_ghz: float, loss: np.ndarray, gain_fn=No
             m = u * L - W.offset[k]
             if W.period[k] > 0:
                 m = m - W.period[k] * math.floor(m / W.period[k])
+                if m > W.period[k] - DELTA:
+                    m -= W.period[k]
             h = zc - W.z0[k]
-            inside = (0 <= m <= W.width[k]) and (W.sill[k] <= h <= W.head[k])
+            inside = ((-DELTA <= m <= W.width[k] + DELTA)
+                      and (W.sill[k] - DELTA <= h <= W.head[k] + DELTA))
             margins += [abs(m), abs(m - W.width[k]), abs(h - W.sill[k]), abs(h - W.head[k])]
             if W.period[k] > 0:
                 margins.append(abs(m - W.period[k]))
@@ -331,7 +340,7 @@ def link_budget(B: Building, T, R, freq_ghz: float, loss: np.ndarray, gain_fn=No
             t = (zs - T[2]) / (R[2] - T[2])
             px, py = T[0] + t * (R[0] - T[0]), T[1] + t * (R[1] - T[1])
             margins += [abs(zs - T[2]), abs(zs - R[2]), abs(px - x0), abs(px - x1), abs(py - y0), abs(py - y1)]
-            if x0 <= px <= x1 and y0 <= py <= y1:
+            if x0 - DELTA <= px <= x1 + DELTA and y0 - DELTA <= py <= y1 + DELTA:
                 slabs.append({"z": float(zs), "loss_db": float(loss[ks]), "x": round(float(px), 6), "y": round(float(py), 6)})
     pl0 = pl0_db(freq_ghz)
     pl_dist = 10.0 * n * math.log10(d)

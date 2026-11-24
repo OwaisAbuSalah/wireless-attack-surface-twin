@@ -360,8 +360,8 @@ const scenarios = {
   shieldPaint:   { label: { en: 'Shielding paint', ar: 'دهان عازل' }, protections: ['shieldPaint'] },
   band5:         { label: { en: '5 GHz band', ar: 'نطاق 5 GHz' }, protections: ['band5'] },
   allRF:         { label: { en: 'Combined RF measures', ar: 'إجراءات الحماية مجتمعة' }, protections: ['relocate', 'shieldWindows', 'shieldPaint', 'band5'] },
-  // exactly what "Apply protection" in the web app ends with (RF part): 2 micro-cells, 5 GHz, shielding, auto-tuned 13 dBm
-  applied:       { label: { en: 'Applied protection (app)', ar: 'الحماية المطبّقة في التطبيق' }, protections: ['microcells', 'shieldWindows', 'shieldPaint', 'band5'], tx_dbm: 13 },
+  // exactly what "Apply protection" in the web app ends with (RF part): 2 micro-cells, 5 GHz, shielding, auto-tuned 14 dBm
+  applied:       { label: { en: 'Applied protection (app)', ar: 'الحماية المطبّقة في التطبيق' }, protections: ['microcells', 'shieldWindows', 'shieldPaint', 'band5'], tx_dbm: 14 },
 };
 
 const out = {

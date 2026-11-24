@@ -50,22 +50,26 @@ danger zone shrink live, while a KPI panel keeps an eye on indoor coverage.
 
 | Configuration | Danger zone outside | Street exposure | Max leak distance | Indoor coverage ≥ −67 dBm |
 |---|---:|---:|---:|---:|
-| Baseline (AP at the street window, 20 dBm, 2.4 GHz) | 22,521 m² | 99 % | > 100 m | 94.4 % |
-| Reduce TX power to 12 dBm | 16,491 m² | 99 % | > 100 m | 82.1 % |
-| Directional patch antenna | 15,450 m² | 92 % | > 100 m | 88.6 % |
-| Shielding window film | 16,794 m² | 97 % | > 100 m | 94.4 % |
-| Shielding paint | 13,620 m² | 96 % | > 100 m | 94.4 % |
-| Move to 5 GHz | 9,376 m² | 95 % | > 100 m | 70.1 % |
-| Two ceiling micro-cells (20 dBm) | 25,269 m² | 98 % | > 100 m | 99.9 % |
-| **All combined** (film + paint + 2 micro-cells + 5 GHz + auto-tuned **13 dBm**) | **239 m²** | **0 %** | **33 m** | **95.9 %** |
+| Baseline (AP at the street window, 20 dBm, 2.4 GHz) | 22,520 m² | 99 % | > 100 m | 94.4 % |
+| Reduce TX power to 12 dBm | 16,490 m² | 99 % | > 100 m | 82.1 % |
+| Directional patch antenna | 15,452 m² | 92 % | > 100 m | 88.5 % |
+| Relocate AP to the ceiling | 18,202 m² | 98 % | > 100 m | 81.2 % |
+| Shielding window film | 16,793 m² | 97 % | > 100 m | 94.4 % |
+| Shielding paint | 13,623 m² | 96 % | > 100 m | 94.4 % |
+| Move to 5 GHz | 9,378 m² | 95 % | > 100 m | 70.1 % |
+| Two ceiling micro-cells (20 dBm) | 25,266 m² | 98 % | > 100 m | 100 % |
+| **All combined** (film + paint + 2 micro-cells + 5 GHz + auto-tuned **14 dBm**) | **282 m²** | **0 %** | **39 m** | **95.9 %** |
 
 No single measure is enough, and several cost indoor coverage. The combination — with micro-cells to *create*
 coverage headroom and an optimiser that then cuts the power — removes 99 % of the danger zone while improving
 coverage. The protocol layer (802.11w PMF, WPA3-SAE) then neutralises deauthentication, offline cracking and
 rogue clones inside whatever area is left: **radio measures limit _where_, protocols limit _what_.**
 
-The ray tracer is more pessimistic than the engineering model — reflections carry energy around shielded walls —
-see [sim/out/RESULTS.md](sim/out/RESULTS.md) and the report for the full comparison.
+**Ray-traced check.** NVIDIA Sionna RT, which includes reflections, confirms the baseline (21,672 m², 98 % of the street)
+but is more pessimistic about the protections: the same applied configuration still leaves **2,691 m² (−88 %)** and
+18 % of the street exposed — reflections carry energy around shielded walls. The fast model is the right tool to
+explore and explain; the ray tracer is the reference for a final design; and the protocol layer covers the remaining
+margin. Full comparison: [sim/out/RESULTS.md](sim/out/RESULTS.md) and the report.
 
 ## How it works
 
@@ -82,8 +86,8 @@ data/building.json ──┬── web/      Three.js + GLSL: real-time multi-wa
 * **GPU** — one fragment per map cell: ≈ 200 000 cells (outdoor + three floors) × 9 sources × 165 walls per update,
   a few milliseconds on an RTX 3060. Results are morphed smoothly when a protection is toggled.
 * **Verification** — the same model exists three times (GLSL, JavaScript, NumPy):
-  JavaScript = Python to 0.000 dB on 39 reference links; GPU = CPU to 0.0003 dB on outdoor cells (and on 99.7 % of
-  floor cells — the rest lie exactly on wall planes where float32/float64 decide a grazing crossing differently).
+  JavaScript = Python to 0.000 dB on 39 baseline links and 40 links across all protection scenarios (incl. two-AP max); GPU = CPU to ≤ 0.0004 dB on 5 000 outdoor cells and with
+  no cell differing on all 47 175 floor cells (symmetric tolerances at wall edges, see the spec).
 * **Validation** — NVIDIA Sionna RT 2.2 (CUDA) ray-traces the same geometry on ITU-R P.2040 materials with
   reflection and transmission; maps are bundled in the app (*Sionna RT* and *Δ Sionna* modes).
 
@@ -164,7 +168,7 @@ cd presentation && npm install && node build_deck.js
 الدهان العازل، نقل الراوتر، الخلايا الصغيرة، الهوائي الاتجاهي، نطاق 5 GHz، ضبط القدرة، 802.11w وWPA3) ومشاهدة
 منطقة الخطر وهي تنكمش لحظياً، مع لوحة مؤشرات تراقب التغطية داخل المبنى.
 
-**النتيجة:** منطقة الخطر من 22,521 م² إلى 239 م² (−99%)، وتعرّض الشارع من 99% إلى 0%، مع بقاء التغطية الداخلية 95.9%.
+**النتيجة:** منطقة الخطر من 22,520 م² إلى 282 م² (−99%)، وتعرّض الشارع من 99% إلى 0%، مع بقاء التغطية الداخلية 95.9%. أما تتبّع الأشعة في Sionna RT — الذي يحسب الانعكاسات — فأكثر تحفّظاً: يبقى 2,691 م² (−88%) وجزء من الشارع، ولهذا تبقى طبقة البروتوكول (802.11w وWPA3) ضرورية.
 
 **التحقّق:** النموذج نفسه مكتوب ثلاث مرات (GLSL وJavaScript وPython) ومتطابق، ومقارَن بتتبّع الأشعة في NVIDIA Sionna RT.
 

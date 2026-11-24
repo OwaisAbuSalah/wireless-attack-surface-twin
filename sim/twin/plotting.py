@@ -84,7 +84,8 @@ def _draw_street(ax, B: Building, th):
 def _draw_devices(ax, B: Building, sp: ScenarioParams, th, floor=None, size=1.0):
     from .mwm import router_floor
     if floor is None or router_floor(B, sp) == floor:
-        ax.plot(*sp.tx_pos[:2], marker="*", ms=14 * size, mfc=th["router"], mec=th["router_edge"], mew=1.2, zorder=9)
+        for T in sp.tx_positions:
+            ax.plot(*T[:2], marker="*", ms=14 * size, mfc=th["router"], mec=th["router_edge"], mew=1.2, zorder=9)
         if sp.antenna == "patch":
             b = np.array([np.cos(np.radians(sp.az_deg)), np.sin(np.radians(sp.az_deg))])
             if abs(sp.tilt_deg) < 89:
@@ -142,6 +143,8 @@ def scenario_figure(B: Building, sp: ScenarioParams, maps: dict, attack: dict, s
     ax.set_xlabel("x [m] (east)"); ax.set_ylabel("y [m] (north)")
     lab = label or B.scenarios.get(sp.name, {}).get("label", {}).get("en", sp.name)
     ant = "3GPP patch" if sp.antenna == "patch" else "λ/2 dipole"
+    if len(sp.tx_positions) > 1:
+        ant = f"{len(sp.tx_positions)} × {ant}"
     ax.set_title(f"{lab} — {model_label}   |   {sp.freq_ghz:g} GHz, {sp.tx_dbm:g} dBm, {ant} @ {sp.mount}   "
                  f"|   outdoor plane z = {g['z']:g} m", fontsize=11, color=th["fg"], loc="left")
     handles = [Line2D([], [], color=TIER_COLORS[k], lw=2, ls="solid" if k != "deauth" else (0, (4, 2)),

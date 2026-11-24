@@ -50,7 +50,7 @@ def load_sionna(B):
         f = CACHE / f"sionna_{name}.npz"
         if f.exists():
             z = np.load(f)
-            out[name] = {k: z[k].astype(np.float64) for k in z.files}
+            out[name] = {k: z[k].astype(np.float64) for k in z.files if k != "meta"}
     if out:
         return out, "cache (float32)"
     from twin.export import read_maps_json
@@ -191,7 +191,8 @@ def compare_figure(B, name, sp, mw, si, met, path, theme="light"):
     ext = [g["x0"], g["x0"] + g["nx"] * g["dx"], g["y0"], g["y0"] + g["ny"] * g["dx"]]
     im = ax.imshow(diff, origin="lower", extent=ext, cmap=cm, vmin=-20, vmax=20, interpolation="nearest")
     _draw_context(ax, B, th); _draw_walls(ax, B, th, outdoor=True)
-    ax.plot(*sp.tx_pos[:2], marker="*", ms=12, mfc=th["router"], mec=th["router_edge"], zorder=9)
+    for T in sp.tx_positions:
+        ax.plot(*T[:2], marker="*", ms=12, mfc=th["router"], mec=th["router_edge"], zorder=9)
     ax.set_xlim(ext[0], ext[1]); ax.set_ylim(ext[2], ext[3]); ax.set_aspect("equal")
     mo = met["outdoor"]
     ax.set_title(f"Outdoor z = {g['z']:g} m: MWM − Sionna   (RMSE {mo['rmse']:.1f}, bias {mo['bias']:+.1f} dB)",
@@ -207,7 +208,8 @@ def compare_figure(B, name, sp, mw, si, met, path, theme="light"):
         ax.imshow(diff, origin="lower", extent=ext, cmap=cm, vmin=-20, vmax=20, interpolation="nearest")
         _draw_walls(ax, B, th, floor=f["id"])
         if B.floor_of_z(sp.tx_pos[2]) == f["id"]:
-            ax.plot(*sp.tx_pos[:2], marker="*", ms=10, mfc=th["router"], mec=th["router_edge"], zorder=9)
+            for T in sp.tx_positions:
+                ax.plot(*T[:2], marker="*", ms=10, mfc=th["router"], mec=th["router_edge"], zorder=9)
         ax.set_xlim(ext[0], ext[1]); ax.set_ylim(ext[2], ext[3]); ax.set_aspect("equal")
         mf = met[pn]
         ax.set_title(f"{f['name']['en']}: RMSE {mf['rmse']:.1f}, bias {mf['bias']:+.1f} dB", fontsize=8.5, color=th["fg"])
@@ -332,7 +334,7 @@ def main():
             cal["loso_2.4"][held] = {"train": train, "n": round(f["n"], 3), "metrics": scenario_metrics(B, mw, sion[held])}
     # shielding increments
     for n in names:
-        if not sp[n].extra_db:
+        if not sp[n].extra_db or len(sp[n].tx_positions) > 1:     # multi-AP max() is not linear -> not fitted
             continue
         fk = sp[n].fkey
         if fk not in base_fit:
@@ -353,8 +355,11 @@ def main():
             continue
         b = base_fit[fk]["n_fixed"]          # primary calibration: n = 2 as in MODEL.md, losses fitted
         loss = b["loss"].copy()
+        # shielding increments: own fit, else the fit of a scenario with the same propagation environment
+        donor = n if n in cal["extras"] else next((m for m in cal["extras"]
+                                                     if sp[m].material_config == sp[n].material_config), None)
         for mat in sp[n].extra_db:
-            ex = cal["extras"].get(n, {}).get("fitted_extra_db", {}).get(mat, sp[n].extra_db[mat])
+            ex = cal["extras"].get(donor, {}).get("fitted_extra_db", {}).get(mat, sp[n].extra_db[mat])
             loss[B.mat_index[mat]] += ex
         r = mwm.scenario_analysis(B, sp[n], "sionna", eq=eq, n=b["n"], loss=loss, client_cache=cache)
         calibrated[n] = scenario_metrics(B, r["maps"], sion[n])

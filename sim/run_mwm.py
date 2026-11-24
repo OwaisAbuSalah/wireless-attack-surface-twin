@@ -100,8 +100,9 @@ def _random_points(B, rng, n, kind, sp, min_margin=0.05):
             f = B.floors[int(rng.integers(len(B.floors)))]
             p = [rng.uniform(-17.8, 17.8), rng.uniform(-7.8, 7.8), f["z"] + B.rf["grids"]["floor"]["dz"]]
         p = np.round(p, 3)
-        lb = mwm.link_budget(B, np.round(sp.tx_pos, 3), p, sp.freq_ghz, sp.loss, mwm.router_gain_fn(sp), sp.tx_dbm)
-        if lb["margin_m"] >= min_margin:
+        margin = min(mwm.link_budget(B, np.round(T, 3), p, sp.freq_ghz, sp.loss, mwm.router_gain_fn(sp),
+                                     sp.tx_dbm)["margin_m"] for T in sp.tx_positions)
+        if margin >= min_margin:
             pts.append(p)
     return pts
 
@@ -132,9 +133,18 @@ def run_testpoints(B, path: Path, seed=20261124):
         s2 = scenario_params(B, name, protections=prot)
         name = s2.name
         pts = [att] + _random_points(B, rng, 1, "near", s2) + _random_points(B, rng, 1, "indoor", s2)
+        labels = ["attacker_start", "random_near", "random_indoor", "c3"]
+        pts = pts + [np.array(B.clients[2]["pos"], float)]
+        multi = len(s2.tx_positions) > 1
         for i, p in enumerate(pts):
-            extra.append(_rec(B, s2, f"{name}-{i}", "AP", s2.tx_pos, ["attacker_start", "random_near", "random_indoor"][i], p))
-        extra.append(_rec(B, s2, f"{name}-ap-c3", "AP", s2.tx_pos, "c3", B.clients[2]["pos"]))
+            # several APs (micro-cells): one itemised link per AP + the combined RSS = max over APs (MODEL.md §4)
+            for k, T in enumerate(s2.tx_positions):
+                lid = f"{name}-ap-c3" if i == 3 else f"{name}-{i}"
+                rec = _rec(B, s2, lid + (f"-ap{k + 1}" if multi else ""), f"AP{k + 1}" if multi else "AP", T,
+                           labels[i], p)
+                if multi:
+                    rec["rss_max_over_aps_dbm"] = float(mwm.rss_from_router(B, s2, np.round(p, 3)[None])[0])
+                extra.append(rec)
 
     # attack feasibility at a few outdoor positions (baseline, default equipment) -- MODEL.md §6
     eq = mwm.equipment(B)

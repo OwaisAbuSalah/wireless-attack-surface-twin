@@ -54,10 +54,10 @@ sim\.venv\Scripts\python.exe -c "import mitsuba as mi; mi.set_variant('cuda_ad_m
 
 | Step | Command | Runtime (RTX 3060 / laptop CPU) | Outputs |
 |---|---|---|---|
-| unit tests | `python sim/tests/test_mwm.py` | 2 s | — |
+| unit tests (15) | `python sim/tests/test_mwm.py` | ≈ 10 s | — |
 | reference model | `python sim/run_mwm.py` | ≈ 2–4 min | `docs/figures/mwm_<scenario>[_dark].png`, `sim/out/mwm_stats.csv`, `sim/out/mwm_maps.json`, `sim/out/mwm_testpoints.json` |
 | Sionna sanity checks | `python sim/tests/test_sionna_canonical.py` | ≈ 10 s | `sim/out/sionna_canonical.json` |
-| ray tracing | `python sim/run_sionna.py` (`--samples 1e9 --max-depth 5 --seeds-outdoor auto`) | ≈ 25 min with 1 seed everywhere; ≈ +30 min for the 4-seed outdoor maps of the three heavily attenuating environments (RTX 3060 shared with another GPU job) | `web/src/data/sionna.json`, `docs/figures/sionna_<scenario>[_dark].png`, `sim/out/sionna_stats.csv`, `sim/out/cache/` |
+| ray tracing | `python sim/run_sionna.py` (`--samples 1e9 --max-depth 5 --seeds-outdoor auto`) | ≈ 40 min for all nine scenarios (sum of recorded per-scenario runtimes 2,362 s on an RTX 3060 shared with another GPU job; the 4-seed outdoor maps of the four heavily attenuating scenarios dominate) | `web/src/data/sionna.json`, `docs/figures/sionna_<scenario>[_dark].png`, `sim/out/sionna_stats.csv`, `sim/out/cache/` |
 | Sionna Monte-Carlo noise | `python sim/run_sionna.py --noise-check` | ≈ 1 min | `sim/out/sionna_noise.json` |
 | comparison | `python sim/compare.py` | ≈ 1–2 min | `docs/figures/compare_<scenario>[_dark].png`, `docs/figures/compare_calibration[_dark].png`, `sim/out/compare_metrics.csv`, `sim/out/calibration.json`, `sim/out/RESULTS.md` |
 | field data | `python sim/measure/compare_measurements.py points.csv` | < 5 s | console / `--out report.json` |
@@ -73,11 +73,15 @@ and a cache entry whose radio inputs no longer match building.json is refused.
 ## 3. Reference model (`twin/mwm.py`)
 
 Implements `docs/MODEL.md` §2–7 literally: `PL = PL0(f) + 10 n log10(max(d, 0.5)) + Σ L_wall + Σ L_slab`,
-3-D wall crossings (plan intersection `ε < t < 1 − ε` with ε = 10⁻⁵ — an end point lying on a wall plane never counts that wall —, `0 ≤ u ≤ 1`, height test `z0 ≤ zc ≤ z1`), periodic openings
-(`m = (s − offset) mod period`, `0 ≤ m ≤ width`, `sill ≤ h ≤ head`), slab planes strictly between the end points and
-inside the footprint (inclusive), vertical λ/2 dipole (2.15 dBi, floor −27.85 dBi) and the 3GPP TR 38.901 patch
+3-D wall crossings (plan intersection `ε < t < 1 − ε`, `−ε ≤ u ≤ 1 + ε` with ε = 10⁻⁵ — an end point on a wall plane
+never counts that wall, a ray through a junction counts every wall meeting there —, height test `z0 − δ ≤ zc ≤ z1 + δ`
+with δ = 10⁻⁴ m), periodic openings (`m = (s − offset) mod period`, wrapped to `m − period` when `m > period − δ`;
+`−δ ≤ m ≤ width + δ`, `sill − δ ≤ h ≤ head + δ`), slab planes strictly between the end points and inside the
+footprint ± δ — the lattice tolerances of MODEL.md §2.1 that make float32 GPU and float64 CPU agree on every cell —, vertical λ/2 dipole (2.15 dBi, floor −27.85 dBi) and the 3GPP TR 38.901 patch
 with the local frame of §3; the patch parameters are those of the active mount (`router.mounts.<mount>.patch`:
-wall 8 dBi / 65° / 30 dB, ceiling 5.5 dBi / 110° / 25 dB).
+wall 8 dBi / 65° / 30 dB, ceiling 5.5 dBi / 110° / 25 dB). Transmit power = the scenario's `tx_dbm` if given, else
+12 dBm with `lowPower`, else `router.tx_dbm`. With several access points (`microcells` → mount `micro`, two ceiling
+APs) `RSS(AP→R) = max_k RSS(AP_k→R)` for maps and for RSS(AP → client) (MODEL.md §4).
 
 * `crossing_counts(T, R)` returns how often each material is crossed, so that the wall loss is `counts @ loss`;
   this makes the calibration a *linear* least-squares problem.
@@ -101,8 +105,8 @@ wall 8 dBi / 65° / 30 dB, ceiling 5.5 dBi / 110° / 25 dB).
 
 43 baseline links (AP → each client, AP → attacker start, AP → 30 seeded random outdoor/near/indoor points,
 client c1 → 4 outdoor points as source of `PL(X, c)`) plus 4 links for every other scenario (patch antenna,
-5 GHz, ceiling mount, shielding) and for the non-scenario combination `directional+relocate` (wide-beam ceiling
-patch of MODEL.md §3), each with `tx_pos, rx_pos, freq_ghz, d_m, pl0_db, pl_distance_db, pl_db,
+5 GHz, ceiling mount, shielding; for the two-AP scenario `applied` one link per AP plus `rss_max_over_aps_dbm`) and
+for the non-scenario combination `directional+relocate` (wide-beam ceiling patch of MODEL.md §3), each with `tx_pos, rx_pos, freq_ghz, d_m, pl0_db, pl_distance_db, pl_db,
 gain_tx_dbi, rss_dbm` and the list of crossed `walls` (`id, material, loss_db, opening, t, u, s_m, zc`) and
 `slabs`. Random points are rejected unless every decision boundary of the model (wall ends, wall top/bottom,
 opening edges, slab edges) is ≥ 5 cm away (`margin_m`), so float32 GPU code must reproduce the same crossings.
@@ -139,7 +143,10 @@ from the slab formula.
   incoherent sum of all path powers (local-area mean, consistent with the radio maps).
 * `RSS_dBm = P_tx + 10 log10(path_gain)`; cells reached by no ray → `−inf` → encoded `0` (no signal).
 * Clients for §6 (`PL(X, c)`): the eight clients are traced as isotropic V sources onto the outdoor plane once per
-  propagation environment (reciprocity), `PL = −10 log10(g)`.
+  propagation environment (reciprocity), `PL = −10 log10(g)`; a scenario of an already traced environment reuses them
+  (e.g. `applied` reuses the maps of `allRF`: same frequency, shielding and clients).
+* Several APs (`applied`): one Sionna `Transmitter` per AP (same pattern and power); the map is the per-cell maximum of
+  the path gains, RSS(AP → client) the maximum over the APs (MODEL.md §4).
 * Solver settings: `max_depth = 5`, LoS + specular reflection + refraction (transmission), diffuse reflection
   off (ITU materials have zero scattering coefficient), diffraction off, `samples_per_tx = 1e9`, `seed = 42`.
   Sionna launches rays on a deterministic Fibonacci lattice and samples the interaction type (reflection vs.

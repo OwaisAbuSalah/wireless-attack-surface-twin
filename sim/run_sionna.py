@@ -143,13 +143,14 @@ class Runner:
         pattern = ss.router_pattern(sp)
         scene.tx_array = rt.PlanarArray(num_rows=1, num_cols=1, pattern=pattern, polarization="V")
         scene.rx_array = rt.PlanarArray(num_rows=1, num_cols=1, pattern="iso", polarization="VH")
-        ap = rt.Transmitter("ap", position=self.P3(sp.tx_pos), orientation=self.P3(ss.router_orientation(sp)),
-                            power_dbm=float(sp.tx_dbm))
-        scene.add(ap)
+        aps = [rt.Transmitter(f"ap{k}", position=self.P3(T), orientation=self.P3(ss.router_orientation(sp)),
+                              power_dbm=float(sp.tx_dbm)) for k, T in enumerate(sp.tx_positions)]
+        scene.add(aps)
         maps = {}
         for name in B.plane_names():
             g = B.grid(name, "sionna")
-            pg = self.radio_map(scene, g, seeds=seeds_outdoor if name == "outdoor" else 1)[0]
+            # several APs (micro-cells, MODEL.md §4): RSS = max over the APs (same power) = max path gain
+            pg = self.radio_map(scene, g, seeds=seeds_outdoor if name == "outdoor" else 1).max(axis=0)
             with np.errstate(divide="ignore"):
                 maps[name] = sp.tx_dbm + 10 * np.log10(pg)
         rxs = [rt.Receiver(f"rx-{c['id']}", position=self.P3(c["pos"])) for c in B.clients]
@@ -160,11 +161,11 @@ class Runner:
                                  specular_reflection=True, diffuse_reflection=False, refraction=True, seed=s["seed"])
         a_re, a_im = (np.asarray(x.numpy(), np.float64) for x in paths.a)
         p = (a_re ** 2 + a_im ** 2)            # [num_rx, num_rx_ant, num_tx, num_tx_ant, num_paths]
-        p_rx = p.sum(axis=(1, 3, 4))[:, 0]
+        p_rx = p.sum(axis=(1, 3, 4)).max(axis=1)          # [num_rx, num_tx] -> strongest AP per client
         with np.errstate(divide="ignore"):
             rss_c = sp.tx_dbm + 10 * np.log10(p_rx)
         n_paths = int(np.asarray(paths.valid.numpy()).sum())
-        scene.remove(["ap"] + [r.name for r in rxs])
+        scene.remove([a.name for a in aps] + [r.name for r in rxs])
         return maps, rss_c, n_paths
 
 
@@ -228,7 +229,26 @@ def fingerprint(B, sp) -> str:
     h.update(json.dumps({"tx": [float(x) for x in sp.tx_pos], "antenna": sp.antenna, "patch": sp.patch,
                          "az": sp.az_deg, "tilt": sp.tilt_deg, "p": sp.tx_dbm, "f": sp.freq_ghz,
                          "clients": B.client_positions().tolist()}, sort_keys=True).encode())
+    if len(sp.tx_positions) > 1:                 # extra key only for multi-AP (keeps single-AP hashes stable)
+        h.update(json.dumps({"tx_all": sp.tx_positions.tolist()}).encode())
     return h.hexdigest()[:16]
+
+
+def reusable_client_maps(B, tag, k_out):
+    """Client-source maps depend only on the propagation environment: reuse them from any cached scenario of the
+    same environment (same seeds) whose radio fingerprint is still valid."""
+    for f in sorted(CACHE.glob("sionna_*.npz")):
+        try:
+            z = np.load(f)
+            meta = json.loads(str(z["meta"]))
+        except Exception:      # noqa: BLE001
+            continue
+        if meta.get("env") != tag or meta.get("seeds_outdoor") != k_out or meta["scenario"] not in B.scenarios:
+            continue
+        if meta["fingerprint"] != fingerprint(B, scenario_params(B, meta["scenario"])):
+            continue
+        return z["pl_clients"].astype(np.float64), meta["scenario"]
+    return None
 
 
 def trace(B, R, names, args):
@@ -245,11 +265,24 @@ def trace(B, R, names, args):
         xml, specs, counts = ss.write_scene(B, sp0, CACHE / f"scene_{tag}")
         k_out = outdoor_seeds(specs, args.seeds_outdoor)
         scene = ss.load(xml, sp0.freq_ghz)
-        pg_c = R.client_maps(scene, g_out, seeds=k_out)                      # (8, ny, nx)
-        with np.errstate(divide="ignore"):
-            pl_c = -10 * np.log10(pg_c)                                      # +inf where no ray reached the cell
+        reuse = reusable_client_maps(B, tag, k_out)
+        if reuse is not None:                       # same environment already traced: client maps are identical
+            pl_c, src = reuse
+            pg_c = np.where(np.isfinite(pl_c), 10 ** (-pl_c / 10), 0.0)
+            print(f"[{tag}] reusing the client-source maps of '{src}' (same environment, {k_out} seed(s))", flush=True)
+        else:
+            pg_c = R.client_maps(scene, g_out, seeds=k_out)                  # (8, ny, nx)
+            with np.errstate(divide="ignore"):
+                pl_c = -10 * np.log10(pg_c)                                  # +inf where no ray reached the cell
         t_env = time.perf_counter() - t0
-        env = {"freq_ghz": sp0.freq_ghz, "scenarios": members, "client_maps_runtime_s": round(t_env, 1),
+        old_env = CACHE / f"env_{tag}.json"
+        if reuse is not None and old_env.exists():   # keep the original client-map runtime / scenario list
+            prev = json.loads(old_env.read_text())
+            members_all = sorted(set(prev.get("scenarios", [])) | set(members))
+            t_env_rec = prev.get("client_maps_runtime_s", round(t_env, 1))
+        else:
+            members_all, t_env_rec = members, round(t_env, 1)
+        env = {"freq_ghz": sp0.freq_ghz, "scenarios": members_all, "client_maps_runtime_s": t_env_rec,
                "seeds_outdoor": k_out, "client_zero_ray_cells": [int((p == 0).sum()) for p in pg_c], "quads": counts,
                "materials": {k: {kk: (round(vv, 6) if isinstance(vv, float) else vv) for kk, vv in s_.items()}
                              for k, s_ in specs.items()}}
