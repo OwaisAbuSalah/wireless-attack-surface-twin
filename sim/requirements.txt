@@ -1,0 +1,7 @@
+# Python >= 3.10 (tested with CPython 3.12.14 on Windows 11, RTX 3060).  Versions are the tested ones.
+sionna-rt==2.2.0      # standalone ray tracer (no TensorFlow); pulls mitsuba==3.9.1 and drjit==1.5.0
+mitsuba==3.9.1
+drjit==1.5.0
+numpy==2.5.5
+scipy==1.18.1
+matplotlib==3.11.2

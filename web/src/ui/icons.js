@@ -1,0 +1,50 @@
+// Minimal stroke icon set (24×24, drawn for this project).
+const I = {
+  play: '<path d="M7 4.5v15l12.5-7.5z"/>',
+  camera: '<path d="M3 8h3.5l2-3h7l2 3H21v11H3z"/><circle cx="12" cy="13" r="3.6"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2.2M12 19.8V22M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M2 12h2.2M19.8 12H22M4.9 19.1l1.5-1.5M17.6 6.4l1.5-1.5"/>',
+  moon: '<path d="M20 14.6A8.2 8.2 0 1 1 9.4 4a6.6 6.6 0 0 0 10.6 10.6z"/>',
+  sunset: '<path d="M3 18h18M6 14.5a6 6 0 0 1 12 0M12 3.5v4M4.6 7.6l1.7 1.7M19.4 7.6l-1.7 1.7M8 21.5h8"/>',
+  maximize: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.6v.4"/>',
+  shield: '<path d="M12 3l8 3v6c0 5-3.6 8.2-8 9.3C7.6 20.2 4 17 4 12V6z"/>',
+  shieldCheck: '<path d="M12 3l8 3v6c0 5-3.6 8.2-8 9.3C7.6 20.2 4 17 4 12V6z"/><path d="M8.6 12.2l2.4 2.4 4.6-4.8"/>',
+  reset: '<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1L3.5 8.5"/><path d="M3.5 3.5v5h5"/>',
+  router: '<rect x="3" y="12.5" width="18" height="7.5" rx="2"/><path d="M7 12.5V6.5M17 12.5V6.5M7 16.3h.01M10.5 16.3h.01"/>',
+  wifi: '<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.7 15.8a5 5 0 0 1 6.6 0"/><circle cx="12" cy="19.3" r="1"/>',
+  hood: '<path d="M12 3c-3.9 0-6.6 2.9-6.6 7v3c0 1.6-1 3.1-2.4 4.1h18c-1.4-1-2.4-2.5-2.4-4.1v-3c0-4.1-2.7-7-6.6-7z"/><path d="M9 10.5c.9-.7 5.1-.7 6 0v3.2H9z"/><path d="M6 21h12"/>',
+  layers: '<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
+  zap: '<path d="M13 2.5L4.5 13.5h6.5l-1 8 8.5-11h-6.5z"/>',
+  dish: '<path d="M4.5 9.5a7.2 7.2 0 0 0 10 10z"/><path d="M9.5 14.5l5.5-5.5"/><path d="M17.5 3.5a5.5 5.5 0 0 1 3 3M15.5 5.6a2.6 2.6 0 0 1 2.9 2.9"/>',
+  move: '<path d="M12 3v18M3 12h18M12 3l-2.6 2.6M12 3l2.6 2.6M12 21l-2.6-2.6M12 21l2.6-2.6M3 12l2.6-2.6M3 12l2.6 2.6M21 12l-2.6-2.6M21 12l-2.6 2.6"/>',
+  window: '<rect x="4.5" y="3" width="15" height="18" rx="1.5"/><path d="M12 3v18M4.5 12h15"/>',
+  paint: '<rect x="3" y="3" width="14.5" height="6" rx="1.5"/><path d="M17.5 6H20v5h-8v3"/><rect x="10" y="14" width="4" height="7" rx="1"/>',
+  bars: '<path d="M4.5 20v-3M9.5 20v-7M14.5 20V9M19.5 20V4"/>',
+  lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/>',
+  key: '<circle cx="8" cy="15" r="4.2"/><path d="M11 12l9-9M17 6l3 3M14.6 8.4l2.2 2.2"/>',
+  eye: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  wifiOff: '<path d="M2.5 9a14 14 0 0 1 5.5-3.4M21.5 9a14 14 0 0 0-8.3-4.1M5.5 12.5a9.5 9.5 0 0 1 3.8-2.2M18.5 12.5a9.5 9.5 0 0 0-2.4-1.8M8.7 15.8a5 5 0 0 1 6.6 0"/><path d="M3 3l18 18"/>',
+  twin: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
+  sparkles: '<path d="M11 3l1.9 4.8 4.8 1.9-4.8 1.9L11 16.4 9.1 11.6 4.3 9.7l4.8-1.9z"/><path d="M18.5 14.5l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z"/>',
+  chevron: '<path d="M6 9l6 6 6-6"/>',
+  phone: '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+  laptop: '<rect x="4" y="6" width="16" height="10.5" rx="1.5"/><path d="M2 19.5h20"/><path d="M18.5 6V2"/>',
+  yagi: '<path d="M3 21L21 3"/><path d="M7.5 20.5l-4-4M11.5 16.5l-4-4M15.5 12.5l-4-4M19.5 8.5l-4-4"/>',
+  target: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/>',
+  cube: '<path d="M12 2.5l8.5 4.8v9.4L12 21.5l-8.5-4.8V7.3z"/><path d="M12 21.5V12M20.5 7.3L12 12 3.5 7.3"/>',
+  diff: '<path d="M12 3v18"/><path d="M5 8.5h4.5M7.25 6.25v4.5M14.5 15.5H19"/>',
+  pin: '<path d="M12 21s-7-6.2-7-11.2a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.6"/>',
+  floors: '<path d="M12 2.5l8.5 4.2-8.5 4.2-8.5-4.2z"/><path d="M3.5 12l8.5 4.2 8.5-4.2"/><path d="M3.5 17.3l8.5 4.2 8.5-4.2"/>',
+  map: '<path d="M3 6.5l6-3 6 3 6-3v14l-6 3-6-3-6 3z"/><path d="M9 3.5v14M15 6.5v14"/>',
+  plan: '<rect x="3.5" y="3.5" width="17" height="17" rx="1.5"/><path d="M3.5 11h8M11.5 3.5V20.5M15 11h5.5"/>',
+  coffee: '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10.5h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3.5v2.5M12 3.5v2.5"/>',
+  car: '<path d="M4 16.5v-4l2-5h12l2 5v4z"/><circle cx="7.5" cy="16.5" r="1.8"/><circle cx="16.5" cy="16.5" r="1.8"/><path d="M4 12.5h16"/>',
+  tree: '<path d="M12 21v-5"/><path d="M12 3c3.6 0 6 2.8 6 6.2 0 3.6-2.7 6.3-6 6.3s-6-2.7-6-6.3C6 5.8 8.4 3 12 3z"/>',
+  road: '<path d="M7 21L10 3M17 21L14 3M12 7v2M12 12v2M12 17v2"/>',
+};
+
+export const icon = (name) => `<svg viewBox="0 0 24 24" aria-hidden="true">${I[name] ?? ''}</svg>`;
+
+export function hydrateIcons(root = document) {
+  for (const el of root.querySelectorAll('[data-icon]')) el.innerHTML = icon(el.dataset.icon);
+}

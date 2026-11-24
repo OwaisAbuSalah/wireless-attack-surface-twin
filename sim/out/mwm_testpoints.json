@@ -1,0 +1,4543 @@
+{
+ "description": "Itemised multi-wall link budgets computed with sim/twin/mwm.py (docs/MODEL.md §2-6) for unit-testing other implementations. Positions are in metres (x east, y north, z up). rss_dbm = tx_dbm + gain_tx_dbi + gain_rx_dbi - pl_db; pl_db = pl0_db + pl_distance_db + sum(walls.loss_db) + sum(slabs.loss_db); d_m is the clamped distance max(|R-T|, 0.5). Client-source links (tx = c1) give PL(X, c) with no antenna gain and rss_dbm = null. margin_m = smallest distance of the link to any model decision boundary (all >= 0.05 m for the random links). t/u/s_m/zc are the crossing parameters of §2.1 (a wall counts only for 1e-5 < t < 1 - 1e-5). attack_checks_baseline: §6 with nested tiers (deauth and evil twin also require eavesdropping): margin_*_db = min(raw margin, margin_eavesdrop_db); feasible when margin >= 0.",
+ "model": "docs/MODEL.md",
+ "generator": "sim/twin/mwm.py",
+ "seed": 20261124,
+ "building_json_sha256": "2fab73c3eaccd9ed5313ab10fe581cef2e15ac2a92d59e55459d8a8421fe8667",
+ "pathloss_exponent": 2,
+ "min_distance_m": 0.5,
+ "loss_tables_db": {
+  "baseline": {
+   "air": 0.0,
+   "ext_concrete": 17.0,
+   "concrete": 15.0,
+   "brick": 6.0,
+   "drywall": 3.0,
+   "ext_glass": 3.0,
+   "glass": 2.0,
+   "wood": 3.0,
+   "metal": 26.0,
+   "slab": 18.0,
+   "ctx_wall": 10.0
+  },
+  "lowPower": {
+   "air": 0.0,
+   "ext_concrete": 17.0,
+   "concrete": 15.0,
+   "brick": 6.0,
+   "drywall": 3.0,
+   "ext_glass": 3.0,
+   "glass": 2.0,
+   "wood": 3.0,
+   "metal": 26.0,
+   "slab": 18.0,
+   "ctx_wall": 10.0
+  },
+  "directional": {
+   "air": 0.0,
+   "ext_concrete": 17.0,
+   "concrete": 15.0,
+   "brick": 6.0,
+   "drywall": 3.0,
+   "ext_glass": 3.0,
+   "glass": 2.0,
+   "wood": 3.0,
+   "metal": 26.0,
+   "slab": 18.0,
+   "ctx_wall": 10.0
+  },
+  "relocate": {
+   "air": 0.0,
+   "ext_concrete": 17.0,
+   "concrete": 15.0,
+   "brick": 6.0,
+   "drywall": 3.0,
+   "ext_glass": 3.0,
+   "glass": 2.0,
+   "wood": 3.0,
+   "metal": 26.0,
+   "slab": 18.0,
+   "ctx_wall": 10.0
+  },
+  "shieldWindows": {
+   "air": 0.0,
+   "ext_concrete": 17.0,
+   "concrete": 15.0,
+   "brick": 6.0,
+   "drywall": 3.0,
+   "ext_glass": 28.0,
+   "glass": 2.0,
+   "wood": 3.0,
+   "metal": 26.0,
+   "slab": 18.0,
+   "ctx_wall": 10.0
+  },
+  "shieldPaint": {
+   "air": 0.0,
+   "ext_concrete": 37.0,
+   "concrete": 15.0,
+   "brick": 6.0,
+   "drywall": 3.0,
+   "ext_glass": 3.0,
+   "glass": 2.0,
+   "wood": 3.0,
+   "metal": 26.0,
+   "slab": 18.0,
+   "ctx_wall": 10.0
+  },
+  "band5": {
+   "air": 0.0,
+   "ext_concrete": 26.0,
+   "concrete": 23.0,
+   "brick": 10.0,
+   "drywall": 4.0,
+   "ext_glass": 5.0,
+   "glass": 3.0,
+   "wood": 5.0,
+   "metal": 32.0,
+   "slab": 26.0,
+   "ctx_wall": 15.0
+  },
+  "allRF": {
+   "air": 0.0,
+   "ext_concrete": 50.0,
+   "concrete": 23.0,
+   "brick": 10.0,
+   "drywall": 4.0,
+   "ext_glass": 33.0,
+   "glass": 3.0,
+   "wood": 5.0,
+   "metal": 32.0,
+   "slab": 26.0,
+   "ctx_wall": 15.0
+  }
+ },
+ "scenario_protections": {
+  "baseline": [],
+  "lowPower": [
+   "lowPower"
+  ],
+  "directional": [
+   "directional"
+  ],
+  "relocate": [
+   "relocate"
+  ],
+  "shieldWindows": [
+   "shieldWindows"
+  ],
+  "shieldPaint": [
+   "shieldPaint"
+  ],
+  "band5": [
+   "band5"
+  ],
+  "allRF": [
+   "relocate",
+   "shieldWindows",
+   "shieldPaint",
+   "band5"
+  ]
+ },
+ "links": [
+  {
+   "id": "ap-c1",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c1",
+   "rx_pos": [
+    -4.2,
+    -4.6,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 3.4788647573597915,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 10.828750913129273,
+   "pl_db": 50.872975747361394,
+   "gain_tx_dbi": 1.0522674343048464,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -29.82070831305655,
+   "walls": [],
+   "slabs": [],
+   "margin_m": 3.4788647573597915
+  },
+  {
+   "id": "ap-c2",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c2",
+   "rx_pos": [
+    3.0,
+    -5.2,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 6.594126174103738,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 16.38314505630271,
+   "pl_db": 59.42736989053483,
+   "gain_tx_dbi": 1.8580611327002885,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -37.569308757834534,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.5,
+     "u": 0.238970588,
+     "s_m": 1.625,
+     "zc": 5.1
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.4999999999999996
+  },
+  {
+   "id": "ap-c3",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c3",
+   "rx_pos": [
+    9.2,
+    -4.0,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 12.78289873229073,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 22.13258696797982,
+   "pl_db": 68.17681180221194,
+   "gain_tx_dbi": 2.0732341393698874,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -46.103577662842056,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.245901639,
+     "u": 0.194551591,
+     "s_m": 1.322951,
+     "zc": 5.455738
+    },
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.737704918,
+     "u": 0.451301832,
+     "s_m": 3.068852,
+     "zc": 4.767213
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.1672131147540985
+  },
+  {
+   "id": "ap-c4",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c4",
+   "rx_pos": [
+    15.6,
+    -5.6,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 18.754266181325253,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 25.462001514084594,
+   "pl_db": 74.50622634831672,
+   "gain_tx_dbi": 2.114417196301509,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -52.391809152015206,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.161290323,
+     "u": 0.112428843,
+     "s_m": 0.764516,
+     "zc": 5.574194
+    },
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.483870968,
+     "u": 0.204933586,
+     "s_m": 1.393548,
+     "zc": 5.122581
+    },
+    {
+     "id": "F1-014",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.806451613,
+     "u": 0.29743833,
+     "s_m": 2.022581,
+     "zc": 4.670968
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.7645161290322583
+  },
+  {
+   "id": "ap-c5",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c5",
+   "rx_pos": [
+    7.6,
+    5.0,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 16.487040365086756,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 24.342854024384565,
+   "pl_db": 75.38707885861669,
+   "gain_tx_dbi": 2.103931301234027,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -53.28314755738266,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.283018868,
+     "u": 0.588512764,
+     "s_m": 4.001887,
+     "zc": 5.403774
+    },
+    {
+     "id": "F1-023",
+     "material": "glass",
+     "loss_db": 2.0,
+     "opening": false,
+     "t": 0.505976096,
+     "u": 0.393891102,
+     "s_m": 2.363347,
+     "zc": 5.091633
+    },
+    {
+     "id": "F1-039",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.697211155,
+     "u": 0.347609562,
+     "s_m": 1.390438,
+     "zc": 4.823904
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.2239043824701201
+  },
+  {
+   "id": "ap-c6",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c6",
+   "rx_pos": [
+    -9.0,
+    5.2,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 14.160596738838375,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 23.02163110510319,
+   "pl_db": 75.06585593933531,
+   "gain_tx_dbi": 2.0874939649949904,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -52.97836197434032,
+   "walls": [
+    {
+     "id": "F1-020",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.498039216,
+     "u": 0.002941176,
+     "s_m": 0.011765,
+     "zc": 5.102745
+    },
+    {
+     "id": "F1-036",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.68627451,
+     "u": 0.394957983,
+     "s_m": 1.382353,
+     "zc": 4.839216
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.011764705882353232
+  },
+  {
+   "id": "ap-c7",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c7",
+   "rx_pos": [
+    -12.0,
+    -3.2,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 10.093686145308858,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 20.0809959317108,
+   "pl_db": 66.12522076594291,
+   "gain_tx_dbi": 2.026562506683025,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -44.09865825925989,
+   "walls": [
+    {
+     "id": "F1-011",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.333333333,
+     "u": 0.279411765,
+     "s_m": 1.9,
+     "zc": 5.333333
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.733333333333333
+  },
+  {
+   "id": "ap-c8",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c8",
+   "rx_pos": [
+    -4.6,
+    6.4,
+    4.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 14.101507011663681,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 22.9853105536414,
+   "pl_db": 72.02953538787352,
+   "gain_tx_dbi": 2.0956763903969926,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -49.933858997476534,
+   "walls": [
+    {
+     "id": "F1-020",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.455197133,
+     "u": 0.567921147,
+     "s_m": 2.271685,
+     "zc": 5.208244
+    },
+    {
+     "id": "F1-037",
+     "material": "wood",
+     "loss_db": 3.0,
+     "opening": true,
+     "t": 0.627240143,
+     "u": 0.996415771,
+     "s_m": 0.996416,
+     "zc": 4.984588
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.0035842293906808
+  },
+  {
+   "id": "ap-attacker_start",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "attacker_start",
+   "rx_pos": [
+    1.0,
+    -30.8,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 23.980252292250807,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 27.59707495853931,
+   "pl_db": 84.64129979277143,
+   "gain_tx_dbi": 1.9427299356602203,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -62.69856985711121,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.019354839,
+     "u": 0.418817204,
+     "s_m": 15.077419,
+     "zc": 5.716774
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.4566111655485904
+  },
+  {
+   "id": "ap-rand01",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_outdoor",
+   "rx_pos": [
+    -74.842,
+    -21.827,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 73.37299021438338,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 37.31072437008593,
+   "pl_db": 80.35494920431805,
+   "gain_tx_dbi": 2.128086000827912,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -58.22686320349013,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_glass",
+     "loss_db": 3.0,
+     "opening": true,
+     "t": 0.031519227,
+     "u": 0.353766548,
+     "s_m": 12.735596,
+     "zc": 5.664467
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.13559571338516818
+  },
+  {
+   "id": "ap-rand02",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_outdoor",
+   "rx_pos": [
+    14.976,
+    34.217,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 45.67394076494823,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 33.193369686327436,
+   "pl_db": 111.23759452055955,
+   "gain_tx_dbi": 2.09333838927809,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -89.14425613128147,
+   "walls": [
+    {
+     "id": "F1-004",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.372303493,
+     "u": 0.046168506,
+     "s_m": 0.692528,
+     "zc": 4.199095
+    },
+    {
+     "id": "F1-022",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.152033902,
+     "u": 0.732961429,
+     "s_m": 0.732961,
+     "zc": 5.146254
+    },
+    {
+     "id": "F1-045",
+     "material": "concrete",
+     "loss_db": 15.0,
+     "opening": false,
+     "t": 0.333778371,
+     "u": 0.763370769,
+     "s_m": 5.190921,
+     "zc": 4.364753
+    },
+    {
+     "id": "F1-047",
+     "material": "air",
+     "loss_db": 0.0,
+     "opening": true,
+     "t": 0.209495535,
+     "u": 0.412076772,
+     "s_m": 1.565892,
+     "zc": 4.899169
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.09252759355472051
+  },
+  {
+   "id": "ap-rand03",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_outdoor",
+   "rx_pos": [
+    58.898,
+    -11.344,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 62.16306652667644,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 35.87064860452033,
+   "pl_db": 81.91487343875245,
+   "gain_tx_dbi": 2.119455310169015,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -59.795418128583435,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_glass",
+     "loss_db": 3.0,
+     "opening": true,
+     "t": 0.118608329,
+     "u": 0.62060051,
+     "s_m": 22.341618,
+     "zc": 5.289984
+    },
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.048466833,
+     "u": 0.039134829,
+     "s_m": 0.266117,
+     "zc": 5.591593
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.26611683737762143
+  },
+  {
+   "id": "ap-rand04",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_outdoor",
+   "rx_pos": [
+    48.041,
+    22.922,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 59.600473697781965,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 35.50499422954139,
+   "pl_db": 113.5492190637735,
+   "gain_tx_dbi": 2.1167673108504466,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -91.43245175292306,
+   "walls": [
+    {
+     "id": "F1-007",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.411433945,
+     "u": 0.556943409,
+     "s_m": 3.787215,
+     "zc": 4.030834
+    },
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.058776278,
+     "u": 0.329563344,
+     "s_m": 2.241031,
+     "zc": 5.547262
+    },
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.176328834,
+     "u": 0.856337091,
+     "s_m": 5.823092,
+     "zc": 5.041786
+    },
+    {
+     "id": "F1-024",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.208388028,
+     "u": 0.409083339,
+     "s_m": 1.636333,
+     "zc": 4.903931
+    },
+    {
+     "id": "F1-031",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.293881389,
+     "u": 0.030169662,
+     "s_m": 0.205154,
+     "zc": 4.53631
+    },
+    {
+     "id": "F1-041",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.287148858,
+     "u": 0.562517671,
+     "s_m": 3.656365,
+     "zc": 4.56526
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.20515369996669455
+  },
+  {
+   "id": "ap-rand05",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_outdoor",
+   "rx_pos": [
+    82.518,
+    -5.337,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 85.65463030683163,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 38.65501689941122,
+   "pl_db": 114.69924173364333,
+   "gain_tx_dbi": 2.133924935582556,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -92.56531679806078,
+   "walls": [
+    {
+     "id": "F1-005",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.245562338,
+     "u": 0.146092567,
+     "s_m": 0.993429,
+     "zc": 4.744082
+    },
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.035080334,
+     "u": 0.077593056,
+     "s_m": 0.527633,
+     "zc": 5.649155
+    },
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.105241002,
+     "u": 0.100426226,
+     "s_m": 0.682898,
+     "zc": 5.347464
+    },
+    {
+     "id": "F1-014",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.17540167,
+     "u": 0.123259396,
+     "s_m": 0.838164,
+     "zc": 5.045773
+    },
+    {
+     "id": "CTX-research-3",
+     "material": "ctx_wall",
+     "loss_db": 10.0,
+     "opening": false,
+     "t": 0.783460792,
+     "u": 0.99343576,
+     "s_m": 27.816201,
+     "zc": 2.431119
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.18379873243059963
+  },
+  {
+   "id": "ap-rand06",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_outdoor",
+   "rx_pos": [
+    -95.976,
+    48.846,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 108.82800830668546,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 40.73481362188359,
+   "pl_db": 135.7790384561157,
+   "gain_tx_dbi": 2.1400453341867998,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -113.6389931219289,
+   "walls": [
+    {
+     "id": "F1-010",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.161331957,
+     "u": 0.051246622,
+     "s_m": 0.348477,
+     "zc": 5.106273
+    },
+    {
+     "id": "F1-011",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.032266391,
+     "u": 0.333778736,
+     "s_m": 2.269695,
+     "zc": 5.661255
+    },
+    {
+     "id": "F1-017",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.112596638,
+     "u": 0.290173569,
+     "s_m": 2.031215,
+     "zc": 5.315834
+    },
+    {
+     "id": "F1-032",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.155152848,
+     "u": 0.229803532,
+     "s_m": 0.574509,
+     "zc": 5.132843
+    },
+    {
+     "id": "CTX-housing-1",
+     "material": "ctx_wall",
+     "loss_db": 10.0,
+     "opening": false,
+     "t": 0.419463087,
+     "u": 0.936868009,
+     "s_m": 28.10604,
+     "zc": 3.996309
+    },
+    {
+     "id": "CTX-housing-2",
+     "material": "ctx_wall",
+     "loss_db": 10.0,
+     "opening": false,
+     "t": 0.453046315,
+     "u": 0.130101426,
+     "s_m": 3.122434,
+     "zc": 3.851901
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.34847702632937505
+  },
+  {
+   "id": "ap-rand07",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_outdoor",
+   "rx_pos": [
+    -16.081,
+    -54.547,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 48.972651245363465,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 33.799072323396246,
+   "pl_db": 110.84329715762837,
+   "gain_tx_dbi": 2.100734657870883,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -88.74256249975748,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.009575079,
+     "u": 0.413187455,
+     "s_m": 14.874748,
+     "zc": 5.758827
+    },
+    {
+     "id": "CTX-shops_w-0",
+     "material": "ctx_wall",
+     "loss_db": 10.0,
+     "opening": false,
+     "t": 0.818137328,
+     "u": 0.872917449,
+     "s_m": 32.297946,
+     "zc": 2.282009
+    },
+    {
+     "id": "CTX-shops_w-2",
+     "material": "ctx_wall",
+     "loss_db": 10.0,
+     "opening": false,
+     "t": 0.520245973,
+     "u": 0.02176588,
+     "s_m": 0.805338,
+     "zc": 3.562942
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.467105947574801
+  },
+  {
+   "id": "ap-rand08",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_outdoor",
+   "rx_pos": [
+    -7.783,
+    -50.352,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 43.28254027896237,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 32.72625483714614,
+   "pl_db": 89.77047967137827,
+   "gain_tx_dbi": 2.086881730017093,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -67.68359794136117,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.010513527,
+     "u": 0.415269828,
+     "s_m": 14.949714,
+     "zc": 5.754792
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.45280095193062564
+  },
+  {
+   "id": "ap-rand09",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_outdoor",
+   "rx_pos": [
+    74.784,
+    -30.957,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 81.34327449150298,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 38.20643302081742,
+   "pl_db": 81.25065785504954,
+   "gain_tx_dbi": 2.132174037540507,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -59.11848381750903,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_glass",
+     "loss_db": 3.0,
+     "opening": true,
+     "t": 0.019225018,
+     "u": 0.458205523,
+     "s_m": 16.495399,
+     "zc": 5.717332
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.5826675780749357
+  },
+  {
+   "id": "ap-rand10",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_outdoor",
+   "rx_pos": [
+    27.132,
+    -37.391,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 42.62525900214566,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 32.59334061789304,
+   "pl_db": 99.63756545212516,
+   "gain_tx_dbi": 2.0849130860608103,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -77.55265236606435,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.015079924,
+     "u": 0.429288563,
+     "s_m": 15.454388,
+     "zc": 5.735156
+    },
+    {
+     "id": "CTX-shops_e-2",
+     "material": "ctx_wall",
+     "loss_db": 10.0,
+     "opening": false,
+     "t": 0.819342515,
+     "u": 0.711123549,
+     "s_m": 26.311571,
+     "zc": 2.276827
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.14561174223383944
+  },
+  {
+   "id": "ap-rand11",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    13.878,
+    -30.514,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 28.821904517224397,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 29.194453501796083,
+   "pl_db": 86.2386783360282,
+   "gain_tx_dbi": 2.007027833665063,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -64.23165050236314,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.019595889,
+     "u": 0.425853873,
+     "s_m": 15.330739,
+     "zc": 5.715738
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.269260581780177
+  },
+  {
+   "id": "ap-rand12",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    22.224,
+    -23.192,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 29.990204067328385,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 29.539588418233645,
+   "pl_db": 72.58381325246576,
+   "gain_tx_dbi": 2.018030483990159,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -50.5657827684756,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_glass",
+     "loss_db": 3.0,
+     "opening": true,
+     "t": 0.0287687,
+     "u": 0.436823936,
+     "s_m": 15.725662,
+     "zc": 5.676295
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.12566168009206002
+  },
+  {
+   "id": "ap-rand13",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    -19.453,
+    -0.024,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 18.596555729489264,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 25.388650318562988,
+   "pl_db": 104.4328751527951,
+   "gain_tx_dbi": 1.8026535782487514,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -82.63022157454635,
+   "walls": [
+    {
+     "id": "F0-011",
+     "material": "ext_glass",
+     "loss_db": 3.0,
+     "opening": true,
+     "t": 0.911687838,
+     "u": 0.213067779,
+     "s_m": 0.511363,
+     "zc": 1.879742
+    },
+    {
+     "id": "F0-013",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.547012703,
+     "u": 0.671590824,
+     "s_m": 4.566818,
+     "zc": 3.447845
+    },
+    {
+     "id": "F0-017",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.843741695,
+     "u": 0.447167154,
+     "s_m": 1.117918,
+     "zc": 2.171911
+    },
+    {
+     "id": "F1-011",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.182337568,
+     "u": 0.267981255,
+     "s_m": 1.822273,
+     "zc": 5.015948
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 18.0,
+     "x": -11.991756,
+     "y": -3.436953
+    }
+   ],
+   "margin_m": 0.11136266942199069
+  },
+  {
+   "id": "ap-rand14",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    -3.066,
+    -34.366,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 27.158648935468054,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 28.67816322493402,
+   "pl_db": 85.72238805916614,
+   "gain_tx_dbi": 1.9888173288222197,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -63.733570730343914,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.016781026,
+     "u": 0.416635901,
+     "s_m": 14.998892,
+     "zc": 5.727842
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.45000136295569193
+  },
+  {
+   "id": "ap-rand15",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    -24.93,
+    -9.414,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 22.425195562135016,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 27.01472478119954,
+   "pl_db": 76.05894961543166,
+   "gain_tx_dbi": 1.9125904626062908,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -54.14635915282537,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_glass",
+     "loss_db": 3.0,
+     "opening": true,
+     "t": 0.241416309,
+     "u": 0.269603898,
+     "s_m": 9.70574,
+     "zc": 4.76191
+    },
+    {
+     "id": "F1-011",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.136798906,
+     "u": 0.028677476,
+     "s_m": 0.195007,
+     "zc": 5.211765
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.1057403433476356
+  },
+  {
+   "id": "ap-rand16",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    30.449,
+    -20.216,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 36.024341173711974,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 31.13192094045598,
+   "pl_db": 74.1761457746881,
+   "gain_tx_dbi": 2.0587436604789624,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -52.11740211420913,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_glass",
+     "loss_db": 3.0,
+     "opening": true,
+     "t": 0.035528186,
+     "u": 0.449677286,
+     "s_m": 16.188382,
+     "zc": 5.647229
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.5883822832780705
+  },
+  {
+   "id": "ap-rand17",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    -36.043,
+    11.183,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 38.22636705207545,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 31.647260512194258,
+   "pl_db": 100.69148534642638,
+   "gain_tx_dbi": 2.0690003553104552,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -78.62248499111593,
+   "walls": [
+    {
+     "id": "F1-009",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.453953939,
+     "u": 0.897466307,
+     "s_m": 2.153919,
+     "zc": 3.847998
+    },
+    {
+     "id": "F1-011",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.090790788,
+     "u": 0.316291739,
+     "s_m": 2.150784,
+     "zc": 5.4096
+    },
+    {
+     "id": "F1-017",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.338974003,
+     "u": 0.185611717,
+     "s_m": 1.299282,
+     "zc": 4.342412
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.052001936870139154
+  },
+  {
+   "id": "ap-rand18",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    12.416,
+    21.416,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 33.09338622746243,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 30.394824158343287,
+   "pl_db": 107.43904899257541,
+   "gain_tx_dbi": 2.0417618931118686,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -85.39728709946354,
+   "walls": [
+    {
+     "id": "F0-006",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.536836291,
+     "u": 0.151724551,
+     "s_m": 2.275868,
+     "zc": 3.491604
+    },
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.19460301,
+     "u": 0.895128056,
+     "s_m": 6.086871,
+     "zc": 4.963207
+    },
+    {
+     "id": "F1-023",
+     "material": "glass",
+     "loss_db": 2.0,
+     "opening": false,
+     "t": 0.219222537,
+     "u": 0.063255771,
+     "s_m": 0.379535,
+     "zc": 4.857343
+    },
+    {
+     "id": "F1-045",
+     "material": "concrete",
+     "loss_db": 15.0,
+     "opening": false,
+     "t": 0.38920602,
+     "u": 0.371138466,
+     "s_m": 2.523742,
+     "zc": 4.126414
+    },
+    {
+     "id": "F1-047",
+     "material": "air",
+     "loss_db": 0.0,
+     "opening": true,
+     "t": 0.302078299,
+     "u": 0.646536593,
+     "s_m": 2.456839,
+     "zc": 4.501063
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.10839605054201451
+  },
+  {
+   "id": "ap-rand19",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    -14.758,
+    -6.494,
+    8.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 12.088246357516047,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 21.64726604617521,
+   "pl_db": 88.69149088040733,
+   "gain_tx_dbi": 1.850249946841249,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -66.84124093356608,
+   "walls": [
+    {
+     "id": "F1-011",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.255145433,
+     "u": 0.105799055,
+     "s_m": 0.719434,
+     "zc": 6.463378
+    },
+    {
+     "id": "F2-011",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.765436299,
+     "u": 0.185044225,
+     "s_m": 1.258301,
+     "zc": 7.790134
+    }
+   ],
+   "slabs": [
+    {
+     "z": 7.05,
+     "loss_db": 18.0,
+     "x": -8.652885,
+     "y": -7.042308
+    }
+   ],
+   "margin_m": 0.5901343765946594
+  },
+  {
+   "id": "ap-rand20",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    1.974,
+    5.615,
+    8.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 14.31146047753338,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 23.113679111210544,
+   "pl_db": 87.15790394544265,
+   "gain_tx_dbi": 1.937176409248559,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -65.22072753619409,
+   "walls": [
+    {
+     "id": "F1-022",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.482339537,
+     "u": 0.399156855,
+     "s_m": 0.399157,
+     "zc": 7.054083
+    },
+    {
+     "id": "F2-047",
+     "material": "air",
+     "loss_db": 0.0,
+     "opening": true,
+     "t": 0.664641094,
+     "u": 0.291032842,
+     "s_m": 1.105925,
+     "zc": 7.528067
+    }
+   ],
+   "slabs": [
+    {
+     "z": 7.05,
+     "loss_db": 18.0,
+     "x": -0.608654,
+     "y": -1.220673
+    }
+   ],
+   "margin_m": 0.14591720470945724
+  },
+  {
+   "id": "ap-rand21",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    0.858,
+    -1.796,
+    1.2
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 8.315809040616553,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 18.398090157780505,
+   "pl_db": 76.44231499201263,
+   "gain_tx_dbi": -0.06355910859685876,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -56.50587410060949,
+   "walls": [],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 18.0,
+     "x": -1.029065,
+     "y": -4.610457
+    }
+   ],
+   "margin_m": 2.25
+  },
+  {
+   "id": "ap-rand22",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    6.905,
+    -7.384,
+    8.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 10.241903192278281,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 20.207613330264273,
+   "pl_db": 84.25183816449639,
+   "gain_tx_dbi": 1.729614474920496,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -62.522223689575895,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.302877335,
+     "u": 0.073570241,
+     "s_m": 0.500278,
+     "zc": 6.587481
+    },
+    {
+     "id": "F2-014",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.908632004,
+     "u": 0.088357781,
+     "s_m": 0.600833,
+     "zc": 8.162443
+    }
+   ],
+   "slabs": [
+    {
+     "z": 7.05,
+     "loss_db": 18.0,
+     "x": 1.762019,
+     "y": -7.470192
+    }
+   ],
+   "margin_m": 0.5002776375567896
+  },
+  {
+   "id": "ap-rand23",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    -3.865,
+    -6.146,
+    8.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 3.078870084949997,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 9.76782727868309,
+   "pl_db": 67.81205211291521,
+   "gain_tx_dbi": -4.754625601268023,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -52.566677714183236,
+   "walls": [],
+   "slabs": [
+    {
+     "z": 7.05,
+     "loss_db": 18.0,
+     "x": -3.415865,
+     "y": -6.875
+    }
+   ],
+   "margin_m": 1.125
+  },
+  {
+   "id": "ap-rand24",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    -3.26,
+    4.987,
+    8.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 12.806403437343365,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 22.148543583766063,
+   "pl_db": 92.19276841799818,
+   "gain_tx_dbi": 1.8834184460991232,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -70.30934997189905,
+   "walls": [
+    {
+     "id": "F1-020",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.506500758,
+     "u": 0.717077451,
+     "s_m": 2.86831,
+     "zc": 7.116902
+    },
+    {
+     "id": "F2-038",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.697934115,
+     "u": 0.81853713,
+     "s_m": 0.818537,
+     "zc": 7.614629
+    }
+   ],
+   "slabs": [
+    {
+     "z": 7.05,
+     "loss_db": 18.0,
+     "x": -3.125,
+     "y": -1.522596
+    }
+   ],
+   "margin_m": 0.08309802983169856
+  },
+  {
+   "id": "ap-rand25",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    17.416,
+    4.955,
+    1.2
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 24.379255136283387,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 27.740408648170913,
+   "pl_db": 109.78463348240302,
+   "gain_tx_dbi": 1.920213407393705,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -87.86442007500932,
+   "walls": [
+    {
+     "id": "F0-022",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.507796881,
+     "u": 0.546872451,
+     "s_m": 1.367181,
+     "zc": 3.464134
+    },
+    {
+     "id": "F0-029",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.734717868,
+     "u": 0.064359845,
+     "s_m": 0.437647,
+     "zc": 2.420298
+    },
+    {
+     "id": "F0-039",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.699720112,
+     "u": 0.481529969,
+     "s_m": 2.985486,
+     "zc": 2.581287
+    },
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.146943574,
+     "u": 0.336401381,
+     "s_m": 2.287529,
+     "zc": 5.12406
+    },
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.440830721,
+     "u": 0.876851201,
+     "s_m": 5.962588,
+     "zc": 3.772179
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 18.0,
+     "x": 7.429913,
+     "y": -1.161576
+    }
+   ],
+   "margin_m": 0.135865653738505
+  },
+  {
+   "id": "ap-rand26",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    8.075,
+    4.518,
+    4.8
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 16.41012641633208,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 24.302238533559088,
+   "pl_db": 75.3464633677912,
+   "gain_tx_dbi": 2.1263039506350645,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -53.22015941715614,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.270880361,
+     "u": 0.546909441,
+     "s_m": 3.718984,
+     "zc": 5.52912
+    },
+    {
+     "id": "F1-023",
+     "material": "glass",
+     "loss_db": 2.0,
+     "opening": false,
+     "t": 0.526184952,
+     "u": 0.471249724,
+     "s_m": 2.827498,
+     "zc": 5.273815
+    },
+    {
+     "id": "F1-039",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.725058005,
+     "u": 0.50750435,
+     "s_m": 2.030017,
+     "zc": 5.074942
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.4749419953596283
+  },
+  {
+   "id": "ap-rand27",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    -3.846,
+    7.576,
+    1.2
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 15.83261166074631,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 23.991051192126985,
+   "pl_db": 94.0352760263591,
+   "gain_tx_dbi": 1.595188109513031,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -72.44008791684607,
+   "walls": [
+    {
+     "id": "F0-036",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.57847415,
+     "u": 0.510610869,
+     "s_m": 0.510611,
+     "zc": 3.139019
+    },
+    {
+     "id": "F1-020",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.419806955,
+     "u": 0.661210829,
+     "s_m": 2.644843,
+     "zc": 3.868888
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 18.0,
+     "x": -3.432196,
+     "y": 0.177413
+    }
+   ],
+   "margin_m": 0.26888800740446905
+  },
+  {
+   "id": "ap-rand28",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    -10.301,
+    1.658,
+    1.2
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 12.619503357898044,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 22.020845270636897,
+   "pl_db": 98.06507010486902,
+   "gain_tx_dbi": 1.2599852771893532,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -76.80508482767966,
+   "walls": [
+    {
+     "id": "F0-021",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.689617724,
+     "u": 0.1860404,
+     "s_m": 0.465101,
+     "zc": 2.627758
+    },
+    {
+     "id": "F0-032",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.950260643,
+     "u": 0.912429409,
+     "s_m": 4.562147,
+     "zc": 1.428801
+    },
+    {
+     "id": "F1-011",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.410902616,
+     "u": 0.622586954,
+     "s_m": 4.233591,
+     "zc": 3.909848
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 18.0,
+     "x": -6.729859,
+     "y": -2.845913
+    }
+   ],
+   "margin_m": 0.30984796603205034
+  },
+  {
+   "id": "ap-rand29",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    3.433,
+    -2.671,
+    1.2
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 9.292369450253256,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 19.362529366982077,
+   "pl_db": 80.4067542012142,
+   "gain_tx_dbi": 0.42782942384767986,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -59.978924777366515,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.466345406,
+     "u": 0.4007793,
+     "s_m": 2.725299,
+     "zc": 3.654811
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 18.0,
+     "x": 0.286424,
+     "y": -5.057467
+    }
+   ],
+   "margin_m": 0.0548111301103682
+  },
+  {
+   "id": "ap-rand30",
+   "scenario": "baseline",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    4.099,
+    -6.589,
+    8.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 7.620979070959322,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 17.640215379024816,
+   "pl_db": 78.68444021325693,
+   "gain_tx_dbi": 1.375458577270762,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -57.30898163598617,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.422594732,
+     "u": 0.12589905,
+     "s_m": 0.856114,
+     "zc": 6.898746
+    }
+   ],
+   "slabs": [
+    {
+     "z": 7.05,
+     "loss_db": 18.0,
+     "x": 0.412981,
+     "y": -7.087981
+    }
+   ],
+   "margin_m": 0.30125369770390176
+  },
+  {
+   "id": "c1-out0",
+   "scenario": "baseline",
+   "tx": "c1",
+   "tx_pos": [
+    -4.2,
+    -4.6,
+    4.4
+   ],
+   "rx": "attacker_start",
+   "rx_pos": [
+    1.0,
+    -30.8,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": null,
+   "antenna": "none",
+   "d_m": 26.868010719068877,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 28.584710257794033,
+   "pl_db": 85.62893509202615,
+   "gain_tx_dbi": 0.0,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": null,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.129770992,
+     "u": 0.402078032,
+     "s_m": 14.474809,
+     "zc": 4.023664
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.0748091603053449,
+   "note": "PL(X,c): client is the source, no antenna gain; rss undefined"
+  },
+  {
+   "id": "c1-out1",
+   "scenario": "baseline",
+   "tx": "c1",
+   "tx_pos": [
+    -4.2,
+    -4.6,
+    4.4
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    -35.997,
+    10.568,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": null,
+   "antenna": "none",
+   "d_m": 35.34865532095952,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 30.96745795372222,
+   "pl_db": 124.01168278795434,
+   "gain_tx_dbi": 0.0,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": null,
+   "walls": [
+    {
+     "id": "F0-012",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.434003208,
+     "u": 0.115141273,
+     "s_m": 0.782961,
+     "zc": 3.141391
+    },
+    {
+     "id": "F0-030",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.382383966,
+     "u": 0.65653481,
+     "s_m": 1.641337,
+     "zc": 3.291086
+    },
+    {
+     "id": "F1-011",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.056609114,
+     "u": 0.626271624,
+     "s_m": 4.258647,
+     "zc": 4.235834
+    },
+    {
+     "id": "F1-017",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.224156118,
+     "u": 0.596072559,
+     "s_m": 4.172508,
+     "zc": 3.749947
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 18.0,
+     "x": -14.616259,
+     "y": 0.368828
+    }
+   ],
+   "margin_m": 0.1499472573839662,
+   "note": "PL(X,c): client is the source, no antenna gain; rss undefined"
+  },
+  {
+   "id": "c1-out2",
+   "scenario": "baseline",
+   "tx": "c1",
+   "tx_pos": [
+    -4.2,
+    -4.6,
+    4.4
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    -34.607,
+    12.386,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": null,
+   "antenna": "none",
+   "d_m": 34.95024813931941,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 30.86900526981976,
+   "pl_db": 123.91323010405188,
+   "gain_tx_dbi": 0.0,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": null,
+   "walls": [
+    {
+     "id": "F0-012",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.453842865,
+     "u": 0.280731604,
+     "s_m": 1.908975,
+     "zc": 3.083856
+    },
+    {
+     "id": "F0-031",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.341457671,
+     "u": 0.917296597,
+     "s_m": 0.917297,
+     "zc": 3.409773
+    },
+    {
+     "id": "F1-011",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.059196895,
+     "u": 0.647870363,
+     "s_m": 4.405518,
+     "zc": 4.228329
+    },
+    {
+     "id": "F1-017",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.200164842,
+     "u": 0.744798237,
+     "s_m": 5.213588,
+     "zc": 3.819522
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 18.0,
+     "x": -14.160914,
+     "y": 0.964379
+    }
+   ],
+   "margin_m": 0.08270340280230959,
+   "note": "PL(X,c): client is the source, no antenna gain; rss undefined"
+  },
+  {
+   "id": "c1-out3",
+   "scenario": "baseline",
+   "tx": "c1",
+   "tx_pos": [
+    -4.2,
+    -4.6,
+    4.4
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    -20.228,
+    -30.746,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": null,
+   "antenna": "none",
+   "d_m": 30.80454674232361,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 29.772296459468336,
+   "pl_db": 92.81652129370045,
+   "gain_tx_dbi": 0.0,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": null,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.130039012,
+     "u": 0.325437076,
+     "s_m": 11.715735,
+     "zc": 4.022887
+    },
+    {
+     "id": "F1-011",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.112303469,
+     "u": 0.068193162,
+     "s_m": 0.463714,
+     "zc": 4.07432
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.3157347204161265,
+   "note": "PL(X,c): client is the source, no antenna gain; rss undefined"
+  }
+ ],
+ "links_other_scenarios": [
+  {
+   "id": "lowPower-0",
+   "scenario": "lowPower",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "attacker_start",
+   "rx_pos": [
+    1.0,
+    -30.8,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 12.0,
+   "antenna": "dipole",
+   "d_m": 23.980252292250807,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 27.59707495853931,
+   "pl_db": 84.64129979277143,
+   "gain_tx_dbi": 1.9427299356602203,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -70.69856985711121,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.019354839,
+     "u": 0.418817204,
+     "s_m": 15.077419,
+     "zc": 5.716774
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.4566111655485904
+  },
+  {
+   "id": "lowPower-1",
+   "scenario": "lowPower",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    -19.238,
+    0.733,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 12.0,
+   "antenna": "dipole",
+   "d_m": 18.728874312141667,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 25.45023350295926,
+   "pl_db": 104.49445833719138,
+   "gain_tx_dbi": 1.8076394119875303,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -90.68681892520385,
+   "walls": [
+    {
+     "id": "F0-011",
+     "material": "ext_glass",
+     "loss_db": 3.0,
+     "opening": true,
+     "t": 0.923759084,
+     "u": 0.542290204,
+     "s_m": 1.301496,
+     "zc": 1.827836
+    },
+    {
+     "id": "F0-013",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.55425545,
+     "u": 0.741308514,
+     "s_m": 5.040898,
+     "zc": 3.416702
+    },
+    {
+     "id": "F0-018",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.766630448,
+     "u": 0.051454787,
+     "s_m": 0.051455,
+     "zc": 2.503489
+    },
+    {
+     "id": "F1-011",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.184751817,
+     "u": 0.291220485,
+     "s_m": 1.980299,
+     "zc": 5.005567
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 18.0,
+     "x": -11.874256,
+     "y": -3.023244
+    }
+   ],
+   "margin_m": 0.05145478691295528
+  },
+  {
+   "id": "lowPower-2",
+   "scenario": "lowPower",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    12.204,
+    -6.946,
+    8.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 12.0,
+   "antenna": "dipole",
+   "d_m": 15.436529143560737,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 23.770993143763064,
+   "pl_db": 90.81521797799519,
+   "gain_tx_dbi": 1.9673746489135902,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -76.8478433290816,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.197316496,
+     "u": 0.083702818,
+     "s_m": 0.569179,
+     "zc": 6.313023
+    },
+    {
+     "id": "F2-014",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.591949487,
+     "u": 0.118755513,
+     "s_m": 0.807537,
+     "zc": 7.339069
+    },
+    {
+     "id": "F2-015",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.986582478,
+     "u": 0.153808208,
+     "s_m": 1.045896,
+     "zc": 8.365114
+    }
+   ],
+   "slabs": [
+    {
+     "z": 7.05,
+     "loss_db": 18.0,
+     "x": 4.309615,
+     "y": -7.259615
+    }
+   ],
+   "margin_m": 0.1390686661404894
+  },
+  {
+   "id": "lowPower-ap-c3",
+   "scenario": "lowPower",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c3",
+   "rx_pos": [
+    9.2,
+    -4.0,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 12.0,
+   "antenna": "dipole",
+   "d_m": 12.78289873229073,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 22.13258696797982,
+   "pl_db": 68.17681180221194,
+   "gain_tx_dbi": 2.0732341393698874,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -54.103577662842056,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.245901639,
+     "u": 0.194551591,
+     "s_m": 1.322951,
+     "zc": 5.455738
+    },
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.737704918,
+     "u": 0.451301832,
+     "s_m": 3.068852,
+     "zc": 4.767213
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.1672131147540985
+  },
+  {
+   "id": "directional-0",
+   "scenario": "directional",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "attacker_start",
+   "rx_pos": [
+    1.0,
+    -30.8,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "patch",
+   "antenna_az_deg": 90.0,
+   "antenna_tilt_deg": -10.0,
+   "antenna_patch": {
+    "gmax_dbi": 8.0,
+    "hpbw_deg": 65.0,
+    "sla_db": 30.0
+   },
+   "d_m": 23.980252292250807,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 27.59707495853931,
+   "pl_db": 84.64129979277143,
+   "gain_tx_dbi": -22.0,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -86.64129979277143,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.019354839,
+     "u": 0.418817204,
+     "s_m": 15.077419,
+     "zc": 5.716774
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.4566111655485904
+  },
+  {
+   "id": "directional-1",
+   "scenario": "directional",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    37.814,
+    -10.694,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "patch",
+   "antenna_az_deg": 90.0,
+   "antenna_tilt_deg": -10.0,
+   "antenna_patch": {
+    "gmax_dbi": 8.0,
+    "hpbw_deg": 65.0,
+    "sla_db": 30.0
+   },
+   "d_m": 41.16014251676007,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 32.289537396703594,
+   "pl_db": 92.33376223093572,
+   "gain_tx_dbi": -16.84750158307104,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -89.18126381400675,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.143129771,
+     "u": 0.578936069,
+     "s_m": 20.841698,
+     "zc": 5.184542
+    },
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.07350419,
+     "u": 0.032191592,
+     "s_m": 0.218903,
+     "zc": 5.483932
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.2189028274611654
+  },
+  {
+   "id": "directional-2",
+   "scenario": "directional",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    -6.786,
+    -1.648,
+    1.2
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "patch",
+   "antenna_az_deg": 90.0,
+   "antenna_tilt_deg": -10.0,
+   "antenna_patch": {
+    "gmax_dbi": 8.0,
+    "hpbw_deg": 65.0,
+    "sla_db": 30.0
+   },
+   "d_m": 8.38614333290339,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 18.4712456186776,
+   "pl_db": 82.51547045290971,
+   "gain_tx_dbi": 3.744198331480254,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -58.771272121429455,
+   "walls": [
+    {
+     "id": "F0-014",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.792393027,
+     "u": 0.753927007,
+     "s_m": 5.126704,
+     "zc": 2.154992
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 18.0,
+     "x": -4.934152,
+     "y": -4.534848
+    }
+   ],
+   "margin_m": 1.4450079239302696
+  },
+  {
+   "id": "directional-ap-c3",
+   "scenario": "directional",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c3",
+   "rx_pos": [
+    9.2,
+    -4.0,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "patch",
+   "antenna_az_deg": 90.0,
+   "antenna_tilt_deg": -10.0,
+   "antenna_patch": {
+    "gmax_dbi": 8.0,
+    "hpbw_deg": 65.0,
+    "sla_db": 30.0
+   },
+   "d_m": 12.78289873229073,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 22.13258696797982,
+   "pl_db": 68.17681180221194,
+   "gain_tx_dbi": -7.152332078928042,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -55.329143881139984,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.245901639,
+     "u": 0.194551591,
+     "s_m": 1.322951,
+     "zc": 5.455738
+    },
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.737704918,
+     "u": 0.451301832,
+     "s_m": 3.068852,
+     "zc": 4.767213
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.1672131147540985
+  },
+  {
+   "id": "relocate-0",
+   "scenario": "relocate",
+   "tx": "AP",
+   "tx_pos": [
+    0.0,
+    0.0,
+    6.75
+   ],
+   "rx": "attacker_start",
+   "rx_pos": [
+    1.0,
+    -30.8,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 31.26023832282793,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 29.899845693685457,
+   "pl_db": 88.94407052791757,
+   "gain_tx_dbi": 1.9684391964302699,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -66.9756313314873,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.25974026,
+     "u": 0.507215007,
+     "s_m": 18.25974,
+     "zc": 5.386364
+    },
+    {
+     "id": "F1-023",
+     "material": "glass",
+     "loss_db": 2.0,
+     "opening": false,
+     "t": 0.038961039,
+     "u": 0.006493506,
+     "s_m": 0.038961,
+     "zc": 6.545455
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.03896103896103886
+  },
+  {
+   "id": "relocate-1",
+   "scenario": "relocate",
+   "tx": "AP",
+   "tx_pos": [
+    0.0,
+    0.0,
+    6.75
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    -1.695,
+    11.901,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 13.117519811305796,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 22.357034575660684,
+   "pl_db": 112.4012594098928,
+   "gain_tx_dbi": 1.0650419134401634,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -91.33621749645263,
+   "walls": [
+    {
+     "id": "F0-005",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.672212419,
+     "u": 0.310099992,
+     "s_m": 1.8606,
+     "zc": 3.220885
+    },
+    {
+     "id": "F1-047",
+     "material": "concrete",
+     "loss_db": 15.0,
+     "opening": false,
+     "t": 0.100831863,
+     "u": 0.165549998,
+     "s_m": 0.62909,
+     "zc": 6.220633
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 18.0,
+     "x": -1.065429,
+     "y": 7.480629
+    }
+   ],
+   "margin_m": 0.22063271993950107
+  },
+  {
+   "id": "relocate-2",
+   "scenario": "relocate",
+   "tx": "AP",
+   "tx_pos": [
+    0.0,
+    0.0,
+    6.75
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    -5.362,
+    7.136,
+    4.8
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 9.136522314316318,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 19.21561838489482,
+   "pl_db": 126.25984321912694,
+   "gain_tx_dbi": 1.85492422193794,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -104.404918997189,
+   "walls": [
+    {
+     "id": "F1-044",
+     "material": "concrete",
+     "loss_db": 15.0,
+     "opening": false,
+     "t": 0.559492727,
+     "u": 0.410667661,
+     "s_m": 2.79254,
+     "zc": 5.658989
+    },
+    {
+     "id": "F1-046",
+     "material": "metal",
+     "loss_db": 26.0,
+     "opening": false,
+     "t": 0.168161435,
+     "u": 0.953781084,
+     "s_m": 2.098318,
+     "zc": 6.422085
+    },
+    {
+     "id": "F1-048",
+     "material": "metal",
+     "loss_db": 26.0,
+     "opening": false,
+     "t": 0.532511211,
+     "u": 0.065761313,
+     "s_m": 0.144675,
+     "zc": 5.711603
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.10168161434977573
+  },
+  {
+   "id": "relocate-ap-c3",
+   "scenario": "relocate",
+   "tx": "AP",
+   "tx_pos": [
+    0.0,
+    0.0,
+    6.75
+   ],
+   "rx": "c3",
+   "rx_pos": [
+    9.2,
+    -4.0,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 10.303518816404422,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 20.259711370928216,
+   "pl_db": 65.30393620516034,
+   "gain_tx_dbi": 1.8122279698659645,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -43.491708235294375,
+   "walls": [
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.652173913,
+     "u": 0.792838875,
+     "s_m": 5.391304,
+     "zc": 5.217391
+    },
+    {
+     "id": "F1-023",
+     "material": "glass",
+     "loss_db": 2.0,
+     "opening": false,
+     "t": 0.3,
+     "u": 0.46,
+     "s_m": 2.76,
+     "zc": 6.045
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.1550000000000002
+  },
+  {
+   "id": "shieldWindows-0",
+   "scenario": "shieldWindows",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "attacker_start",
+   "rx_pos": [
+    1.0,
+    -30.8,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 23.980252292250807,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 27.59707495853931,
+   "pl_db": 84.64129979277143,
+   "gain_tx_dbi": 1.9427299356602203,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -62.69856985711121,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.019354839,
+     "u": 0.418817204,
+     "s_m": 15.077419,
+     "zc": 5.716774
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.4566111655485904
+  },
+  {
+   "id": "shieldWindows-1",
+   "scenario": "shieldWindows",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    -36.195,
+    20.524,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 43.68692597333898,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 32.8070297338413,
+   "pl_db": 107.85125456807341,
+   "gain_tx_dbi": 2.0880488127450794,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -85.76320575532833,
+   "walls": [
+    {
+     "id": "F1-010",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.451875282,
+     "u": 0.578815688,
+     "s_m": 3.935947,
+     "zc": 3.856936
+    },
+    {
+     "id": "F1-011",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.090375056,
+     "u": 0.439292549,
+     "s_m": 2.987189,
+     "zc": 5.411387
+    },
+    {
+     "id": "F1-017",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.226187932,
+     "u": 0.7130988,
+     "s_m": 4.991692,
+     "zc": 4.827392
+    },
+    {
+     "id": "F1-034",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.311676284,
+     "u": 0.23078115,
+     "s_m": 1.153906,
+     "zc": 4.459792
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.2072325581395349
+  },
+  {
+   "id": "shieldWindows-2",
+   "scenario": "shieldWindows",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    0.295,
+    6.141,
+    8.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 14.31993386856238,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 23.11882024688819,
+   "pl_db": 139.16304508112032,
+   "gain_tx_dbi": 1.9374312039690662,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -117.22561387715125,
+   "walls": [
+    {
+     "id": "F1-021",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.463808341,
+     "u": 0.528248484,
+     "s_m": 0.528248,
+     "zc": 7.005902
+    },
+    {
+     "id": "F2-046",
+     "material": "metal",
+     "loss_db": 26.0,
+     "opening": false,
+     "t": 0.639105982,
+     "u": 0.957206459,
+     "s_m": 2.105854,
+     "zc": 7.461676
+    },
+    {
+     "id": "F2-049",
+     "material": "metal",
+     "loss_db": 26.0,
+     "opening": false,
+     "t": 0.6676783,
+     "u": 0.150455235,
+     "s_m": 0.391184,
+     "zc": 7.535964
+    }
+   ],
+   "slabs": [
+    {
+     "z": 7.05,
+     "loss_db": 18.0,
+     "x": -1.415865,
+     "y": -0.967788
+    }
+   ],
+   "margin_m": 0.09414578920458685
+  },
+  {
+   "id": "shieldWindows-ap-c3",
+   "scenario": "shieldWindows",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c3",
+   "rx_pos": [
+    9.2,
+    -4.0,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 12.78289873229073,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 22.13258696797982,
+   "pl_db": 68.17681180221194,
+   "gain_tx_dbi": 2.0732341393698874,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -46.103577662842056,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.245901639,
+     "u": 0.194551591,
+     "s_m": 1.322951,
+     "zc": 5.455738
+    },
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.737704918,
+     "u": 0.451301832,
+     "s_m": 3.068852,
+     "zc": 4.767213
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.1672131147540985
+  },
+  {
+   "id": "shieldPaint-0",
+   "scenario": "shieldPaint",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "attacker_start",
+   "rx_pos": [
+    1.0,
+    -30.8,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 23.980252292250807,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 27.59707495853931,
+   "pl_db": 104.64129979277143,
+   "gain_tx_dbi": 1.9427299356602203,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -82.69856985711121,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 37.0,
+     "opening": false,
+     "t": 0.019354839,
+     "u": 0.418817204,
+     "s_m": 15.077419,
+     "zc": 5.716774
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.4566111655485904
+  },
+  {
+   "id": "shieldPaint-1",
+   "scenario": "shieldPaint",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    4.425,
+    -21.299,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 16.206653757022146,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 24.193867076884793,
+   "pl_db": 101.23809191111691,
+   "gain_tx_dbi": 1.6897634108419048,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -79.548328500275,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 37.0,
+     "opening": false,
+     "t": 0.032729653,
+     "u": 0.423417158,
+     "s_m": 15.243018,
+     "zc": 5.659262
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.35698232598734236
+  },
+  {
+   "id": "shieldPaint-2",
+   "scenario": "shieldPaint",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    1.856,
+    -6.495,
+    1.2
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 6.771540518966123,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 16.61374963006221,
+   "pl_db": 74.65797446429433,
+   "gain_tx_dbi": -1.488610355137141,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -56.14658481943147,
+   "walls": [],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 18.0,
+     "x": -0.519217,
+     "y": -7.011033
+    }
+   ],
+   "margin_m": 0.9889673913043477
+  },
+  {
+   "id": "shieldPaint-ap-c3",
+   "scenario": "shieldPaint",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c3",
+   "rx_pos": [
+    9.2,
+    -4.0,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 12.78289873229073,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 22.13258696797982,
+   "pl_db": 68.17681180221194,
+   "gain_tx_dbi": 2.0732341393698874,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -46.103577662842056,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.245901639,
+     "u": 0.194551591,
+     "s_m": 1.322951,
+     "zc": 5.455738
+    },
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.737704918,
+     "u": 0.451301832,
+     "s_m": 3.068852,
+     "zc": 4.767213
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.1672131147540985
+  },
+  {
+   "id": "band5-0",
+   "scenario": "band5",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "attacker_start",
+   "rx_pos": [
+    1.0,
+    -30.8,
+    1.5
+   ],
+   "freq_ghz": 5.0,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 23.980252292250807,
+   "pl0_db": 46.41940008672037,
+   "pl_distance_db": 27.59707495853931,
+   "pl_db": 100.01647504525968,
+   "gain_tx_dbi": 1.9427299356602203,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -78.07374510959946,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 26.0,
+     "opening": false,
+     "t": 0.019354839,
+     "u": 0.418817204,
+     "s_m": 15.077419,
+     "zc": 5.716774
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.4566111655485904
+  },
+  {
+   "id": "band5-1",
+   "scenario": "band5",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    -10.42,
+    17.338,
+    1.5
+   ],
+   "freq_ghz": 5.0,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 26.32411335638867,
+   "pl0_db": 46.41940008672037,
+   "pl_distance_db": 28.407075045649954,
+   "pl_db": 150.82647513237032,
+   "gain_tx_dbi": 1.9783359710963522,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -128.84813916127396,
+   "walls": [
+    {
+     "id": "F0-004",
+     "material": "ext_concrete",
+     "loss_db": 26.0,
+     "opening": false,
+     "t": 0.6247991,
+     "u": 0.690932712,
+     "s_m": 10.363991,
+     "zc": 3.113364
+    },
+    {
+     "id": "F1-020",
+     "material": "brick",
+     "loss_db": 10.0,
+     "opening": false,
+     "t": 0.255143041,
+     "u": 0.276709659,
+     "s_m": 1.106839,
+     "zc": 4.702885
+    },
+    {
+     "id": "F1-030",
+     "material": "drywall",
+     "loss_db": 4.0,
+     "opening": false,
+     "t": 0.404312668,
+     "u": 0.193019661,
+     "s_m": 1.312534,
+     "zc": 4.061456
+    },
+    {
+     "id": "F1-036",
+     "material": "brick",
+     "loss_db": 10.0,
+     "opening": false,
+     "t": 0.351575056,
+     "u": 0.826089452,
+     "s_m": 2.891313,
+     "zc": 4.288227
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 26.0,
+     "x": -7.055116,
+     "y": 6.051581
+    }
+   ],
+   "margin_m": 0.4133638701382196
+  },
+  {
+   "id": "band5-2",
+   "scenario": "band5",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    9.082,
+    4.023,
+    1.2
+   ],
+   "freq_ghz": 5.0,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 17.351341533149537,
+   "pl0_db": 46.41940008672037,
+   "pl_distance_db": 24.786661165155333,
+   "pl_db": 111.20606125187571,
+   "gain_tx_dbi": 1.690524917257834,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -89.51553633461788,
+   "walls": [
+    {
+     "id": "F0-037",
+     "material": "brick",
+     "loss_db": 10.0,
+     "opening": false,
+     "t": 0.756070163,
+     "u": 0.847253977,
+     "s_m": 3.13484,
+     "zc": 2.322077
+    },
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 4.0,
+     "opening": false,
+     "t": 0.248303261,
+     "u": 0.488766712,
+     "s_m": 3.323614,
+     "zc": 4.657805
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 26.0,
+     "x": 3.172326,
+     "y": -1.637707
+    }
+   ],
+   "margin_m": 0.5651602868746223
+  },
+  {
+   "id": "band5-ap-c3",
+   "scenario": "band5",
+   "tx": "AP",
+   "tx_pos": [
+    -3.0,
+    -7.55,
+    5.8
+   ],
+   "rx": "c3",
+   "rx_pos": [
+    9.2,
+    -4.0,
+    4.4
+   ],
+   "freq_ghz": 5.0,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 12.78289873229073,
+   "pl0_db": 46.41940008672037,
+   "pl_distance_db": 22.13258696797982,
+   "pl_db": 76.55198705470019,
+   "gain_tx_dbi": 2.0732341393698874,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -54.478752915330304,
+   "walls": [
+    {
+     "id": "F1-012",
+     "material": "drywall",
+     "loss_db": 4.0,
+     "opening": false,
+     "t": 0.245901639,
+     "u": 0.194551591,
+     "s_m": 1.322951,
+     "zc": 5.455738
+    },
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 4.0,
+     "opening": false,
+     "t": 0.737704918,
+     "u": 0.451301832,
+     "s_m": 3.068852,
+     "zc": 4.767213
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.1672131147540985
+  },
+  {
+   "id": "allRF-0",
+   "scenario": "allRF",
+   "tx": "AP",
+   "tx_pos": [
+    0.0,
+    0.0,
+    6.75
+   ],
+   "rx": "attacker_start",
+   "rx_pos": [
+    1.0,
+    -30.8,
+    1.5
+   ],
+   "freq_ghz": 5.0,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 31.26023832282793,
+   "pl0_db": 46.41940008672037,
+   "pl_distance_db": 29.899845693685457,
+   "pl_db": 129.31924578040582,
+   "gain_tx_dbi": 1.9684391964302699,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -107.35080658397555,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 50.0,
+     "opening": false,
+     "t": 0.25974026,
+     "u": 0.507215007,
+     "s_m": 18.25974,
+     "zc": 5.386364
+    },
+    {
+     "id": "F1-023",
+     "material": "glass",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.038961039,
+     "u": 0.006493506,
+     "s_m": 0.038961,
+     "zc": 6.545455
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.03896103896103886
+  },
+  {
+   "id": "allRF-1",
+   "scenario": "allRF",
+   "tx": "AP",
+   "tx_pos": [
+    0.0,
+    0.0,
+    6.75
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    -17.016,
+    16.857,
+    1.5
+   ],
+   "freq_ghz": 5.0,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 24.520709716482514,
+   "pl0_db": 46.41940008672037,
+   "pl_distance_db": 27.790660721080446,
+   "pl_db": 183.2100608078008,
+   "gain_tx_dbi": 1.8530217099586426,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -161.35703909784215,
+   "walls": [
+    {
+     "id": "F1-002",
+     "material": "ext_concrete",
+     "loss_db": 50.0,
+     "opening": false,
+     "t": 0.474580293,
+     "u": 0.661636116,
+     "s_m": 9.924542,
+     "zc": 4.258453
+    },
+    {
+     "id": "F1-030",
+     "material": "drywall",
+     "loss_db": 4.0,
+     "opening": false,
+     "t": 0.352609309,
+     "u": 0.697637518,
+     "s_m": 4.743935,
+     "zc": 4.898801
+    },
+    {
+     "id": "F1-044",
+     "material": "concrete",
+     "loss_db": 23.0,
+     "opening": false,
+     "t": 0.176304654,
+     "u": 0.260583465,
+     "s_m": 1.771968,
+     "zc": 5.824401
+    },
+    {
+     "id": "F1-046",
+     "material": "metal",
+     "loss_db": 32.0,
+     "opening": false,
+     "t": 0.071187044,
+     "u": 0.813036936,
+     "s_m": 1.788681,
+     "zc": 6.376268
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.2415465385299883
+  },
+  {
+   "id": "allRF-2",
+   "scenario": "allRF",
+   "tx": "AP",
+   "tx_pos": [
+    0.0,
+    0.0,
+    6.75
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    7.039,
+    -7.409,
+    1.2
+   ],
+   "freq_ghz": 5.0,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 11.629415376535485,
+   "pl0_db": 46.41940008672037,
+   "pl_distance_db": 21.311157656346428,
+   "pl_db": 106.7305577430668,
+   "gain_tx_dbi": 0.5618655562909041,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -86.1686921867759,
+   "walls": [
+    {
+     "id": "F0-015",
+     "material": "brick",
+     "loss_db": 10.0,
+     "opening": false,
+     "t": 0.852393806,
+     "u": 0.247737396,
+     "s_m": 1.684614,
+     "zc": 2.019214
+    },
+    {
+     "id": "F1-023",
+     "material": "glass",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.161965177,
+     "u": 0.190012147,
+     "s_m": 1.140073,
+     "zc": 5.851093
+    }
+   ],
+   "slabs": [
+    {
+     "z": 3.45,
+     "loss_db": 26.0,
+     "x": 4.185351,
+     "y": -4.405351
+    }
+   ],
+   "margin_m": 1.140072884329869
+  },
+  {
+   "id": "allRF-ap-c3",
+   "scenario": "allRF",
+   "tx": "AP",
+   "tx_pos": [
+    0.0,
+    0.0,
+    6.75
+   ],
+   "rx": "c3",
+   "rx_pos": [
+    9.2,
+    -4.0,
+    4.4
+   ],
+   "freq_ghz": 5.0,
+   "tx_dbm": 20.0,
+   "antenna": "dipole",
+   "d_m": 10.303518816404422,
+   "pl0_db": 46.41940008672037,
+   "pl_distance_db": 20.259711370928216,
+   "pl_db": 73.67911145764859,
+   "gain_tx_dbi": 1.8122279698659645,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -51.86688348778262,
+   "walls": [
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 4.0,
+     "opening": false,
+     "t": 0.652173913,
+     "u": 0.792838875,
+     "s_m": 5.391304,
+     "zc": 5.217391
+    },
+    {
+     "id": "F1-023",
+     "material": "glass",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.3,
+     "u": 0.46,
+     "s_m": 2.76,
+     "zc": 6.045
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.1550000000000002
+  },
+  {
+   "id": "directional+relocate-0",
+   "scenario": "directional+relocate",
+   "tx": "AP",
+   "tx_pos": [
+    0.0,
+    0.0,
+    6.75
+   ],
+   "rx": "attacker_start",
+   "rx_pos": [
+    1.0,
+    -30.8,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "patch",
+   "antenna_az_deg": 90.0,
+   "antenna_tilt_deg": -90.0,
+   "antenna_patch": {
+    "gmax_dbi": 5.5,
+    "hpbw_deg": 110.0,
+    "sla_db": 25.0
+   },
+   "d_m": 31.26023832282793,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 29.899845693685457,
+   "pl_db": 88.94407052791757,
+   "gain_tx_dbi": -0.9872412351155742,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -69.93131176303315,
+   "walls": [
+    {
+     "id": "F1-001",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.25974026,
+     "u": 0.507215007,
+     "s_m": 18.25974,
+     "zc": 5.386364
+    },
+    {
+     "id": "F1-023",
+     "material": "glass",
+     "loss_db": 2.0,
+     "opening": false,
+     "t": 0.038961039,
+     "u": 0.006493506,
+     "s_m": 0.038961,
+     "zc": 6.545455
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.03896103896103886
+  },
+  {
+   "id": "directional+relocate-1",
+   "scenario": "directional+relocate",
+   "tx": "AP",
+   "tx_pos": [
+    0.0,
+    0.0,
+    6.75
+   ],
+   "rx": "random_near",
+   "rx_pos": [
+    27.346,
+    24.774,
+    1.5
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "patch",
+   "antenna_az_deg": 90.0,
+   "antenna_tilt_deg": -90.0,
+   "antenna_patch": {
+    "gmax_dbi": 5.5,
+    "hpbw_deg": 110.0,
+    "sla_db": 25.0
+   },
+   "d_m": 37.270863848319905,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 31.427389175286503,
+   "pl_db": 118.47161400951862,
+   "gain_tx_dbi": -2.4313421293908055,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -100.90295613890942,
+   "walls": [
+    {
+     "id": "F1-004",
+     "material": "ext_concrete",
+     "loss_db": 17.0,
+     "opening": false,
+     "t": 0.322919189,
+     "u": 0.38870321,
+     "s_m": 5.830548,
+     "zc": 5.054674
+    },
+    {
+     "id": "F1-045",
+     "material": "concrete",
+     "loss_db": 15.0,
+     "opening": false,
+     "t": 0.109705259,
+     "u": 0.223211482,
+     "s_m": 1.517838,
+     "zc": 6.174047
+    },
+    {
+     "id": "F1-047",
+     "material": "concrete",
+     "loss_db": 15.0,
+     "opening": false,
+     "t": 0.048437878,
+     "u": 0.559100585,
+     "s_m": 2.124582,
+     "zc": 6.495701
+    }
+   ],
+   "slabs": [],
+   "margin_m": 0.43054815532413016
+  },
+  {
+   "id": "directional+relocate-2",
+   "scenario": "directional+relocate",
+   "tx": "AP",
+   "tx_pos": [
+    0.0,
+    0.0,
+    6.75
+   ],
+   "rx": "random_indoor",
+   "rx_pos": [
+    15.213,
+    1.445,
+    4.8
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "patch",
+   "antenna_az_deg": 90.0,
+   "antenna_tilt_deg": -90.0,
+   "antenna_patch": {
+    "gmax_dbi": 5.5,
+    "hpbw_deg": 110.0,
+    "sla_db": 25.0
+   },
+   "d_m": 15.40538522725089,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 23.753451255237113,
+   "pl_db": 69.79767608946923,
+   "gain_tx_dbi": -1.3107842475407505,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -51.10846033700999,
+   "walls": [
+    {
+     "id": "F1-041",
+     "material": "brick",
+     "loss_db": 6.0,
+     "opening": false,
+     "t": 0.830449827,
+     "u": 0.712866649,
+     "s_m": 4.633633,
+     "zc": 5.130623
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.5306228373702422
+  },
+  {
+   "id": "directional+relocate-ap-c3",
+   "scenario": "directional+relocate",
+   "tx": "AP",
+   "tx_pos": [
+    0.0,
+    0.0,
+    6.75
+   ],
+   "rx": "c3",
+   "rx_pos": [
+    9.2,
+    -4.0,
+    4.4
+   ],
+   "freq_ghz": 2.4,
+   "tx_dbm": 20.0,
+   "antenna": "patch",
+   "antenna_az_deg": 90.0,
+   "antenna_tilt_deg": -90.0,
+   "antenna_patch": {
+    "gmax_dbi": 5.5,
+    "hpbw_deg": 110.0,
+    "sla_db": 25.0
+   },
+   "d_m": 10.303518816404422,
+   "pl0_db": 40.04422483423212,
+   "pl_distance_db": 20.259711370928216,
+   "pl_db": 65.30393620516034,
+   "gain_tx_dbi": -0.6963033120832369,
+   "gain_rx_dbi": 0.0,
+   "rss_dbm": -46.00023951724358,
+   "walls": [
+    {
+     "id": "F1-013",
+     "material": "drywall",
+     "loss_db": 3.0,
+     "opening": false,
+     "t": 0.652173913,
+     "u": 0.792838875,
+     "s_m": 5.391304,
+     "zc": 5.217391
+    },
+    {
+     "id": "F1-023",
+     "material": "glass",
+     "loss_db": 2.0,
+     "opening": false,
+     "t": 0.3,
+     "u": 0.46,
+     "s_m": 2.76,
+     "zc": 6.045
+    }
+   ],
+   "slabs": [],
+   "margin_m": 1.1550000000000002
+  }
+ ],
+ "attack_checks_baseline": [
+  {
+   "pos": [
+    1.0,
+    -30.8,
+    1.5
+   ],
+   "equipment": "usb",
+   "rss_ap_dbm": -62.69856985711121,
+   "pl_client_db": {
+    "c1": 85.62893509202615,
+    "c2": 85.29049387618777,
+    "c3": 86.04182814940376,
+    "c4": 86.37205623434112,
+    "c5": 121.29451326788254,
+    "c6": 124.51916396590035,
+    "c7": 86.77166694836818,
+    "c8": 118.57993464856992
+   },
+   "rss_ap_client_dbm": {
+    "c1": -29.82070831305655,
+    "c2": -37.569308757834534,
+    "c3": -46.103577662842056,
+    "c4": -52.391809152015206,
+    "c5": -53.28314755738266,
+    "c6": -52.97836197434032,
+    "c7": -44.09865825925989,
+    "c8": -49.933858997476534
+   },
+   "attacker_at_client_dbm": {
+    "c1": -53.628935092026154,
+    "c2": -53.29049387618777,
+    "c3": -54.041828149403756,
+    "c4": -54.372056234341116,
+    "c5": -89.29451326788254,
+    "c6": -92.51916396590035,
+    "c7": -54.77166694836818,
+    "c8": -86.57993464856992
+   },
+   "margin_eavesdrop_db": 34.30143014288879,
+   "margin_deauth_raw_db": 34.70950612381223,
+   "margin_eviltwin_raw_db": -4.98024708232591,
+   "margin_deauth_db": 34.30143014288879,
+   "margin_eviltwin_db": -4.98024708232591,
+   "eviltwin_clients_raw": [],
+   "eavesdrop": true,
+   "deauth": true,
+   "eviltwin": false
+  },
+  {
+   "pos": [
+    -30.092,
+    -6.576,
+    1.5
+   ],
+   "equipment": "usb",
+   "rss_ap_dbm": -87.8223360050788,
+   "pl_client_db": {
+    "c1": 115.38658900325194,
+    "c2": 120.47935594609689,
+    "c3": 110.97242701743076,
+    "c4": 126.2604606371917,
+    "c5": 174.98409424327608,
+    "c6": 123.76712379844795,
+    "c7": 100.44911929343306,
+    "c8": 114.22042795389152
+   },
+   "rss_ap_client_dbm": {
+    "c1": -29.82070831305655,
+    "c2": -37.569308757834534,
+    "c3": -46.103577662842056,
+    "c4": -52.391809152015206,
+    "c5": -53.28314755738266,
+    "c6": -52.97836197434032,
+    "c7": -44.09865825925989,
+    "c8": -49.933858997476534
+   },
+   "attacker_at_client_dbm": {
+    "c1": -83.38658900325194,
+    "c2": -88.47935594609689,
+    "c3": -78.97242701743076,
+    "c4": -94.2604606371917,
+    "c5": -142.98409424327608,
+    "c6": -91.76712379844795,
+    "c7": -68.44911929343306,
+    "c8": -82.22042795389152
+   },
+   "margin_eavesdrop_db": 9.177663994921204,
+   "margin_deauth_raw_db": 19.550880706566943,
+   "margin_eviltwin_raw_db": -27.350461034173165,
+   "margin_deauth_db": 9.177663994921204,
+   "margin_eviltwin_db": -27.350461034173165,
+   "eviltwin_clients_raw": [],
+   "eavesdrop": true,
+   "deauth": true,
+   "eviltwin": false
+  },
+  {
+   "pos": [
+    -17.18,
+    -23.547,
+    1.5
+   ],
+   "equipment": "usb",
+   "rss_ap_dbm": -61.91671938720811,
+   "pl_client_db": {
+    "c1": 90.33489391070047,
+    "c2": 88.80787456193572,
+    "c3": 90.40412084055171,
+    "c4": 91.52109072657197,
+    "c5": 100.61996984407088,
+    "c6": 122.59490529723666,
+    "c7": 83.56903617536746,
+    "c8": 117.31396441035656
+   },
+   "rss_ap_client_dbm": {
+    "c1": -29.82070831305655,
+    "c2": -37.569308757834534,
+    "c3": -46.103577662842056,
+    "c4": -52.391809152015206,
+    "c5": -53.28314755738266,
+    "c6": -52.97836197434032,
+    "c7": -44.09865825925989,
+    "c8": -49.933858997476534
+   },
+   "attacker_at_client_dbm": {
+    "c1": -58.33489391070047,
+    "c2": -56.80787456193572,
+    "c3": -58.40412084055171,
+    "c4": -59.52109072657197,
+    "c5": -68.61996984407088,
+    "c6": -90.59490529723666,
+    "c7": -51.56903617536746,
+    "c8": -85.31396441035656
+   },
+   "margin_eavesdrop_db": 35.08328061279189,
+   "margin_deauth_raw_db": 36.43096382463254,
+   "margin_eviltwin_raw_db": -10.129281574556764,
+   "margin_deauth_db": 35.08328061279189,
+   "margin_eviltwin_db": -10.129281574556764,
+   "eviltwin_clients_raw": [],
+   "eavesdrop": true,
+   "deauth": true,
+   "eviltwin": false
+  },
+  {
+   "pos": [
+    -4.615,
+    -21.372,
+    1.5
+   ],
+   "equipment": "usb",
+   "rss_ap_dbm": -58.73401729772171,
+   "pl_client_db": {
+    "c1": 81.66644045552188,
+    "c2": 82.20206028190043,
+    "c3": 84.043040777523,
+    "c4": 85.27774237975784,
+    "c5": 98.35421717251224,
+    "c6": 112.69946571873179,
+    "c7": 82.99002644953327,
+    "c8": 98.96675301394038
+   },
+   "rss_ap_client_dbm": {
+    "c1": -29.82070831305655,
+    "c2": -37.569308757834534,
+    "c3": -46.103577662842056,
+    "c4": -52.391809152015206,
+    "c5": -53.28314755738266,
+    "c6": -52.97836197434032,
+    "c7": -44.09865825925989,
+    "c8": -49.933858997476534
+   },
+   "attacker_at_client_dbm": {
+    "c1": -49.66644045552188,
+    "c2": -50.20206028190043,
+    "c3": -52.043040777523004,
+    "c4": -53.27774237975784,
+    "c5": -66.35421717251224,
+    "c6": -80.69946571873179,
+    "c7": -50.990026449533275,
+    "c8": -66.96675301394038
+   },
+   "margin_eavesdrop_db": 38.26598270227829,
+   "margin_deauth_raw_db": 38.33355954447812,
+   "margin_eviltwin_raw_db": -3.8859332277426333,
+   "margin_deauth_db": 38.26598270227829,
+   "margin_eviltwin_db": -3.8859332277426333,
+   "eviltwin_clients_raw": [],
+   "eavesdrop": true,
+   "deauth": true,
+   "eviltwin": false
+  },
+  {
+   "pos": [
+    9.348,
+    10.132,
+    1.5
+   ],
+   "equipment": "usb",
+   "rss_ap_dbm": -76.98623590401581,
+   "pl_client_db": {
+    "c1": 120.16135308773175,
+    "c2": 107.57400178569289,
+    "c3": 110.2278915064413,
+    "c4": 103.74234676874082,
+    "c5": 90.81947922546038,
+    "c6": 104.71900243516441,
+    "c7": 171.11882638622617,
+    "c8": 113.4183088036047
+   },
+   "rss_ap_client_dbm": {
+    "c1": -29.82070831305655,
+    "c2": -37.569308757834534,
+    "c3": -46.103577662842056,
+    "c4": -52.391809152015206,
+    "c5": -53.28314755738266,
+    "c6": -52.97836197434032,
+    "c7": -44.09865825925989,
+    "c8": -49.933858997476534
+   },
+   "attacker_at_client_dbm": {
+    "c1": -88.16135308773175,
+    "c2": -75.57400178569289,
+    "c3": -78.2278915064413,
+    "c4": -71.74234676874082,
+    "c5": -58.819479225460384,
+    "c6": -72.71900243516441,
+    "c7": -139.11882638622617,
+    "c8": -81.4183088036047
+   },
+   "margin_eavesdrop_db": 20.013764095984186,
+   "margin_deauth_raw_db": 29.180520774539616,
+   "margin_eviltwin_raw_db": -8.536331668077722,
+   "margin_deauth_db": 20.013764095984186,
+   "margin_eviltwin_db": -8.536331668077722,
+   "eviltwin_clients_raw": [],
+   "eavesdrop": true,
+   "deauth": true,
+   "eviltwin": false
+  },
+  {
+   "pos": [
+    42.657,
+    18.002,
+    1.5
+   ],
+   "equipment": "usb",
+   "rss_ap_dbm": -87.33980530386108,
+   "pl_client_db": {
+    "c1": 123.38166539326008,
+    "c2": 123.30639604506052,
+    "c3": 101.1175218668916,
+    "c4": 88.17545130481035,
+    "c5": 91.52548402871946,
+    "c6": 109.5785501765878,
+    "c7": 152.41652357854116,
+    "c8": 105.80420686626903
+   },
+   "rss_ap_client_dbm": {
+    "c1": -29.82070831305655,
+    "c2": -37.569308757834534,
+    "c3": -46.103577662842056,
+    "c4": -52.391809152015206,
+    "c5": -53.28314755738266,
+    "c6": -52.97836197434032,
+    "c7": -44.09865825925989,
+    "c8": -49.933858997476534
+   },
+   "attacker_at_client_dbm": {
+    "c1": -91.38166539326008,
+    "c2": -91.30639604506052,
+    "c3": -69.1175218668916,
+    "c4": -56.17545130481035,
+    "c5": -59.52548402871946,
+    "c6": -77.5785501765878,
+    "c7": -120.41652357854116,
+    "c8": -73.80420686626903
+   },
+   "margin_eavesdrop_db": 9.660194696138916,
+   "margin_deauth_raw_db": 31.824548695189648,
+   "margin_eviltwin_raw_db": -6.783642152795146,
+   "margin_deauth_db": 9.660194696138916,
+   "margin_eviltwin_db": -6.783642152795146,
+   "eviltwin_clients_raw": [],
+   "eavesdrop": true,
+   "deauth": true,
+   "eviltwin": false
+  }
+ ]
+}

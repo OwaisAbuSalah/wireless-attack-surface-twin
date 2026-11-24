@@ -1,0 +1,81 @@
+{
+  "args": {
+    "data": "C:\\Users\\HP\\AppData\\Local\\Claude-Data\\claude_pzs8sxrjxfjjc\\scratch-workspaces\\546ab276-2a68-4471-abb1-2c8cd69074c9\\01f4d4c0-c777-49ad-a50b-bcb22158a9e5\\scratch-2026-11-24-bb1882\\data\\building.json",
+    "out": "C:\\Users\\HP\\AppData\\Local\\Claude-Data\\claude_pzs8sxrjxfjjc\\scratch-workspaces\\546ab276-2a68-4471-abb1-2c8cd69074c9\\01f4d4c0-c777-49ad-a50b-bcb22158a9e5\\scratch-2026-11-24-bb1882\\docs/figures",
+    "samples": 256,
+    "views": [
+      "hero",
+      "cutaway",
+      "street",
+      "clean"
+    ],
+    "res": "1920x1080",
+    "percent": 100,
+    "cell": 0.25,
+    "floor_cell": 0.1,
+    "suffix": "",
+    "device": "OPTIX",
+    "no_blend": false,
+    "no_glb": false,
+    "no_render": false,
+    "set": [],
+    "outdir_blend": "C:\\Users\\HP\\AppData\\Local\\Claude-Data\\claude_pzs8sxrjxfjjc\\scratch-workspaces\\546ab276-2a68-4471-abb1-2c8cd69074c9\\01f4d4c0-c777-49ad-a50b-bcb22158a9e5\\scratch-2026-11-24-bb1882\\blender\\out",
+    "w": 1920,
+    "h": 1080
+  },
+  "rf_seconds": 6.07,
+  "rf_stats": "outdoor grid 800x560 @ 0.25 m: RSS min -150.8 / median -84.3 / max -40.6 dBm\neavesdrop (usb, RSS >= -97 dBm): 22524 m^2 outside the footprint (82.1 % of the study area)\nfloor1 (z=4.80): RSS min -117.1 / median -51.3 / max -24.9 dBm",
+  "eavesdrop_threshold_dbm": -97,
+  "build_seconds": 0.36,
+  "objects": 563,
+  "polygons_building_walls": {
+    "Walls_F0": 996,
+    "Glass_F0": 210,
+    "Frames_F0": 1332,
+    "Doors_F0": 60,
+    "Walls_F1": 906,
+    "Glass_F1": 180,
+    "Frames_F1": 1428,
+    "Doors_F1": 60,
+    "Walls_F1_cut": 622,
+    "Glass_F1_cut": 180,
+    "Frames_F1_cut": 1176,
+    "Doors_F1_cut": 60,
+    "Walls_F2": 912,
+    "Glass_F2": 174,
+    "Frames_F2": 1416,
+    "Doors_F2": 66
+  },
+  "checks": [
+    "ok"
+  ],
+  "renders": {
+    "hero": {
+      "file": "docs\\figures\\blender_hero.png",
+      "seconds": 82.6,
+      "samples": 256,
+      "res": "1920x1080@100%"
+    },
+    "cutaway": {
+      "file": "docs\\figures\\blender_cutaway.png",
+      "seconds": 81.9,
+      "samples": 256,
+      "res": "1920x1080@100%"
+    },
+    "street": {
+      "file": "docs\\figures\\blender_street.png",
+      "seconds": 125.9,
+      "samples": 256,
+      "res": "1920x1080@100%"
+    },
+    "clean": {
+      "file": "docs\\figures\\blender_clean.png",
+      "seconds": 70.3,
+      "samples": 256,
+      "res": "1920x1080@100%"
+    }
+  },
+  "blend": "blender\\out\\twin.blend",
+  "glb": "blender\\out\\twin.glb",
+  "total_seconds": 368.2
+}

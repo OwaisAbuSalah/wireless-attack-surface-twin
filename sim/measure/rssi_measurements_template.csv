@@ -1,0 +1,3 @@
+point_id,x_m,y_m,z_m,rssi_dbm,device,notes
+# EXAMPLE ROW (not a measurement - delete before use),1.0,-30.8,1.5,-60.0,example-phone,"EXAMPLE ONLY: attacker start on the cafe terrace, hand-held"
+# EXAMPLE ROW (not a measurement - delete before use),-4.2,-4.6,4.4,-35.0,example-laptop,"EXAMPLE ONLY: desk of client c1, first floor"

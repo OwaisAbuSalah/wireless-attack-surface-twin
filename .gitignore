@@ -1,0 +1,20 @@
+node_modules/
+.vite/
+*.log
+!sim/out/*.log
+
+# python
+__pycache__/
+*.pyc
+sim/.venv/
+sim/out/cache/
+
+# build intermediates
+presentation/.build/
+presentation/~$*
+blender/out/*.blend1
+blender/out/*.exr
+
+# local tooling
+.vite-dev.log
+.claude/

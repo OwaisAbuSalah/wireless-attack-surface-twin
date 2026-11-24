@@ -1,0 +1,32 @@
+{
+  "_source": "Real-time model numbers measured in the web app (USB attacker, 0.4 m grid); validation numbers from sim/out/RESULTS.md (Sionna RT).",
+  "model": { "walls": 165, "materials": 11, "rooms": 37, "clients": 8 },
+  "gpuMs": "10",
+  "unit": { "maxErr": "0.000", "links": 39 },
+  "materials": [
+    ["Exterior reinforced concrete, 30 cm", 17, 26],
+    ["Concrete core wall, 25 cm", 15, 23],
+    ["Brick / block wall, 20 cm", 6, 10],
+    ["Gypsum drywall partition", 3, 4],
+    ["Exterior double glazing", 3, 5],
+    ["Wooden door", 3, 5],
+    ["Steel (elevator shaft, door)", 26, 32],
+    ["Floor slab, 30 cm", 18, 26]
+  ],
+  "base": { "areaU": 22521, "areaT": 567, "street": 99.5, "cov": 93.7, "hijack": 8.75 },
+  "link": { "ptx": 20, "d": 23.98, "spread": 67.64, "gTx": 1.94, "wall": 17, "gRx": 5, "rss": -57.70, "sens": -92, "margin": 34.30, "deauth": 6 },
+  "measures": [
+    ["Baseline", 22521, 93.7],
+    ["Reduce TX power (12 dBm)", 16491, 81.5],
+    ["Directional antenna", 15444, 88.0],
+    ["Relocate AP to ceiling", 18209, 81.2],
+    ["Micro-cells (2 APs, 20 dBm)", 25269, 100.0],
+    ["Shielding window film", 16794, 93.0],
+    ["Shielding paint", 13620, 93.7],
+    ["Move to 5 GHz", 9375, 69.5],
+    ["All combined", 239, 95.9]
+  ],
+  "micro": { "singleBest": 79, "pairBest": 99.5, "pairs": 450 },
+  "after": { "tx": 13, "areaU": 239, "street": 0, "leak": 33.4, "cov": 95.9 },
+  "validation": { "floorsRmse": "7.0", "outRmse": "12.8", "bias": "−1.6", "note": "Sionna RT 2.2 (CUDA, RTX 3060): ray tracing with specular reflection and refraction through walls, ITU-R P.2040 materials. Indoors the engineering model tracks the ray tracer closely; outdoors reflections fill the multi-wall shadows. Both agree on the security finding: at baseline the eavesdropping zone reaches beyond the 200 × 140 m study area." }
+}

@@ -1,0 +1,28 @@
+[
+ {
+  "case": "free space, vertical half-wave dipole",
+  "cells": 6188,
+  "mean_err_db": -7.173326283480031e-05,
+  "rmse_db": 0.03193429736885926,
+  "p95_abs_err_db": 0.010293798734186056
+ },
+ {
+  "case": "free space, 3GPP patch az=90 tilt=-10",
+  "cells": 3514,
+  "mean_err_db": 0.0015426400120400908,
+  "rmse_db": 0.059765311108271525,
+  "p95_abs_err_db": 0.026781660114678366
+ },
+ {
+  "case": "free space, ceiling patch 5.5 dBi/110\u00b0, tilt=-90",
+  "cells": 6188,
+  "mean_err_db": -0.006132399815593895,
+  "rmse_db": 0.008286229918749263,
+  "p95_abs_err_db": 0.014540348443609472
+ },
+ {
+  "case": "single concrete surface t=0.30 m, normal incidence",
+  "sionna_excess_loss_db": 21.06934356689453,
+  "itu_slab_T_loss_db": 21.046932518092845
+ }
+]

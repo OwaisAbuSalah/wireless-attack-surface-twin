@@ -1,0 +1,10 @@
+# virtual environments
+.venv/
+venv/
+# generated scene files, full-precision map caches, logs
+out/cache/
+out/*.log
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Wireless Attack Surface Digital Twin · التوأم الرقمي لسطح الهجوم اللاسلكي</title>
+    <meta name="description" content="Interactive 3-D digital twin that simulates Wi-Fi propagation through a building and shows from where an outside attacker can eavesdrop, deauthenticate or run an Evil Twin — and how protections shrink that zone." />
+    <meta name="theme-color" content="#0b0f17" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f17'/%3E%3Cpath d='M14 30a26 26 0 0 1 36 0M20 37a17 17 0 0 1 24 0M26 44a8 8 0 0 1 12 0' fill='none' stroke='%2322d3ee' stroke-width='4.5' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='50' r='3.5' fill='%23ff2d55'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <div id="app">
+      <div id="viewport"></div>
+
+      <div id="loader">
+        <div class="loader-inner">
+          <svg class="loader-logo" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M14 30a26 26 0 0 1 36 0" /><path d="M20 37a17 17 0 0 1 24 0" /><path d="M26 44a8 8 0 0 1 12 0" />
+            <circle cx="32" cy="50" r="3.5" />
+          </svg>
+          <div class="loader-title" data-i18n="title"></div>
+          <div class="loader-sub" id="loader-msg" data-i18n="loading"></div>
+          <div class="loader-bar"><span></span></div>
+        </div>
+      </div>
+
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64"><path d="M14 30a26 26 0 0 1 36 0" /><path d="M20 37a17 17 0 0 1 24 0" /><path d="M26 44a8 8 0 0 1 12 0" /><circle cx="32" cy="50" r="3.5" /></svg>
+          </div>
+          <div class="brand-text">
+            <h1 data-i18n="title"></h1>
+            <p data-i18n="subtitle"></p>
+          </div>
+        </div>
+        <nav class="center-controls">
+          <div class="seg" id="seg-mode"></div>
+          <div class="seg" id="seg-floor"></div>
+        </nav>
+        <div class="top-actions">
+          <button class="btn primary" id="btn-tour"><span class="ico" data-icon="play"></span><span data-i18n="btn.tour"></span></button>
+          <div class="menu" id="menu-cam">
+            <button class="btn icon" title="Camera" id="btn-cam"><span class="ico" data-icon="camera"></span></button>
+            <div class="menu-pop" id="cam-pop"></div>
+          </div>
+          <button class="btn icon" id="btn-mood" title="Mood"><span class="ico" data-icon="sunset"></span></button>
+          <button class="btn icon lang" id="btn-lang"><span data-i18n="btn.lang"></span></button>
+          <button class="btn icon" id="btn-full" data-i18n-title="btn.full"><span class="ico" data-icon="maximize"></span></button>
+          <button class="btn icon" id="btn-about" data-i18n-title="btn.about"><span class="ico" data-icon="info"></span></button>
+        </div>
+      </header>
+
+      <aside class="kpis" id="kpis"></aside>
+      <aside class="panel" id="panel"></aside>
+      <div class="legend" id="legend"></div>
+      <div class="hint" id="hint" data-i18n="hint"></div>
+      <div class="toasts" id="toasts"></div>
+      <div class="tour" id="tour" hidden></div>
+      <div class="modal" id="about" hidden></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

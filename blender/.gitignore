@@ -1,0 +1,15 @@
+# Blender backups / autosaves
+out/*.blend1
+out/*.blend@
+*.blend1
+
+# Python caches
+__pycache__/
+
+# Render logs from preview runs (the final out/render_log.json is kept)
+out/render_log_*.json
+out/final_render.log
+
+# Large generated files (> 50 MB). None of the outputs currently exceeds 50 MB
+# (twin.blend ~ see README); if one ever does, list it here, e.g.:
+# out/twin.blend
