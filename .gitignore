@@ -18,3 +18,6 @@ blender/out/*.exr
 # local tooling
 .vite-dev.log
 .claude/
+
+# QA screenshots
+web/qa_*.png
