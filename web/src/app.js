@@ -56,7 +56,7 @@ export class App {
     this.ui = new UI(this);
     this.tour = new Tour(this);
 
-    this.world.onMood = (m) => { this.site?.setMood(m); this.building?.setWindowGlow(m.windowGlow); };
+    this.world.onMood = (m) => { this.site?.setMood(m); this.building?.setWindowGlow(m.windowGlow); this.U.uIntensity.value = m.ovI ?? 1; };   // overlay glow follows exposure
     this.world.setMood(this.state.mood);
     this._resizeLines();
     window.addEventListener('resize', () => this._resizeLines());

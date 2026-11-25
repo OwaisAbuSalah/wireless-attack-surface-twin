@@ -35,7 +35,8 @@ const SST = csv('sionna_stats.csv'), MST = csv('mwm_stats.csv').filter((r) => r.
   NUM.after = { tx: a.tx_dbm, areaU: a.area_danger, street: a.street_exposure, leak: a.max_leak_m, cov: a.coverage };
   const names = { baseline: 'Baseline', lowPower: 'Reduce TX power (12 dBm)', directional: 'Directional antenna', relocate: 'Relocate AP to ceiling', microcells: 'Micro-cells (2 APs, 20 dBm)', shieldWindows: 'Shielding window film', shieldPaint: 'Shielding paint', band5: 'Move to 5 GHz', applyAll: 'All combined' };
   NUM.measures = Object.keys(names).filter((k) => S[k]).map((k) => [names[k], S[k].area_danger, +r1(S[k].coverage)]);
-  NUM.unit = { maxErr: APP.verification.js_vs_python.max_abs_diff_db.toFixed(3), links: APP.verification.js_vs_python.links };
+  { const V = APP.verification, P = V.js_vs_python_protections ?? { links: 0, max_abs_diff_db: 0 };
+    NUM.unit = { maxErr: Math.max(V.js_vs_python.max_abs_diff_db, P.max_abs_diff_db).toFixed(3), links: V.js_vs_python.links + P.links }; }
   NUM.gpuMs = String(Math.round(APP.timing_ms));
   const nom = CMP.filter((r) => r.mwm === 'nominal' && r.scenario === 'baseline');
   const out = nom.find((r) => r.plane === 'outdoor'), fl = nom.filter((r) => /^floor\d/.test(r.plane)), all = nom.find((r) => r.plane === 'all');
@@ -287,7 +288,7 @@ async function build() {
   s = pres.addSlide({ masterName: 'CONTENT', sectionTitle: 'Method' });
   s.addText('Propagation model: multi-wall, evaluated on the GPU', { placeholder: 'title' });
   card(s, 0.6, 1.4, 6.3, 1.45, 'Equation card', CARD2);
-  txt(s, 'PL = 20 log₁₀ f + 32.44 + 10 n log₁₀ d + ΣL_wall + ΣL_slab', { x: 0.85, y: 1.5, w: 5.95, h: 0.7, fontSize: 17, bold: true, color: 'FFFFFF', valign: 'middle', fontFace: 'Cambria' });
+  txt(s, 'PL = 20 log₁₀ f + 32.44 + 10 n log₁₀ d + ΣL_wall + ΣL_slab', { x: 0.85, y: 1.5, w: 5.95, h: 0.7, fontSize: 14.5, bold: true, color: 'FFFFFF', valign: 'middle', fontFace: 'Cambria' });
   txt(s, 'RSS = P_tx + G_tx(θ, φ) + G_rx − PL      (COST-231 multi-wall, n = 2)', { x: 0.85, y: 2.25, w: 5.9, h: 0.45, fontSize: 14, color: HEX.lt2 });
   const bul6 = [
     '3-D ray–wall intersection: windows, doors and curtain walls are cut-outs with their own material',

@@ -119,6 +119,7 @@ Evil Twin: eavesdropping feasible and ∃c: P<sub>att</sub> + G<sub>att</sub> �
 <p><b>Verification.</b> The model is implemented three times — GLSL on the GPU, JavaScript for single links and statistics, and NumPy as the batch reference — following one written specification. The automated checks (script <code>web/tools/measure.mjs</code>) give:</p>
 <ul>
 <li>JavaScript vs NumPy on 39 reference links (access point to clients, to the attacker and to random indoor and outdoor points): maximum difference <b>0.000 dB</b>;</li>
+<li>JavaScript vs NumPy on 40 further links covering every protection scenario (patch antennas, relocated and ceiling access points, shielding, 5 GHz), including 8 two-AP links where the received power is the maximum over both micro-cells: maximum difference <b>0.000 dB</b>;</li>
 <li>GPU vs JavaScript on 5,000 random outdoor cells: maximum difference 0.0004 dB (received power), 0.0000 dB (deauthentication channel) and 0.0000 dB (Evil-Twin channel);</li>
 <li>GPU vs JavaScript on all 47,175 floor cells: 0 cells differ by more than 0.01 dB.</li>
 </ul>

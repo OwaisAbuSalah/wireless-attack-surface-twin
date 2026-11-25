@@ -17,17 +17,17 @@ const MOODS = {
   dusk: {
     sunElev: 7.5, sunAz: 318, turbidity: 6.5, rayleigh: 2.6, mieC: 0.006, mieG: 0.86,
     sunColor: 0xffd6b0, sunI: 1.05, hemiSky: 0xa9bdf5, hemiGround: 0x2a2421, hemiI: 0.5,
-    exposure: 0.9, fog: 0x2d3446, fogD: 0.0014, envI: 0.32, windowGlow: 1, lamp: 1, bg: null, bloom: 0.45,
+    exposure: 0.9, fog: 0x2d3446, fogD: 0.0014, envI: 0.32, windowGlow: 1, lamp: 1, bg: null, bloom: 0.45, ovI: 0.72,
   },
   day: {
     sunElev: 48, sunAz: 330, turbidity: 3.2, rayleigh: 1.2, mieC: 0.004, mieG: 0.8,
     sunColor: 0xfff1e0, sunI: 1.5, hemiSky: 0xcfe3ff, hemiGround: 0x6b6150, hemiI: 0.42,
-    exposure: 0.62, fog: 0xc9dcef, fogD: 0.0006, envI: 0.35, windowGlow: 0.05, lamp: 0, bg: null, bloom: 0.12,
+    exposure: 0.62, fog: 0xc9dcef, fogD: 0.0006, envI: 0.35, windowGlow: 0.05, lamp: 0, bg: null, bloom: 0.12, ovI: 1,
   },
   night: {
     sunElev: -4, sunAz: 228, turbidity: 2, rayleigh: 0.6, mieC: 0.003, mieG: 0.8,
     sunColor: 0xa9b8ff, sunI: 0.85, hemiSky: 0x8193c4, hemiGround: 0x1c2029, hemiI: 1.05,
-    exposure: 1.3, fog: 0x0b0f1a, fogD: 0.0014, envI: 0.35, windowGlow: 1.4, lamp: 1.4, bg: 0x070a12, bloom: 0.5,
+    exposure: 1.3, fog: 0x0b0f1a, fogD: 0.0014, envI: 0.35, windowGlow: 1.4, lamp: 1.4, bg: 0x070a12, bloom: 0.5, ovI: 0.5,
   },
 };
 

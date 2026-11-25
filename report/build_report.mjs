@@ -236,6 +236,7 @@ ${eqTable}
 <p><b>Verification.</b> The model is implemented three times — GLSL on the GPU, JavaScript for single links and statistics, and NumPy as the batch reference — following one written specification. The automated checks (script <code>web/tools/measure.mjs</code>) give:</p>
 <ul>
 <li>JavaScript vs NumPy on ${V.js_vs_python.links} reference links (access point to clients, to the attacker and to random indoor and outdoor points): maximum difference <b>${fmt(V.js_vs_python.max_abs_diff_db, 3)} dB</b>;</li>
+${V.js_vs_python_protections ? `<li>JavaScript vs NumPy on ${V.js_vs_python_protections.links} further links covering every protection scenario (patch antennas, relocated and ceiling access points, shielding, 5 GHz), including ${V.js_vs_python_protections.multi_ap_links} two-AP links where the received power is the maximum over both micro-cells: maximum difference <b>${fmt(V.js_vs_python_protections.max_abs_diff_db, 3)} dB</b>;</li>` : ''}
 <li>GPU vs JavaScript on ${fmt(V.gpu_vs_cpu_outdoor.cells)} random outdoor cells: maximum difference ${fmt(V.gpu_vs_cpu_outdoor.max_abs_diff_rss_db, 4)} dB (received power), ${fmt(V.gpu_vs_cpu_outdoor.max_abs_diff_deauth_db, 4)} dB (deauthentication channel) and ${fmt(V.gpu_vs_cpu_outdoor.max_abs_diff_eviltwin_db, 4)} dB (Evil-Twin channel);</li>
 <li>GPU vs JavaScript on all ${fmt(V.gpu_vs_cpu_floors.cells)} floor cells: ${fmt(V.gpu_vs_cpu_floors.differing_over_0_01_db)} cells differ by more than 0.01 dB.</li>
 </ul>
