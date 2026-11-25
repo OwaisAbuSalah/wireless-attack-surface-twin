@@ -12,6 +12,7 @@ import { loadSionna, matchScenario, sionnaStats } from './rf/sionna.js';
 import { B, FOOT } from './data.js';
 import { UI } from './ui/ui.js';
 import { Tour } from './ui/tour.js';
+import { Story } from './ui/story.js';
 import { t } from './ui/i18n.js';
 
 const PROT = B.protections;
@@ -24,7 +25,7 @@ export const defaultState = () => ({
   shieldWindows: false, shieldPaint: false, pmf: false, wpa3: false,
   equipment: B.attack.default_equipment,
   layers: { zones: true, indoor: true, contours: true, ghost: true, rays: true, waves: true, labels: true },
-  mood: 'dusk', quality: 'high', follow: false,
+  mood: 'dusk', quality: 'high', follow: false, simple: true,
 });
 
 const RF_KEYS = ['freq', 'txDbm', 'antenna', 'mount', 'aps', 'az', 'tilt', 'shieldWindows', 'shieldPaint', 'equipment'];
@@ -37,6 +38,9 @@ export class App {
     this.state.lang = q.get('lang') ?? saved ?? 'en';
     if (q.get('quality')) this.state.quality = q.get('quality');
     if (q.get('ui') === '0') document.body.classList.add('clean');
+    // simple (story) view by default; ?view=expert or the toggle opens the detailed interface
+    const view = q.get('view') ?? localStorage.getItem('twin.view');
+    this.state.simple = view !== 'expert';
 
     this.world = new World(document.getElementById('viewport'));
     const scene = this.world.scene;
@@ -55,11 +59,12 @@ export class App {
     this.sionna = loadSionna(this.world.renderer);
     this.ui = new UI(this);
     this.tour = new Tour(this);
+    this.story = new Story(this);
 
     this.world.onMood = (m) => { this.site?.setMood(m); this.building?.setWindowGlow(m.windowGlow); this.U.uIntensity.value = m.ovI ?? 1; };   // overlay glow follows exposure
     this.world.setMood(this.state.mood);
     this._resizeLines();
-    window.addEventListener('resize', () => this._resizeLines());
+    window.addEventListener('resize', () => { this._resizeLines(); if (this.state.simple) this.world.setFrameShift(this._frameShift()); });
     this._input();
     this.keys = new Set();
     this.dirty = { rf: { animate: false }, att: true, display: true };
@@ -86,6 +91,7 @@ export class App {
     this.applyView();
     this.world.start();
     this.cameraPreset('overview', 0.01);
+    this.setSimple(this.state.simple, true);
     setTimeout(() => document.getElementById('loader').classList.add('done'), 350);
     window.__twin = this;
     window.__ready = true;
@@ -192,10 +198,33 @@ export class App {
     this.applyView();
     this.ui.sync();
   }
+  /** Simple story view ↔ detailed interface. */
+  setSimple(on, init = false) {
+    this.state.simple = on;
+    if (!init) localStorage.setItem('twin.view', on ? 'simple' : 'expert');
+    document.body.classList.toggle('simple', on);
+    document.body.classList.remove('panel-open');
+    this.world.setFrameShift(on ? this._frameShift() : 0);
+    if (on) {
+      this.setLayer('labels', false);
+      this.story.go(this.story.i);
+    } else {
+      this.setLayer('labels', true);
+      this.setLayer('rays', true);
+      this.story.render();
+    }
+    this.ui.sync();
+  }
+  _frameShift() {
+    const h = this.world.container.clientHeight;
+    return Math.round(h * (window.innerWidth <= 760 ? 0.16 : 0.09));
+  }
+
   setLang(l) {
     this.state.lang = l;
     localStorage.setItem('twin.lang', l);
     this.ui.build();
+    this.story.render();
     this.building.setLang(l);
     this.site.setLang(l);
     this.clients.setLang(l);
@@ -239,17 +268,26 @@ export class App {
     const s = this.state;
     const a = this.attacker.pos;
     if (name !== 'follow') this.state.follow = false;
+    // portrait screens (phones): pull the wide shots back so the whole scene fits
+    const asp = this.world.camera.aspect;
+    const kd = asp < 1 ? Math.min(2.2, Math.pow(1 / asp, 0.8)) : 1;
+    const fly = (pos, tgt) => this.world.flyTo(tgt.clone().add(pos.clone().sub(tgt).multiplyScalar(kd)), tgt, dur);
     switch (name) {
       case 'overview':
         if (s.focus !== 'all' || s.explode) this.setView({ focus: 'all', explode: false });
-        this.world.flyTo(P(30, -62, 70), P(-1, -12, 0), dur); break;
+        fly(P(30, -62, 70), P(-1, -12, 0)); break;
       case 'top':
-        this.world.flyTo(P(0.5, -16.5, 172), P(0.5, -16, 0), dur); break;
+        fly(P(0.5, -16.5, 172), P(0.5, -16, 0)); break;
       case 'street':
         this.world.flyTo(P(a[0] + 2.6, a[1] - 5.2, 3.4), P(-2, -7, 5.2), dur); break;
+      case 'attacker': {   // 3/4 view that holds both the attacker and the access point
+        if (s.focus !== 'all' || s.explode) this.setView({ focus: 'all', explode: false });
+        const r = this.rf.pos;
+        fly(P(a[0] + 21, a[1] - 27, 21), P((a[0] + r[0]) / 2 + 1, (a[1] + r[1]) / 2 - 1, 3)); break;
+      }
       case 'floor':
         this.setView({ focus: 1, explode: false });
-        this.world.flyTo(P(5, -20, 31), P(-0.5, -0.5, 3.6), dur); break;
+        fly(P(5, -20, 31), P(-0.5, -0.5, 3.6)); break;
       case 'follow': {
         this.state.follow = !this.state.follow;
         const r = this.rf.pos;
@@ -424,7 +462,7 @@ export class App {
       this.attacker.faceTowards(this.ev.txPos ?? this.rf.pos);
       const showRays = this.state.layers.rays && !this.state.explode;
       this.rays.update(this.ev, this.rf, showRays);
-      this.rays.updateLinks(this.ev, this.clients.markerAnchor, showRays && this.state.mode !== 'sionna');
+      this.rays.updateLinks(this.ev, this.clients.markerAnchor, showRays && this.state.mode !== 'sionna' && !this.state.simple);
       this.clients.setStates(this.ev.clients);
       this.U.uAttOk.value = this.ev.eav.ok ? 1 : 0;
       this._labels();
@@ -585,6 +623,8 @@ export class App {
         return;
       }
       if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (this.state.simple && this.tour.i < 0 && (k === 'pagedown' || ((k === ' ' || k === 'enter') && !e.target.closest?.('button')))) { e.preventDefault(); this.story.go(this.story.i + 1); return; }
+      if (this.state.simple && this.tour.i < 0 && k === 'pageup') { e.preventDefault(); this.story.go(this.story.i - 1); return; }
       if (k === 't') this.tour.i >= 0 ? this.tour.stop() : this.tour.start();
       else if (k === 'p') this.applyAll();
       else if (k === 'r') this.resetAll();

@@ -2,7 +2,7 @@
 // uses the keyboard, and reports console errors.   node tools/ui_qa.mjs [url]
 import { chromium } from 'playwright-core';
 
-const url = process.argv[2] ?? 'http://127.0.0.1:5288/?lang=en&quality=high';
+const url = process.argv[2] ?? 'http://127.0.0.1:5288/?lang=en&quality=high&view=expert';
 const browser = await chromium.launch({ channel: 'msedge', headless: true, args: ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist'] });
 const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
 const errors = [];
@@ -66,6 +66,22 @@ await step('drag AP', async () => {
 await step('double-click walk', async () => { await page.mouse.dblclick(500, 500); await page.waitForTimeout(800); });
 await step('WASD', async () => { await page.keyboard.down('w'); await page.waitForTimeout(500); await page.keyboard.up('w'); });
 await step('tour T + arrows + Esc', async () => { await page.keyboard.press('t'); await page.waitForTimeout(800); await page.keyboard.press('ArrowRight'); await page.waitForTimeout(800); await page.keyboard.press('Escape'); });
+// simple (story) view: switch, walk the four steps, apply protection, switch back
+await step('switch to simple view', async () => { await page.click('#btn-view'); if (!(await page.evaluate(() => document.body.classList.contains('simple')))) throw new Error('not simple'); });
+for (const k of [0, 1, 2]) await step('story step ' + (k + 1), async () => { await page.click(`#story-steps [data-step="${k}"]`); await page.waitForTimeout(900); });
+await step('story apply protection', async () => {
+  await page.click('#story-card [data-s="apply"]');
+  await page.waitForFunction(() => window.__twin.story.i === 3, null, { timeout: 20000 });
+  await page.waitForTimeout(1500);
+  const st = await page.evaluate(() => ({ lvl: document.querySelector('#status').dataset.lvl, area: window.__twin.stats.areaU }));
+  if (st.area > 1000) throw new Error('zone did not shrink: ' + st.area);
+  log.push(`     after story apply: status ${st.lvl}, danger zone ${st.area} m²`);
+});
+await step('story start again', async () => { await page.click('#story-card [data-s="again"]'); await page.waitForTimeout(1200); if (await page.evaluate(() => window.__twin.anyProtection())) throw new Error('not reset'); });
+await step('story next/back buttons', async () => { await page.click('#story-card [data-s="next"]'); await page.waitForTimeout(700); await page.click('#story-card [data-s="back"]'); });
+await step('story keyboard PageDown', async () => { await page.keyboard.press('PageDown'); await page.waitForTimeout(500); if (await page.evaluate(() => window.__twin.story.i) !== 1) throw new Error('PageDown did not advance'); });
+await step('story language toggle', async () => { await page.click('#btn-lang'); await page.waitForTimeout(400); await page.click('#btn-lang'); });
+await step('switch back to detailed mode', async () => { await page.click('#btn-view'); if (await page.evaluate(() => document.body.classList.contains('simple'))) throw new Error('still simple'); });
 await step('mobile viewport', async () => { await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(800); await page.screenshot({ path: process.env.SHOT ?? 'qa_mobile.png' }); await page.setViewportSize({ width: 1600, height: 900 }); });
 
 console.log(log.join('\n'));

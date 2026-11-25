@@ -35,10 +35,12 @@
           </div>
         </div>
         <nav class="center-controls">
+          <div class="story-steps" id="story-steps"></div>
           <div class="seg" id="seg-mode"></div>
           <div class="seg" id="seg-floor"></div>
         </nav>
         <div class="top-actions">
+          <button class="btn view-btn" id="btn-view"></button>
           <button class="btn primary" id="btn-tour"><span class="ico" data-icon="play"></span><span data-i18n="btn.tour"></span></button>
           <div class="menu" id="menu-cam">
             <button class="btn icon" title="Camera" id="btn-cam"><span class="ico" data-icon="camera"></span></button>
@@ -52,6 +54,8 @@
       </header>
 
       <aside class="kpis" id="kpis"></aside>
+      <aside class="status" id="status" aria-live="polite"></aside>
+      <section class="story-card" id="story-card" aria-live="polite"></section>
       <aside class="panel" id="panel"></aside>
       <div class="legend" id="legend"></div>
       <div class="hint" id="hint" data-i18n="hint"></div>

@@ -200,9 +200,17 @@ export class World {
     this.resize();
   }
 
+  /** Shift the rendered frame up by px (keeps the scene clear of a bottom card). */
+  setFrameShift(px) {
+    this.frameShift = px;
+    this.resize();
+  }
+
   resize() {
     const w = this.container.clientWidth, h = this.container.clientHeight;
     this.camera.aspect = w / h;
+    if (this.frameShift) this.camera.setViewOffset(w, h, 0, this.frameShift, w, h);
+    else this.camera.clearViewOffset();
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(w, h);
     this.composer.setSize(w, h);

@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-24T23:10:58.291Z",
+ "generated": "2026-11-25T04:29:08.781Z",
  "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 (0x00002504) Direct3D11 vs_5_0 ps_5_0, D3D11)",
  "scenarios": {
   "baseline": {
@@ -180,6 +180,6 @@
   "deauth_devices": 6,
   "hijack_floor_pct": 8.39
  },
- "timing_ms": 5.9,
+ "timing_ms": 4.5,
  "page_errors": []
 }

@@ -7,7 +7,7 @@ import { chromium } from 'playwright-core';
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-const url = process.argv[2] ?? 'http://127.0.0.1:5288/?lang=en&quality=high';
+const url = process.argv[2] ?? 'http://127.0.0.1:5288/?lang=en&quality=high&view=expert';
 const out = fileURLToPath(new URL('../../sim/out/app_stats.json', import.meta.url));
 const browser = await chromium.launch({ channel: 'msedge', headless: true, args: ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist'] });
 const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });

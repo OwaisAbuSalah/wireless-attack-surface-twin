@@ -70,6 +70,7 @@ export class UI {
     $('#btn-full').onclick = () => (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());
     $('#btn-about').onclick = () => ($('#about').hidden = false);
     $('#btn-panel').onclick = () => document.body.classList.toggle('panel-open');
+    $('#btn-view').onclick = () => this.app.setSimple(!this.app.state.simple);
   }
 
   buildCamMenu() {
@@ -183,6 +184,7 @@ export class UI {
     }
     r(c, 'note').textContent = `${this.T('kpi.target')} · ${this.T('floor.' + s.floor)} · ${this.T('kpi.baseline')}: ${base ? base.coverage.toFixed(1) : '—'} %`;
     if (s.edge) r(l, 'base').title = this.T('kpi.beyondNote');
+    this.app.story?.refresh();
   }
 
   updateAttacker(ev, hijack = null) {
@@ -230,6 +232,7 @@ export class UI {
         </table>
       </details>`;
     this.k.att.querySelector('details').addEventListener('toggle', (e) => (this.lbOpen = e.target.open));
+    this.app.story?.refresh();
   }
 
   matName(key) {

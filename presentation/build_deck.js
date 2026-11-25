@@ -537,16 +537,16 @@ async function build() {
   // 16 ─ Live demo
   s = pres.addSlide({ masterName: 'CONTENT', sectionTitle: 'Validation' });
   s.addText('Live demo — open it in any browser', { placeholder: 'title' });
-  frame(s, await cropTo(A('shot_ui_baseline.jpg'), 7.9, 4.45, 0.5, 0.5), 0.6, 1.35, 7.9, 4.45, 'Interactive twin user interface');
+  frame(s, await cropTo(A('shot_ui_simple.jpg'), 7.9, 4.45, 0.5, 0.5), 0.6, 1.35, 7.9, 4.45, 'Simple view of the twin: step 2, the attacker');
   const qr = path.join(BUILD, 'qr_live.png');
   await QRCode.toFile(qr, LIVE, { width: 700, margin: 1, color: { dark: '#0A0F1C', light: '#FFFFFF' } });
   card(s, 8.85, 1.35, 3.85, 4.45, 'QR card', CARD2);
   s.addImage({ path: qr, x: 9.5, y: 1.6, w: 2.55, h: 2.55, objectName: 'QR code to live demo', altText: 'QR code: ' + LIVE });
   txt(s, 'Scan to open the twin', { x: 8.85, y: 4.3, w: 3.85, h: 0.4, fontSize: 16, bold: true, color: 'FFFFFF', align: 'center' });
   txt(s, 'owaisabusalah.github.io/wireless-attack-surface-twin', { x: 9.0, y: 4.75, w: 3.55, h: 0.8, fontSize: 12, color: HEX.accent1, align: 'center', valign: 'top', hyperlink: { url: LIVE } });
-  const feats = ['Drag the attacker and the APs', '9 protections, one-click “Apply protection”', 'Guided demo (T) · Arabic / English · offline single file'];
+  const feats = ['Opens as a four-step story: leak → attacker → protection → result', 'One click “Apply protection” · drag the attacker to any spot', 'Detailed mode: 9 protections, map modes, floors · Arabic / English · offline'];
   txt(s, feats.map((f, i) => ({ text: f, options: { bullet: { indent: 18 }, breakLine: i < feats.length - 1, paraSpaceAfter: 4 } })), { x: 0.75, y: 5.95, w: 11.9, h: 0.9, fontSize: 15, color: HEX.lt2, valign: 'top' });
-  s.addNotes('Switch to the browser now. Start the guided demo with T, or drag the attacker around the street, toggle protections and watch the zone shrink. The whole app is a single ' + (fs.statSync(path.join(ROOT, 'docs/index.html')).size / 1048576).toFixed(1) + ' MB HTML file that also works offline.');
+  s.addNotes('Switch to the browser now. The twin opens as a four-step story: the leak, the attacker, the protection and the result, each with a short explanation and live numbers. Press Apply protection in step 3 and watch the zone shrink; drag the attacker to any spot. Detailed mode, top right, opens every control: all protections, map modes, floors and the full link budget. The whole app is a single ' + (fs.statSync(path.join(ROOT, 'docs/index.html')).size / 1048576).toFixed(1) + ' MB HTML file that also works offline.');
 
   // 17 ─ Limitations
   pres.addSection({ title: 'Conclusion' });

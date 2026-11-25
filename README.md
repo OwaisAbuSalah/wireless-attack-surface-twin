@@ -35,13 +35,18 @@ You can **walk the attacker around**, **drag the access points**, and **apply pr
 paint, relocation, micro-cells, directional antenna, 5 GHz, TX-power tuning, 802.11w and WPA3 — and watch the
 danger zone shrink live, while a KPI panel keeps an eye on indoor coverage.
 
+The twin opens in a **simple view** that tells the story in four steps — *the leak → the attacker → protection → the
+result* — with one short explanation and a few live numbers per step, and a single card that says in plain words
+whether the attacker can still attack. **Detailed mode** (top button) opens the full interface: every protection,
+the signal / attack / Sionna maps, single floors and the attacker's link budget.
+
 <table>
 <tr>
 <td width="50%"><img src="presentation/assets/shot_protected_overview.jpg" alt="After protection"><br><sub><b>After “Apply protection”</b>: danger zone −99 %, street exposure 0 %, coverage kept.</sub></td>
 <td width="50%"><img src="presentation/assets/shot_floor_hijack.jpg" alt="Floor 1 cut-away"><br><sub><b>Inside floor 1</b>: purple = where clients would join the attacker's rogue AP.</sub></td>
 </tr>
 <tr>
-<td><img src="presentation/assets/shot_ui_tour.jpg" alt="Guided demo"><br><sub><b>Guided demo</b> (press <kbd>T</kbd>) with the attacker's link budget, live numbers.</sub></td>
+<td><img src="presentation/assets/shot_ui_simple.jpg" alt="Simple view"><br><sub><b>Simple view</b> — the story in four steps (leak, attacker, protection, result) with live numbers; <b>Detailed mode</b> opens every control.</sub></td>
 <td><img src="presentation/assets/shot_sionna_top.jpg" alt="Sionna RT"><br><sub><b>NVIDIA Sionna RT</b> ray-traced map of the same building, for validation.</sub></td>
 </tr>
 </table>
@@ -109,7 +114,8 @@ data/building.json ──┬── web/      Three.js + GLSL: real-time multi-wa
 ## Run it
 
 **Just view it:** open the [live demo](https://owaisabusalah.github.io/wireless-attack-surface-twin/), or double-click
-`docs/index.html` (Chrome/Edge, WebGL2). Controls: drag the attacker or an AP · double-click the ground to walk ·
+`docs/index.html` (Chrome/Edge, WebGL2). Simple view: click the steps or press <kbd>Page Down</kbd> / <kbd>Space</kbd>.
+Controls: drag the attacker or an AP · double-click the ground to walk ·
 <kbd>W A S D</kbd> · <kbd>T</kbd> guided demo · <kbd>P</kbd> apply protection · <kbd>R</kbd> reset ·
 <kbd>1–4</kbd> cameras · <kbd>F</kbd> follow attacker · <kbd>H</kbd> hide UI · <kbd>M</kbd> lighting · <kbd>L</kbd> Arabic/English.
 
@@ -173,7 +179,10 @@ cd presentation && npm install && node build_deck.js
 **التحقّق:** النموذج نفسه مكتوب ثلاث مرات (GLSL وJavaScript وPython) ومتطابق، ومقارَن بتتبّع الأشعة في NVIDIA Sionna RT.
 
 **التشغيل:** افتح [الرابط المباشر](https://owaisabusalah.github.io/wireless-attack-surface-twin/) أو انقر مرتين على
-الملف `docs/index.html` — يعمل دون إنترنت. اضغط <kbd>T</kbd> للعرض الموجّه و<kbd>L</kbd> للتبديل بين العربية والإنجليزية.
+الملف `docs/index.html` — يعمل دون إنترنت. يفتح الموقع على **عرض مبسّط من أربع خطوات**: تسرّب الإشارة، ثم المهاجم، ثم الحماية، ثم النتيجة،
+مع شرح قصير وأرقام حيّة في كل خطوة. زر **«الوضع المفصّل»** في الأعلى يفتح كل أدوات التحكم. و<kbd>L</kbd> للتبديل بين العربية والإنجليزية.
+
+<img src="presentation/assets/shot_ui_simple_ar.jpg" width="100%" alt="العرض المبسّط: الخطوة الأولى، الإشارة تتسرّب إلى الشارع">
 
 </div>
 

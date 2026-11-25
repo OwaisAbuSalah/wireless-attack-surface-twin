@@ -41,6 +41,10 @@ const I = {
   car: '<path d="M4 16.5v-4l2-5h12l2 5v4z"/><circle cx="7.5" cy="16.5" r="1.8"/><circle cx="16.5" cy="16.5" r="1.8"/><path d="M4 12.5h16"/>',
   tree: '<path d="M12 21v-5"/><path d="M12 3c3.6 0 6 2.8 6 6.2 0 3.6-2.7 6.3-6 6.3s-6-2.7-6-6.3C6 5.8 8.4 3 12 3z"/>',
   road: '<path d="M7 21L10 3M17 21L14 3M12 7v2M12 12v2M12 17v2"/>',
+  sliders: '<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  alert: '<path d="M12 3.5L22 20H2z"/><path d="M12 10v4.5M12 17.2v.3"/>',
 };
 
 export const icon = (name) => `<svg viewBox="0 0 24 24" aria-hidden="true">${I[name] ?? ''}</svg>`;
